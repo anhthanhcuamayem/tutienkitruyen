@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tu Tiên Kỳ Truyện - Thiên Đạo Luân Hồi (Retro Pixel RPG)</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☯️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -27,104 +30,155 @@
   <div class="game-container">
 
     <!-- CỘT TRÁI: THÔNG TIN ĐẠO HỮU -->
-    <aside class="left-panel">
-      <!-- Thông tin cơ bản -->
+    <aside class="left-panel xianxia-panel">
+      <div class="panel-ornament-tl"></div>
+      <div class="panel-ornament-tr"></div>
+      <div class="panel-ornament-bl"></div>
+      <div class="panel-ornament-br"></div>
+
+      <!-- Thông tin cơ bản & Avatar Ngọc Bài -->
       <div class="character-card">
-        <div class="avatar-wrapper">
-          <canvas id="avatar-canvas" width="48" height="48"></canvas>
+        <div class="avatar-frame">
+          <div class="avatar-wrapper">
+            <canvas id="avatar-canvas" width="48" height="48"></canvas>
+          </div>
         </div>
         <div class="char-info">
           <div id="player-name" class="char-name">Vô Danh Tu Sĩ</div>
-          <div id="player-path" class="char-path">Kiếm Tu</div>
-          <div id="player-realm" class="char-realm-badge">Luyện Khí Tầng 1</div>
+          <div class="char-path-wrapper">
+            <span class="char-path-label">Đạo Đồ:</span>
+            <span id="player-path" class="char-path">Kiếm Tu</span>
+          </div>
+          <div class="char-realm-wrapper">
+            <div id="player-realm" class="char-realm-badge">Luyện Khí Tầng 1</div>
+          </div>
           <div id="player-age" class="char-age">16 / 100 tuổi (Tháng 1)</div>
         </div>
       </div>
 
-      <!-- Thanh trạng thái HP / MP / EXP -->
+      <!-- Thanh trạng thái HP / MP / EXP (Có số đặt chính giữa & Shimmer) -->
       <div class="bar-group">
         <div class="bar-container">
-          <div class="bar-label-row">
-            <span>Khí Huyết (HP)</span>
-            <span id="player-hp-text">150 / 150</span>
+          <div class="bar-title-row">
+            <span class="bar-name">Khí Huyết (HP)</span>
           </div>
-          <div class="progress-bar-bg">
+          <div class="progress-bar-bg hp-bg">
             <div id="player-hp-bar" class="progress-bar-fill hp-fill" style="width: 100%;"></div>
+            <div class="bar-highlight"></div>
+            <div id="player-hp-text" class="bar-center-text">150 / 150</div>
           </div>
         </div>
 
         <div class="bar-container">
-          <div class="bar-label-row">
-            <span>Linh Lực (MP)</span>
-            <span id="player-mp-text">60 / 60</span>
+          <div class="bar-title-row">
+            <span class="bar-name">Linh Lực (MP)</span>
           </div>
-          <div class="progress-bar-bg">
+          <div class="progress-bar-bg mp-bg">
             <div id="player-mp-bar" class="progress-bar-fill mp-fill" style="width: 100%;"></div>
+            <div class="bar-highlight"></div>
+            <div id="player-mp-text" class="bar-center-text">60 / 60</div>
           </div>
         </div>
 
         <div class="bar-container">
-          <div class="bar-label-row">
-            <span>Tu Vi (EXP)</span>
-            <span id="player-exp-text">0 / 100 (0%)</span>
+          <div class="bar-title-row">
+            <span class="bar-name">Tu Vi (EXP)</span>
           </div>
-          <div class="progress-bar-bg">
+          <div class="progress-bar-bg exp-bg">
             <div id="player-exp-bar" class="progress-bar-fill exp-fill" style="width: 0%;"></div>
+            <div class="bar-highlight"></div>
+            <div id="player-exp-text" class="bar-center-text">0 / 100 (0%)</div>
           </div>
         </div>
       </div>
 
       <!-- Nút Đột Phá Nổi Bật -->
-      <button id="btn-breakthrough" class="pixel-btn primary-btn btn-breakthrough" disabled>Tu Vi Chưa Đủ</button>
+      <button id="btn-breakthrough" class="pixel-btn primary-btn btn-breakthrough" disabled>
+        <span class="lock-icon">🔒</span> <span class="breakthrough-btn-text">Tu Vi Chưa Đủ</span>
+      </button>
 
-      <!-- Bảng Chỉ Số Chi Tiết -->
-      <div class="stats-table">
-        <div class="stat-row">
-          <span class="stat-label">Công Kích</span>
-          <span id="player-stat-atk" class="stat-val text-red">25</span>
+      <!-- Bảng Chỉ Số Chiến Đấu (Lưới 2x2 Grid) -->
+      <div class="combat-stats-section">
+        <div class="section-title">⚔️ Chỉ Số Chiến Đấu</div>
+        <div class="stats-grid-2x2">
+          <div class="stat-card atk-card">
+            <div class="stat-card-header">
+              <span class="stat-icon">⚔️</span>
+              <span class="stat-name">Công Kích</span>
+            </div>
+            <div id="player-stat-atk" class="stat-number text-red">25</div>
+          </div>
+
+          <div class="stat-card def-card">
+            <div class="stat-card-header">
+              <span class="stat-icon">🛡️</span>
+              <span class="stat-name">Phòng Ngự</span>
+            </div>
+            <div id="player-stat-def" class="stat-number text-cyan">12</div>
+          </div>
+
+          <div class="stat-card spd-card">
+            <div class="stat-card-header">
+              <span class="stat-icon">👟</span>
+              <span class="stat-name">Thân Pháp</span>
+            </div>
+            <div id="player-stat-spd" class="stat-number text-emerald">15</div>
+          </div>
+
+          <div class="stat-card crit-card">
+            <div class="stat-card-header">
+              <span class="stat-icon">⚡</span>
+              <span class="stat-name">Bạo Kích</span>
+            </div>
+            <div id="player-stat-crit" class="stat-number text-gold">5%</div>
+          </div>
         </div>
-        <div class="stat-row">
-          <span class="stat-label">Phòng Ngự</span>
-          <span id="player-stat-def" class="stat-val text-cyan">12</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Thân Pháp</span>
-          <span id="player-stat-spd" class="stat-val">15</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Tỷ Lệ Bạo Kích</span>
-          <span id="player-stat-crit" class="stat-val text-gold">5%</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Linh Căn</span>
-          <span id="player-stat-root" class="stat-val text-cyan">Đang tải...</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Thể Chất</span>
-          <span id="player-stat-phy" class="stat-val text-purple">Phàm Thể</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Ngộ Tính</span>
-          <span id="player-stat-comp" class="stat-val text-green">100% (x1.00)</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Linh Thạch</span>
-          <span id="player-stones" class="stat-val text-gold">100</span>
+      </div>
+
+      <!-- Bảng Căn Cơ & Tài Nguyên (Badges Phẩm Chất) -->
+      <div class="talents-section">
+        <div class="section-title">🔮 Tiên Duyên & Căn Cơ</div>
+        <div class="talent-badges-grid">
+          <div class="talent-badge-item">
+            <span class="badge-label">Linh Căn:</span>
+            <span id="player-stat-root" class="badge-chip root-chip">Đang tải...</span>
+          </div>
+          <div class="talent-badge-item">
+            <span class="badge-label">Thể Chất:</span>
+            <span id="player-stat-phy" class="badge-chip phy-chip">Phàm Thể</span>
+          </div>
+          <div class="talent-badge-item">
+            <span class="badge-label">Ngộ Tính:</span>
+            <span id="player-stat-comp" class="badge-chip comp-chip">100% (x1.00)</span>
+          </div>
+          <div class="talent-badge-item">
+            <span class="badge-label">Linh Thạch:</span>
+            <span id="player-stones" class="badge-chip stone-chip">100</span>
+          </div>
         </div>
       </div>
     </aside>
 
     <!-- CỘT GIỮA: MÀN HÌNH CHÍNH & BẢNG ĐIỀU KHIỂN TABS -->
-    <main class="center-panel">
+    <main class="center-panel xianxia-panel">
+      <div class="panel-ornament-tl"></div>
+      <div class="panel-ornament-tr"></div>
+      <div class="panel-ornament-bl"></div>
+      <div class="panel-ornament-br"></div>
+
       <!-- Nửa trên: HTML5 Canvas Pixel Viewport -->
       <div class="canvas-viewport">
         <canvas id="main-canvas" width="640" height="360"></canvas>
+        <div id="canvas-status-banner" class="canvas-status-hud">
+          <span class="status-orb"></span>
+          <span id="canvas-status-text">Đang đả tọa hấp thu thiên địa linh khí...</span>
+        </div>
       </div>
 
-      <!-- Nửa dưới: Tabs Điều Khiển -->
+      <!-- Nửa dưới: Tabs Điều Khiển (Lưới 2 Hàng Không Bao Giờ Tràn Ngang) -->
       <nav class="tab-nav-bar">
         <button class="tab-btn active" data-tab="tab-meditate">🧘 Tu Luyện</button>
-        <button class="tab-btn" data-tab="tab-world">🗺️ Thế Giới Mở</button>
+        <button class="tab-btn" data-tab="tab-world">🗺️ Thế Giới</button>
         <button class="tab-btn" data-tab="tab-combat" id="tab-nav-combat">⚔️ Chiến Đấu</button>
         <button class="tab-btn" data-tab="tab-cheat">🌀 Kim Thủ Chỉ</button>
         <button class="tab-btn" data-tab="tab-sect">🏯 Tông Môn</button>
@@ -139,10 +193,10 @@
         <section id="tab-meditate" class="tab-pane active">
           <div class="pixel-box">
             <h3>🧘 Đả Tọa Hấp Thu Thiên Địa Linh Khí</h3>
-            <p style="color: var(--text-dim); margin-top: 4px;">Ngồi thiền đả tọa, vận chuyển chu thiên kinh mạch. Tu vi tự động tăng theo thời gian thực (ảnh hưởng trực tiếp bởi Ngộ Tính và Linh Căn).</p>
-            <div style="display: flex; gap: 10px; margin-top: 12px;">
-              <button id="btn-gather-qi" class="pixel-btn primary-btn">✨ Tụ Linh Khí (Click Thủ Công)</button>
-              <button id="btn-use-exp-pill" class="pixel-btn">💊 Nuốt Tụ Khí Đan (+350 Tu Vi)</button>
+            <p style="color: var(--text-dim); margin-top: 6px; line-height: 1.6;">Ngồi thiền đả tọa, vận chuyển chu thiên kinh mạch. Tu vi tự động tăng theo thời gian thực (ảnh hưởng trực tiếp bởi Ngộ Tính và Linh Căn).</p>
+            <div class="action-buttons-row" style="display: flex; gap: 12px; margin-top: 14px;">
+              <button id="btn-gather-qi" class="pixel-btn primary-btn btn-3d">✨ Tụ Linh Khí (Click Thủ Công)</button>
+              <button id="btn-use-exp-pill" class="pixel-btn btn-3d">💊 Nuốt Tụ Khí Đan (+350 Tu Vi)</button>
             </div>
           </div>
         </section>
@@ -277,9 +331,16 @@
     </main>
 
     <!-- CỘT PHẢI: THIÊN CƠ LỤC (NHẬT KÝ TU TIÊN) -->
-    <aside class="right-panel">
+    <aside class="right-panel xianxia-panel">
+      <div class="panel-ornament-tl"></div>
+      <div class="panel-ornament-tr"></div>
+      <div class="panel-ornament-bl"></div>
+      <div class="panel-ornament-br"></div>
       <div class="log-header">
-        <span>📜 THIÊN CƠ LỤC</span>
+        <div class="log-header-title">
+          <span class="log-icon">📜</span>
+          <span>THIÊN CƠ LỤC</span>
+        </div>
         <button id="btn-clear-log" class="pixel-btn small-btn">Xóa Log</button>
       </div>
       <div id="log-messages" class="log-messages"></div>
