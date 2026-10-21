@@ -2851,6 +2851,8 @@
       this.marketItems = [];
       this.idleTimer = null;
       this.saveTimer = null;
+      // Ngăn người chơi khởi tạo nhiều lần đột phá trong lúc đang chờ thiên kiếp.
+      this.breakthroughInProgress = false;
     }
 
     setCombatEngine(combatEngine) {
@@ -3047,12 +3049,19 @@
     breakthrough() {
       const p = this.player;
       if (!p) return;
+
+      // Độ kiếp có thời gian chờ; các click liên tiếp không được tạo thêm timer.
+      if (this.breakthroughInProgress) return;
+
       const realm = REALMS[p.realmIndex];
 
       if (p.exp < realm.maxExp) {
         this.addLog(`Tu vi chưa đạt đỉnh phong (${p.exp}/${realm.maxExp}), cưỡng ép đột phá ắt tẩu hỏa nhập ma!`, 'warning');
         return;
       }
+
+      this.breakthroughInProgress = true;
+      this.updateUI();
 
       let successChance = realm.rate;
       successChance += (p.comprehension - 80) * 0.002;
@@ -3090,6 +3099,10 @@
     }
 
     resolveBreakthrough(successChance, usedPill) {
+      // Chỉ xử lý một lần cho mỗi lần bấm đột phá, kể cả khi có callback cũ bị gọi lại.
+      if (!this.breakthroughInProgress) return;
+      this.breakthroughInProgress = false;
+
       const p = this.player;
       if (!p) return;
       const oldRealm = REALMS[p.realmIndex];
@@ -4160,8 +4173,13 @@
       if (charGearArt) charGearArt.textContent = p.equippedArtifact ? `${p.equippedArtifact.name}` : 'Chưa có';
 
       const isReadyToBreak = p.exp >= base.maxExp;
+      const isBreakthroughInProgress = this.breakthroughInProgress;
       if (btnBreakthrough) {
-        if (isReadyToBreak) {
+        if (isBreakthroughInProgress) {
+          btnBreakthrough.disabled = true;
+          btnBreakthrough.classList.remove('glow-breakthrough');
+          btnBreakthrough.innerHTML = '⚡ <span>ĐANG ĐỘ KIẾP...</span>';
+        } else if (isReadyToBreak) {
           btnBreakthrough.disabled = false;
           btnBreakthrough.classList.add('glow-breakthrough');
           btnBreakthrough.innerHTML = `⚡ <span>${base.isMajorBreakthrough ? 'ĐỘ KIẾP ĐỘT PHÁ' : 'ĐỘT PHÁ CẢNH GIỚI'}</span> ✨`;
@@ -4173,7 +4191,11 @@
       }
 
       if (btnBreakthroughSanctum) {
-        if (isReadyToBreak) {
+        if (isBreakthroughInProgress) {
+          btnBreakthroughSanctum.disabled = true;
+          btnBreakthroughSanctum.classList.remove('glow-breakthrough');
+          btnBreakthroughSanctum.innerHTML = '⚡ <span>ĐANG ĐỘ KIẾP...</span>';
+        } else if (isReadyToBreak) {
           btnBreakthroughSanctum.disabled = false;
           btnBreakthroughSanctum.classList.add('glow-breakthrough');
           btnBreakthroughSanctum.innerHTML = `⚡ <span>${base.isMajorBreakthrough ? 'ĐỘ KIẾP ĐỘT PHÁ' : 'ĐỘT PHÁ BÌNH CẢNH'}</span> ✨`;
