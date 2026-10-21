@@ -459,7 +459,12 @@ body {
 
 .world-map {
   position: relative;
-  min-height: 310px;
+  display: grid;
+  grid-template-columns: repeat(11, minmax(0, 1fr));
+  grid-template-rows: repeat(11, minmax(0, 1fr));
+  width: min(100%, 660px);
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
   overflow: hidden;
   border: 1px solid rgba(56, 189, 248, 0.45);
   border-radius: 6px;
@@ -469,6 +474,105 @@ body {
     radial-gradient(circle at 52% 78%, rgba(168, 85, 247, 0.18), transparent 24%),
     linear-gradient(135deg, #082f49 0%, #0f172a 42%, #172554 100%);
   box-shadow: inset 0 0 35px rgba(2, 6, 23, 0.9), 0 0 16px rgba(14, 165, 233, 0.12);
+}
+
+.world-grid-cell {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+  min-height: 0;
+  aspect-ratio: 1 / 1;
+  padding: 3px 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  overflow: hidden;
+  color: rgba(226, 232, 240, 0.72);
+  background: rgba(15, 23, 42, 0.43);
+  border: 1px solid rgba(125, 211, 252, 0.12);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.world-grid-cell:hover {
+  z-index: 4;
+  background: rgba(30, 64, 175, 0.55);
+  border-color: rgba(125, 211, 252, 0.65);
+  box-shadow: inset 0 0 10px rgba(56, 189, 248, 0.25);
+}
+
+.world-grid-cell.current {
+  color: #fef08a;
+  background: rgba(120, 53, 15, 0.82);
+  border: 2px solid var(--border-gold-bright);
+  box-shadow: 0 0 14px rgba(251, 191, 36, 0.52), inset 0 0 12px rgba(251, 191, 36, 0.22);
+}
+
+.world-grid-cell.region {
+  color: #fde68a;
+  background: rgba(30, 41, 59, 0.78);
+  border-color: rgba(250, 204, 21, 0.42);
+}
+
+.world-grid-cell.locked {
+  color: #94a3b8;
+  background: rgba(15, 23, 42, 0.75);
+  border-color: rgba(100, 116, 139, 0.35);
+}
+
+.world-grid-icon { font-size: 16px; line-height: 1; }
+.world-grid-label { max-width: 100%; font-size: 8px; line-height: 1.15; text-align: center; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+
+.world-grid-cell.forest { background-color: rgba(6, 78, 59, 0.2); }
+.world-grid-cell.water { background-color: rgba(3, 105, 161, 0.22); }
+.world-grid-cell.mountain { background-color: rgba(71, 85, 105, 0.28); }
+.world-grid-cell.plain { background-color: rgba(101, 83, 20, 0.18); }
+.world-grid-cell.rock { background-color: rgba(71, 85, 105, 0.2); }
+
+.world-cell-context-menu {
+  position: fixed;
+  z-index: 1000;
+  min-width: 220px;
+  padding: 5px;
+  border: 1px solid var(--border-gold);
+  border-radius: 5px;
+  background: rgba(8, 15, 28, 0.97);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65), 0 0 12px rgba(251, 191, 36, 0.2);
+}
+
+.world-context-title {
+  padding: 5px 7px 7px;
+  color: var(--text-gold);
+  font-size: 11px;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border-dark);
+}
+
+.world-cell-context-menu button {
+  width: 100%;
+  margin-top: 4px;
+  padding: 7px 8px;
+  text-align: left;
+  color: var(--text-main);
+  background: rgba(30, 41, 59, 0.72);
+  border: 1px solid transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.world-cell-context-menu button:hover:not(:disabled) {
+  color: #fef08a;
+  border-color: var(--border-gold);
+  background: rgba(120, 53, 15, 0.65);
+}
+
+.world-cell-context-menu button:disabled {
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .world-map::before,
@@ -590,7 +694,7 @@ body {
 
 @media (max-width: 700px) {
   .open-world-heading { flex-direction: column; }
-  .world-map { min-height: 360px; }
+  .world-map { width: 100%; }
   .world-map-node { min-width: 92px; }
   .open-world-grid { grid-template-columns: 1fr; }
   .world-alliance-row { align-items: flex-start; flex-direction: column; }

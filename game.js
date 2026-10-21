@@ -927,7 +927,7 @@
     {
       id: 'region_1',
       name: 'Linh Sơn Ngoại Vi',
-      mapX: 17, mapY: 68,
+      gridX: 0, gridY: 0,
       terrain: 'Sơn lâm',
       reqRealmIndex: 0,
       dangerLevel: 'Thấp (Luyện Khí Kỳ)',
@@ -940,7 +940,7 @@
     {
       id: 'region_2',
       name: 'Vạn Yêu Sơn Mạch',
-      mapX: 42, mapY: 51,
+      gridX: 2, gridY: -1,
       terrain: 'Sơn mạch',
       reqRealmIndex: 10,
       dangerLevel: 'Trung Bình (Trúc Cơ Kỳ)',
@@ -953,7 +953,7 @@
     {
       id: 'region_3',
       name: 'Cổ Kiếm Bí Cảnh',
-      mapX: 67, mapY: 68,
+      gridX: 4, gridY: 0,
       terrain: 'Kiếm vực',
       reqRealmIndex: 14,
       dangerLevel: 'Cao (Kim Đan Kỳ)',
@@ -966,7 +966,7 @@
     {
       id: 'region_4',
       name: 'Huyết Sát Ma Vực',
-      mapX: 82, mapY: 35,
+      gridX: 5, gridY: -2,
       terrain: 'Ma vực',
       reqRealmIndex: 18,
       dangerLevel: 'Rất Nguy Hiểm (Nguyên Anh Kỳ)',
@@ -979,7 +979,7 @@
     {
       id: 'region_5',
       name: 'Thượng Cổ Vực Thẳm',
-      mapX: 51, mapY: 14,
+      gridX: 3, gridY: -4,
       terrain: 'Hư không',
       reqRealmIndex: 22,
       dangerLevel: 'Tuyệt Địa Hung Hiểm (Hóa Thần+)',
@@ -991,15 +991,8 @@
     }
   ];
 
-  // Các tuyến đường và đạo hữu cư ngụ trong Vạn Giới. Đây là dữ liệu mô phỏng
+  // Các đạo hữu cư ngụ trong Vạn Giới. Đây là dữ liệu mô phỏng
   // để thế giới có cảm giác sống động ngay cả khi game chưa có máy chủ online.
-  const WORLD_MAP_ROUTES = [
-    ['region_1', 'region_2'],
-    ['region_2', 'region_3'],
-    ['region_3', 'region_4'],
-    ['region_2', 'region_5']
-  ];
-
   const WORLD_TRAVELERS = [
     { id: 'traveler_linh_nhi', name: 'Linh Nhi', title: 'Tán Tu Hái Thuốc', regionId: 'region_1', realmIndex: 2, faction: 'Tán Tu', mood: 'thân thiện' },
     { id: 'traveler_mac_van', name: 'Mặc Vân', title: 'Kiếm Tu Du Phương', regionId: 'region_2', realmIndex: 11, faction: 'Vân Kiếm Minh', mood: 'trầm mặc' },
@@ -2885,6 +2878,7 @@
       this.idleTimer = null;
       this.saveTimer = null;
       this.worldEncounter = null;
+      this.worldSelectedCell = null;
       // Ngăn người chơi khởi tạo nhiều lần đột phá trong lúc đang chờ thiên kiếp.
       this.breakthroughInProgress = false;
     }
@@ -2916,6 +2910,7 @@
         lastSignInYear: -1,
         signedRegions: {},
         worldLocation: 'region_1',
+        worldGridPosition: { x: 0, y: 0 },
         worldResidence: null,
         worldFaction: null,
         worldAlliances: [],
@@ -3568,6 +3563,10 @@
       const p = this.player;
       if (!p) return;
       if (!p.worldLocation || !WORLD_REGIONS.some(r => r.id === p.worldLocation)) p.worldLocation = 'region_1';
+      const savedRegion = WORLD_REGIONS.find(r => r.id === p.worldLocation) || WORLD_REGIONS[0];
+      if (!p.worldGridPosition || !Number.isFinite(p.worldGridPosition.x) || !Number.isFinite(p.worldGridPosition.y)) {
+        p.worldGridPosition = { x: savedRegion.gridX, y: savedRegion.gridY };
+      }
       if (!p.worldAlliances) p.worldAlliances = [];
       if (!p.worldRelations) p.worldRelations = {};
       if (!p.worldMetTravelers) p.worldMetTravelers = [];
@@ -3612,6 +3611,7 @@
       }
 
       this.currentRegion = region;
+      p.worldGridPosition = { x: region.gridX, y: region.gridY };
       this.worldEncounter = null;
       sound.playClick();
       this.updateUI();
@@ -4775,6 +4775,101 @@
       }
     }
 
+    getWorldTileVisual(x, y) {
+      const tiles = [
+        { icon: '🌿', name: 'Linh lâm', className: 'forest' },
+        { icon: '🌊', name: 'Linh thủy', className: 'water' },
+        { icon: '⛰️', name: 'Sơn địa', className: 'mountain' },
+        { icon: '🌾', name: 'Bình nguyên', className: 'plain' },
+        { icon: '🪨', name: 'Hoang thạch', className: 'rock' }
+      ];
+      const seed = Math.abs((x * 37) + (y * 61) + (x * y * 11)) % tiles.length;
+      return tiles[seed];
+    }
+
+    closeWorldCellMenu() {
+      const menu = document.getElementById('world-cell-context-menu');
+      if (menu) menu.classList.add('hidden');
+      this.worldSelectedCell = null;
+    }
+
+    openWorldCellMenu(x, y, regionId, clientX, clientY) {
+      const p = this.player;
+      const menu = document.getElementById('world-cell-context-menu');
+      if (!p || !menu) return;
+      this.worldSelectedCell = { x, y, regionId };
+      const position = p.worldGridPosition || { x: 0, y: 0 };
+      const isCurrent = position.x === x && position.y === y;
+      const region = regionId ? this.getWorldRegion(regionId) : null;
+      const isReachable = !region || p.realmIndex >= region.reqRealmIndex;
+      const regionName = region ? region.name : this.getWorldTileVisual(x, y).name;
+      const travelText = region && region.id !== p.worldLocation ? `🧭 Đi đến ${region.name}` : (isCurrent ? '📍 Đang đứng tại ô này' : '🧭 Di chuyển đến ô');
+
+      menu.innerHTML = `
+        <div class="world-context-title">${region ? '📜 ' + region.name : '🧩 ' + regionName}</div>
+        <button type="button" data-cell-action="move" ${isCurrent || !isReachable ? 'disabled' : ''}>${travelText}</button>
+        <button type="button" data-cell-action="explore" ${!isReachable ? 'disabled' : ''}>🔍 Khám phá ô đất</button>
+        ${isCurrent && region ? '<button type="button" data-cell-action="residence">🏠 Xây cư trú tại đây</button>' : ''}
+        ${isCurrent ? '<button type="button" data-cell-action="meet">🤝 Tìm đạo hữu quanh đây</button>' : ''}
+      `;
+      menu.classList.remove('hidden');
+      menu.style.left = `${Math.min(clientX, window.innerWidth - 235)}px`;
+      menu.style.top = `${Math.min(clientY, window.innerHeight - 190)}px`;
+
+      menu.querySelectorAll('[data-cell-action]').forEach(button => {
+        button.addEventListener('click', () => {
+          const action = button.dataset.cellAction;
+          this.closeWorldCellMenu();
+          if (action === 'move') this.moveToWorldCell(x, y, regionId);
+          else if (action === 'explore') this.exploreWorldCell(x, y, regionId);
+          else if (action === 'residence') this.buildWorldResidence();
+          else if (action === 'meet') this.meetWorldTraveler();
+        });
+      });
+    }
+
+    moveToWorldCell(x, y, regionId) {
+      const p = this.player;
+      if (!p) return;
+      const region = regionId ? this.getWorldRegion(regionId) : null;
+      if (region && p.realmIndex < region.reqRealmIndex) {
+        this.addLog(`Chưa đủ cảnh giới để tiến vào 【${region.name}】.`, 'warning');
+        return;
+      }
+      if (region && region.id !== p.worldLocation) {
+        this.travelToWorldRegion(region.id);
+        return;
+      }
+      const oldPosition = p.worldGridPosition || { x: 0, y: 0 };
+      const distance = Math.max(1, Math.abs(x - oldPosition.x) + Math.abs(y - oldPosition.y));
+      const cost = distance * 5;
+      if ((p.spiritStones || 0) < cost) {
+        this.addLog(`Không đủ Linh Thạch để đi đến ô này (cần ${cost}).`, 'warning');
+        return;
+      }
+      p.spiritStones -= cost;
+      p.worldGridPosition = { x, y };
+      this.worldEncounter = null;
+      this.addLog(`🧭 Di chuyển đến ô [${x}, ${y}], tiêu hao ${cost} Linh Thạch.`, 'system');
+      sound.playClick();
+      this.updateUI();
+    }
+
+    exploreWorldCell(x, y, regionId) {
+      const p = this.player;
+      if (!p) return;
+      const position = p.worldGridPosition || { x: 0, y: 0 };
+      if (position.x !== x || position.y !== y) {
+        this.moveToWorldCell(x, y, regionId);
+        return;
+      }
+      if (regionId && regionId !== p.worldLocation) {
+        this.travelToWorldRegion(regionId);
+        return;
+      }
+      this.openWorldExplore();
+    }
+
     renderOpenWorldUI() {
       const p = this.player;
       const mapEl = document.getElementById('world-map');
@@ -4797,29 +4892,38 @@
       const btnBuild = document.getElementById('btn-world-build-residence');
       const btnFactionUpgrade = document.getElementById('btn-world-faction-upgrade');
 
-      const routeHtml = WORLD_MAP_ROUTES.map(([fromId, toId]) => {
-        const from = this.getWorldRegion(fromId);
-        const to = this.getWorldRegion(toId);
-        const dx = to.mapX - from.mapX;
-        const dy = to.mapY - from.mapY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-        return `<div class="world-map-route" style="left:${from.mapX}%;top:${from.mapY}%;width:${distance}%;transform:rotate(${angle}deg);"></div>`;
-      }).join('');
-
-      const nodeHtml = WORLD_REGIONS.map(region => {
-        const isCurrent = region.id === location.id;
-        const isLocked = p.realmIndex < region.reqRealmIndex;
-        return `
-          <button type="button" class="world-map-node ${isCurrent ? 'current' : ''} ${isLocked ? 'locked' : ''}" data-world-region="${region.id}" style="left:${region.mapX}%;top:${region.mapY}%;" title="${region.name}">
-            <span class="world-map-node-icon">${isCurrent ? '📍' : (isLocked ? '🔒' : '✦')}</span>
-            <span class="world-map-node-label">${region.name}</span>
-          </button>
-        `;
-      }).join('');
-      mapEl.innerHTML = `${routeHtml}${nodeHtml}`;
-      mapEl.querySelectorAll('[data-world-region]').forEach(node => {
-        node.addEventListener('click', () => this.travelToWorldRegion(node.dataset.worldRegion));
+      const gridSize = 11;
+      const gridCenter = Math.floor(gridSize / 2);
+      const position = p.worldGridPosition || { x: location.gridX, y: location.gridY };
+      let gridHtml = '';
+      for (let row = 0; row < gridSize; row++) {
+        for (let column = 0; column < gridSize; column++) {
+          const worldX = position.x + column - gridCenter;
+          const worldY = position.y + row - gridCenter;
+          const region = WORLD_REGIONS.find(item => item.gridX === worldX && item.gridY === worldY);
+          const isCurrent = worldX === position.x && worldY === position.y;
+          const isLocked = region && p.realmIndex < region.reqRealmIndex;
+          const tile = region ? { icon: isLocked ? '🔒' : '🏯', name: region.name, className: 'region' } : this.getWorldTileVisual(worldX, worldY);
+          gridHtml += `
+            <button type="button" class="world-grid-cell ${tile.className} ${isCurrent ? 'current' : ''} ${isLocked ? 'locked' : ''}" data-grid-x="${worldX}" data-grid-y="${worldY}" data-region-id="${region ? region.id : ''}" title="Chuột phải để thao tác: ${tile.name}">
+              <span class="world-grid-icon">${isCurrent ? '📍' : tile.icon}</span>
+              <span class="world-grid-label">${isCurrent ? 'Đang ở đây' : (region ? region.name : '')}</span>
+            </button>
+          `;
+        }
+      }
+      mapEl.innerHTML = gridHtml;
+      mapEl.querySelectorAll('.world-grid-cell').forEach(cell => {
+        cell.addEventListener('contextmenu', event => {
+          event.preventDefault();
+          this.openWorldCellMenu(
+            Number(cell.dataset.gridX),
+            Number(cell.dataset.gridY),
+            cell.dataset.regionId || null,
+            event.clientX,
+            event.clientY
+          );
+        });
       });
 
       const travelCost = this.getWorldTravelCost(location);
@@ -4829,7 +4933,7 @@
           <div class="world-location-title">📍 ${location.name}</div>
           <div class="world-location-meta">${location.terrain} • ${location.dangerLevel}</div>
           <div class="world-location-desc">${location.desc}</div>
-          <div class="world-location-meta">Đạo hữu đang ở đây • Lộ phí đến nơi này: ${travelCost} Linh Thạch</div>
+          <div class="world-location-meta">Vị trí ô [${position.x}, ${position.y}] • Lộ phí truyền tống khu vực: ${travelCost} Linh Thạch</div>
         `;
       }
 
@@ -5193,6 +5297,13 @@
   });
 
   function setupUIEvents(systems, combatEngine, renderer) {
+    document.addEventListener('click', event => {
+      if (!event.target.closest('#world-cell-context-menu')) systems.closeWorldCellMenu();
+    });
+    document.addEventListener('contextmenu', event => {
+      if (!event.target.closest('.world-grid-cell') && !event.target.closest('#world-cell-context-menu')) systems.closeWorldCellMenu();
+    });
+
     // Xử lý chuyển tab chính (4 Trụ Cột)
     const tabButtons = document.querySelectorAll('.tab-btn');
     tabButtons.forEach(btn => {
