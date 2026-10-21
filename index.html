@@ -449,6 +449,7 @@
         <section id="tab-tiengioi" class="tab-pane">
           <div class="sub-tab-bar">
             <button class="sub-tab-btn active" data-subtab="subtab-world">🧭 Bí Cảnh Khám Phá</button>
+            <button class="sub-tab-btn" data-subtab="subtab-open-world">🌍 Vạn Giới Tự Do</button>
             <button class="sub-tab-btn" data-subtab="subtab-sect">🏯 Sơn Môn Tông Môn</button>
           </div>
 
@@ -463,6 +464,59 @@
               </div>
               <div id="region-info" class="destiny-results" style="margin-bottom: 12px;"></div>
               <button id="btn-explore" class="pixel-btn primary-btn">🧭 Bắt Đầu Du Ngoạn / Lịch Luyện</button>
+            </div>
+          </div>
+
+          <!-- Phân mục 1.5: Bản đồ thế giới mở -->
+          <div id="subtab-open-world" class="sub-tab-content">
+            <div class="pixel-box open-world-box">
+              <div class="open-world-heading">
+                <div>
+                  <h3>🌍 Bản Đồ Vạn Giới — Tự Do Giao Du</h3>
+                  <p class="open-world-subtitle">Di chuyển giữa các vùng đất, gặp đạo hữu, dựng cư trú và gây dựng thế lực của riêng mình.</p>
+                </div>
+                <span class="world-online-badge">● VẠN GIỚI ĐANG LƯU THÔNG</span>
+              </div>
+              <div id="world-map" class="world-map" aria-label="Bản đồ thế giới mở"></div>
+              <div id="world-location-summary" class="world-location-summary"></div>
+              <div class="world-action-row">
+                <button id="btn-world-explore" class="pixel-btn primary-btn">🧭 Khám Phá Khu Vực</button>
+                <button id="btn-world-build-residence" class="pixel-btn">🏠 Dựng Cư Trú</button>
+              </div>
+            </div>
+
+            <div class="open-world-grid">
+              <div class="pixel-box world-feature-box">
+                <h4>🤝 Đạo Hữu Gặp Gỡ</h4>
+                <p class="world-help-text">Mỗi chuyến khám phá có cơ hội gặp tu sĩ khác đang hành tẩu trong cùng khu vực.</p>
+                <div id="world-encounter-info" class="world-encounter-panel"></div>
+              </div>
+              <div class="pixel-box world-feature-box">
+                <h4>🏠 Cư Trú / Động Phủ</h4>
+                <p id="world-residence-info" class="world-help-text">Chưa có cư trú.</p>
+                <div class="world-bonus-note">Cư trú đúng địa điểm giúp tăng tốc độ hấp thu tu vi.</div>
+              </div>
+            </div>
+
+            <div class="pixel-box world-faction-box">
+              <h4>🏯 Xây Dựng Liên Minh — Thế Lực</h4>
+              <p id="world-faction-info" class="world-help-text">Chưa có thế lực riêng.</p>
+              <div id="world-faction-create" class="world-faction-create-form">
+                <div class="input-row">
+                  <label for="world-faction-name">Tên thế lực:</label>
+                  <input id="world-faction-name" class="pixel-input" maxlength="24" placeholder="Ví dụ: Vạn Kiếm Sơn Trang">
+                </div>
+                <div class="input-row">
+                  <label for="world-faction-motto">Tôn chỉ:</label>
+                  <input id="world-faction-motto" class="pixel-input" maxlength="60" placeholder="Đồng tâm đồng đạo...">
+                </div>
+                <button id="btn-world-create-faction" class="pixel-btn primary-btn">🏯 Lập Thế Lực (1200 Linh Thạch + 2 Huyền Thiết)</button>
+              </div>
+              <div id="world-faction-active" class="hidden">
+                <button id="btn-world-faction-upgrade" class="pixel-btn small-btn primary-btn">🏗️ Mở Rộng Thế Lực</button>
+              </div>
+              <h5 class="world-section-label">Các thế lực có thể kết minh</h5>
+              <div id="world-alliance-list" class="world-alliance-list"></div>
             </div>
           </div>
 

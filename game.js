@@ -927,6 +927,8 @@
     {
       id: 'region_1',
       name: 'Linh Sơn Ngoại Vi',
+      mapX: 17, mapY: 68,
+      terrain: 'Sơn lâm',
       reqRealmIndex: 0,
       dangerLevel: 'Thấp (Luyện Khí Kỳ)',
       desc: 'Rừng cây xanh tốt bao quanh tiên phong, nơi đệ tử nhập môn rèn luyện và hái thuốc.',
@@ -938,6 +940,8 @@
     {
       id: 'region_2',
       name: 'Vạn Yêu Sơn Mạch',
+      mapX: 42, mapY: 51,
+      terrain: 'Sơn mạch',
       reqRealmIndex: 10,
       dangerLevel: 'Trung Bình (Trúc Cơ Kỳ)',
       desc: 'Dãy núi ngút ngàn đầy yêu khí hung hãn, cọp dữ gầm thét, độc xà lượn quanh.',
@@ -949,6 +953,8 @@
     {
       id: 'region_3',
       name: 'Cổ Kiếm Bí Cảnh',
+      mapX: 67, mapY: 68,
+      terrain: 'Kiếm vực',
       reqRealmIndex: 14,
       dangerLevel: 'Cao (Kim Đan Kỳ)',
       desc: 'Phế tích thượng cổ kiếm tông lưu lại, kiếm ý tung hoành, khôi lỗi hộ kiếm tuần tra.',
@@ -960,6 +966,8 @@
     {
       id: 'region_4',
       name: 'Huyết Sát Ma Vực',
+      mapX: 82, mapY: 35,
+      terrain: 'Ma vực',
       reqRealmIndex: 18,
       dangerLevel: 'Rất Nguy Hiểm (Nguyên Anh Kỳ)',
       desc: 'Biển máu u ám ngút trời, nơi tà tu và đại ma đầu ẩn náu tế luyện ma khí.',
@@ -971,6 +979,8 @@
     {
       id: 'region_5',
       name: 'Thượng Cổ Vực Thẳm',
+      mapX: 51, mapY: 14,
+      terrain: 'Hư không',
       reqRealmIndex: 22,
       dangerLevel: 'Tuyệt Địa Hung Hiểm (Hóa Thần+)',
       desc: 'Khe nứt hư không thông đến di tích tiên ma cổ đại, nơi cự long và thụ yêu ngàn năm thống trị.',
@@ -979,6 +989,29 @@
       ores: ['ore_huyettinh', 'ore_hondon'],
       lootStoneRange: [2000, 5000]
     }
+  ];
+
+  // Các tuyến đường và đạo hữu cư ngụ trong Vạn Giới. Đây là dữ liệu mô phỏng
+  // để thế giới có cảm giác sống động ngay cả khi game chưa có máy chủ online.
+  const WORLD_MAP_ROUTES = [
+    ['region_1', 'region_2'],
+    ['region_2', 'region_3'],
+    ['region_3', 'region_4'],
+    ['region_2', 'region_5']
+  ];
+
+  const WORLD_TRAVELERS = [
+    { id: 'traveler_linh_nhi', name: 'Linh Nhi', title: 'Tán Tu Hái Thuốc', regionId: 'region_1', realmIndex: 2, faction: 'Tán Tu', mood: 'thân thiện' },
+    { id: 'traveler_mac_van', name: 'Mặc Vân', title: 'Kiếm Tu Du Phương', regionId: 'region_2', realmIndex: 11, faction: 'Vân Kiếm Minh', mood: 'trầm mặc' },
+    { id: 'traveler_thanh_lien', name: 'Thanh Liên Tiên Tử', title: 'Luyện Đan Sư', regionId: 'region_3', realmIndex: 15, faction: 'Thanh Liên Các', mood: 'nhã nhặn' },
+    { id: 'traveler_huyet_sat', name: 'Huyết Sát Tử', title: 'Ma Tu Lãng Khách', regionId: 'region_4', realmIndex: 19, faction: 'Huyết Ảnh Điện', mood: 'nguy hiểm' },
+    { id: 'traveler_tinh_ha', name: 'Tinh Hà Đạo Nhân', title: 'Tinh Không Khách', regionId: 'region_5', realmIndex: 23, faction: 'Tinh Hà Cổ Minh', mood: 'thần bí' }
+  ];
+
+  const WORLD_FACTIONS = [
+    { id: 'faction_van_kiem', name: 'Vân Kiếm Minh', type: 'Liên minh kiếm tu', reqRealmIndex: 10, influence: 18, desc: 'Các kiếm tu kết minh, trọng lời hứa và giao ước.' },
+    { id: 'faction_thanh_lien', name: 'Thanh Liên Các', type: 'Thế lực luyện đan', reqRealmIndex: 14, influence: 25, desc: 'Nắm giữ nhiều linh dược và bí phương thất truyền.' },
+    { id: 'faction_tinh_ha', name: 'Tinh Hà Cổ Minh', type: 'Cổ minh hư không', reqRealmIndex: 22, influence: 40, desc: 'Thế lực cổ xưa canh giữ cánh cửa đi vào vực thẳm.' }
   ];
 
   const MONSTERS = {
@@ -2851,6 +2884,7 @@
       this.marketItems = [];
       this.idleTimer = null;
       this.saveTimer = null;
+      this.worldEncounter = null;
       // Ngăn người chơi khởi tạo nhiều lần đột phá trong lúc đang chờ thiên kiếp.
       this.breakthroughInProgress = false;
     }
@@ -2881,6 +2915,12 @@
         cheatPoints: 50,
         lastSignInYear: -1,
         signedRegions: {},
+        worldLocation: 'region_1',
+        worldResidence: null,
+        worldFaction: null,
+        worldAlliances: [],
+        worldRelations: {},
+        worldMetTravelers: [],
         skillMastery: 1,
 
         bonusHp: 0, bonusMp: 0, bonusAtk: 0, bonusDef: 0, bonusSpd: 0,
@@ -2986,6 +3026,7 @@
 
     tickCultivation() {
       const p = this.player;
+      this.ensureWorldState();
       const baseRealm = REALMS[p.realmIndex];
       if (p.exp >= baseRealm.maxExp) return;
 
@@ -2993,6 +3034,9 @@
       let expGain = baseExpPerSec * (p.comprehension / 100);
       if (p.spiritualRoot && p.spiritualRoot.speedMod) expGain *= p.spiritualRoot.speedMod;
       if (p.physique && p.physique.expBonus) expGain *= (1 + p.physique.expBonus);
+      if (p.worldResidence && p.worldResidence.regionId === p.worldLocation) {
+        expGain *= 1 + ((p.worldResidence.level || 0) * 0.05);
+      }
 
       if (p.cheatCore && p.cheatCore.id === 'proficiency') {
         expGain *= 1.25;
@@ -3520,6 +3564,265 @@
       this.updateUI();
     }
 
+    ensureWorldState() {
+      const p = this.player;
+      if (!p) return;
+      if (!p.worldLocation || !WORLD_REGIONS.some(r => r.id === p.worldLocation)) p.worldLocation = 'region_1';
+      if (!p.worldAlliances) p.worldAlliances = [];
+      if (!p.worldRelations) p.worldRelations = {};
+      if (!p.worldMetTravelers) p.worldMetTravelers = [];
+      if (p.worldFaction === undefined) p.worldFaction = null;
+      if (p.worldResidence === undefined) p.worldResidence = null;
+      if (!this.currentRegion || !WORLD_REGIONS.some(r => r.id === this.currentRegion.id)) {
+        this.currentRegion = WORLD_REGIONS.find(r => r.id === p.worldLocation) || WORLD_REGIONS[0];
+      }
+    }
+
+    getWorldRegion(regionId) {
+      return WORLD_REGIONS.find(region => region.id === regionId) || WORLD_REGIONS[0];
+    }
+
+    getWorldTravelCost(region) {
+      return 20 + Math.max(0, region.reqRealmIndex) * 5;
+    }
+
+    travelToWorldRegion(regionId) {
+      const p = this.player;
+      if (!p) return;
+      this.ensureWorldState();
+      const region = this.getWorldRegion(regionId);
+      if (p.realmIndex < region.reqRealmIndex) {
+        const reqRealm = REALMS[region.reqRealmIndex];
+        this.addLog(`Chưa đủ tu vi để đi đến 【${region.name}】! Cần 【${reqRealm.name}】.`, 'warning');
+        this.renderOpenWorldUI();
+        return;
+      }
+
+      const cost = this.getWorldTravelCost(region);
+      if (p.worldLocation !== region.id) {
+        if ((p.spiritStones || 0) < cost) {
+          this.addLog(`Không đủ Linh Thạch để vượt đường đến 【${region.name}】 (cần ${cost}).`, 'warning');
+          return;
+        }
+        p.spiritStones -= cost;
+        p.worldLocation = region.id;
+        this.addLog(`🧭 Đạo hữu vượt qua ${cost} Linh Thạch truyền tống, đặt chân đến 【${region.name}】!`, 'system');
+      } else {
+        this.addLog(`Đạo hữu đang ở 【${region.name}】.`, 'system');
+      }
+
+      this.currentRegion = region;
+      this.worldEncounter = null;
+      sound.playClick();
+      this.updateUI();
+    }
+
+    openWorldExplore() {
+      const p = this.player;
+      if (!p) return;
+      this.ensureWorldState();
+      const region = this.getWorldRegion(p.worldLocation);
+      this.currentRegion = region;
+      if (p.realmIndex < region.reqRealmIndex) {
+        this.exploreWorld();
+        return;
+      }
+
+      // Mỗi chuyến đi có cơ hội gặp đạo hữu khác trước khi phát sinh kỳ ngộ hoặc chiến đấu.
+      if (Math.random() < 0.35 && WORLD_TRAVELERS.some(t => t.regionId === region.id)) {
+        this.meetWorldTraveler();
+        return;
+      }
+      this.exploreWorld();
+      this.renderOpenWorldUI();
+    }
+
+    meetWorldTraveler() {
+      const p = this.player;
+      if (!p) return;
+      this.ensureWorldState();
+      const travelers = WORLD_TRAVELERS.filter(t => t.regionId === p.worldLocation);
+      if (travelers.length === 0) {
+        this.addLog('Hôm nay vùng đất này vắng bóng đạo hữu, chỉ còn linh phong thổi qua.', 'system');
+        return;
+      }
+
+      const traveler = travelers[Math.floor(Math.random() * travelers.length)];
+      this.worldEncounter = traveler;
+      if (!p.worldMetTravelers.includes(traveler.id)) p.worldMetTravelers.push(traveler.id);
+      const realm = REALMS[Math.min(traveler.realmIndex, REALMS.length - 1)];
+      this.addLog(`🤝 Gặp 【${traveler.name}】 — ${traveler.title}, cảnh giới 【${realm.name}】 tại 【${this.currentRegion.name}】.`, 'golden');
+      sound.playClick();
+      this.renderOpenWorldUI();
+      this.saveToLocalStorage();
+    }
+
+    socializeWorldTraveler() {
+      const p = this.player;
+      const traveler = this.worldEncounter;
+      if (!p || !traveler) return;
+      p.worldRelations[traveler.id] = (p.worldRelations[traveler.id] || 0) + 1;
+      const gift = 40 + traveler.realmIndex * 10;
+      p.spiritStones += gift;
+      this.addLog(`🍵 Đạo hữu cùng 【${traveler.name}】 luận đạo giao du. Tình hữu nghị tăng lên, nhận ${gift} Linh Thạch!`, 'loot');
+      sound.playLoot();
+      this.updateUI();
+    }
+
+    recruitWorldTraveler() {
+      const p = this.player;
+      const traveler = this.worldEncounter;
+      if (!p || !traveler) return;
+      if (!p.worldFaction) {
+        this.addLog('Cần lập thế lực riêng trước khi chiêu mộ đồng đạo.', 'warning');
+        return;
+      }
+      p.worldFaction.members = p.worldFaction.members || [p.name];
+      if (p.worldFaction.members.includes(traveler.name)) {
+        this.addLog(`【${traveler.name}】 đã là thành viên của 【${p.worldFaction.name}】.`, 'warning');
+        return;
+      }
+      const relation = p.worldRelations[traveler.id] || 0;
+      if (relation < 1) {
+        this.addLog(`Hãy giao du với 【${traveler.name}】 trước để tạo lòng tin.`, 'warning');
+        return;
+      }
+      const cost = 250 + traveler.realmIndex * 25;
+      if ((p.spiritStones || 0) < cost) {
+        this.addLog(`Không đủ Linh Thạch chuẩn bị lễ vật chiêu mộ (cần ${cost}).`, 'warning');
+        return;
+      }
+      p.spiritStones -= cost;
+      p.worldFaction.members.push(traveler.name);
+      p.worldFaction.influence = (p.worldFaction.influence || 0) + 5;
+      this.addLog(`🏳️ 【${traveler.name}】 nhận lời gia nhập 【${p.worldFaction.name}】! Thế lực tăng 5 ảnh hưởng.`, 'golden');
+      sound.playBreakthrough();
+      this.updateUI();
+    }
+
+    createWorldFaction() {
+      const p = this.player;
+      if (!p) return;
+      if (p.worldFaction) {
+        this.addLog(`Đạo hữu đã có thế lực 【${p.worldFaction.name}】.`, 'warning');
+        return;
+      }
+      const nameInput = document.getElementById('world-faction-name');
+      const mottoInput = document.getElementById('world-faction-motto');
+      const name = nameInput ? nameInput.value.trim() : '';
+      const motto = mottoInput ? mottoInput.value.trim() : '';
+      if (name.length < 2 || name.length > 24) {
+        this.addLog('Tên thế lực cần dài từ 2 đến 24 ký tự.', 'warning');
+        return;
+      }
+      const cost = 1200;
+      const oreNeed = 2;
+      if ((p.spiritStones || 0) < cost || (p.inventory.ore_huyenthiet || 0) < oreNeed) {
+        this.addLog(`Lập thế lực cần ${cost} Linh Thạch và ${oreNeed} Huyền Thiết Tinh.`, 'warning');
+        return;
+      }
+      p.spiritStones -= cost;
+      p.inventory.ore_huyenthiet -= oreNeed;
+      p.worldFaction = {
+        id: `player_faction_${Date.now()}`,
+        name,
+        motto: motto || 'Đồng tâm đồng đạo, cùng vấn đỉnh trường sinh.',
+        type: 'Thế lực do người chơi sáng lập',
+        level: 1,
+        influence: 10,
+        foundedRegionId: p.worldLocation,
+        members: [p.name]
+      };
+      this.addLog(`🏯 Lập 【${name}】 thành công tại 【${this.currentRegion.name}】! Các đạo hữu quanh vùng bắt đầu chú ý đến thế lực mới.`, 'golden');
+      sound.playBreakthrough();
+      this.updateUI();
+    }
+
+    upgradeWorldFaction() {
+      const p = this.player;
+      if (!p || !p.worldFaction) return;
+      const faction = p.worldFaction;
+      faction.level = faction.level || 1;
+      if (faction.level >= 5) {
+        this.addLog('Thế lực đã đạt cấp tối đa trong phiên bản hiện tại.', 'warning');
+        return;
+      }
+      const cost = 900 * faction.level;
+      if ((p.spiritStones || 0) < cost) {
+        this.addLog(`Cần ${cost} Linh Thạch để mở rộng thế lực.`, 'warning');
+        return;
+      }
+      p.spiritStones -= cost;
+      faction.level++;
+      faction.influence = (faction.influence || 0) + 15;
+      this.addLog(`🏗️ 【${faction.name}】 mở rộng thành công lên cấp ${faction.level}, ảnh hưởng +15!`, 'golden');
+      this.updateUI();
+    }
+
+    buildWorldResidence() {
+      const p = this.player;
+      if (!p) return;
+      this.ensureWorldState();
+      const region = this.getWorldRegion(p.worldLocation);
+      if (p.worldResidence && p.worldResidence.regionId !== region.id) {
+        this.addLog(`Đạo hữu đã có cư trú tại 【${this.getWorldRegion(p.worldResidence.regionId).name}】. Hãy nâng cấp hoặc di chuyển cư trú sau.`, 'warning');
+        return;
+      }
+      const level = p.worldResidence ? p.worldResidence.level : 0;
+      if (level >= 3) {
+        this.addLog('Cư trú đã đạt cấp tối đa.', 'warning');
+        return;
+      }
+      const nextLevel = level + 1;
+      const stoneCost = level === 0 ? 500 : 700 * nextLevel;
+      const oreCost = level === 0 ? 2 : nextLevel;
+      const herbCost = level === 0 ? 3 : nextLevel + 1;
+      if ((p.spiritStones || 0) < stoneCost || (p.inventory.ore_huyenthiet || 0) < oreCost || (p.inventory.herb_linhchi || 0) < herbCost) {
+        this.addLog(`Xây cư trú cấp ${nextLevel} cần ${stoneCost} Linh Thạch, ${oreCost} Huyền Thiết Tinh và ${herbCost} Linh Chi Thảo.`, 'warning');
+        return;
+      }
+      p.spiritStones -= stoneCost;
+      p.inventory.ore_huyenthiet -= oreCost;
+      p.inventory.herb_linhchi -= herbCost;
+      p.worldResidence = {
+        regionId: region.id,
+        level: nextLevel,
+        name: level === 0 ? `Động Phủ ${p.name}` : (p.worldResidence.name || `Động Phủ ${p.name}`)
+      };
+      this.addLog(`🏠 ${level === 0 ? 'Dựng cư trú' : 'Nâng cấp cư trú'} tại 【${region.name}】 thành công, đạt cấp ${nextLevel}!`, 'golden');
+      sound.playLoot();
+      this.updateUI();
+    }
+
+    formWorldAlliance(factionId) {
+      const p = this.player;
+      const faction = WORLD_FACTIONS.find(item => item.id === factionId);
+      if (!p || !faction) return;
+      if (!p.worldFaction) {
+        this.addLog('Cần lập thế lực riêng trước khi kết minh.', 'warning');
+        return;
+      }
+      if (p.worldAlliances.includes(faction.id)) {
+        this.addLog(`Đã kết minh với 【${faction.name}】 rồi.`, 'warning');
+        return;
+      }
+      if (p.realmIndex < faction.reqRealmIndex) {
+        this.addLog(`Muốn kết minh với 【${faction.name}】 cần đạt 【${REALMS[faction.reqRealmIndex].name}】.`, 'warning');
+        return;
+      }
+      const cost = 500 + faction.influence * 10;
+      if ((p.spiritStones || 0) < cost) {
+        this.addLog(`Cần ${cost} Linh Thạch để chuẩn bị lễ kết minh với 【${faction.name}】.`, 'warning');
+        return;
+      }
+      p.spiritStones -= cost;
+      p.worldAlliances.push(faction.id);
+      p.worldFaction.influence = (p.worldFaction.influence || 0) + faction.influence;
+      this.addLog(`🤝 【${p.worldFaction.name}】 chính thức kết minh cùng 【${faction.name}】!`, 'golden');
+      sound.playBreakthrough();
+      this.updateUI();
+    }
+
     showEventModal(event) {
       const modal = document.getElementById('event-modal');
       const titleEl = document.getElementById('event-title');
@@ -4021,6 +4324,8 @@
           if (!this.player.sectManualsBought) this.player.sectManualsBought = [];
           if (this.player.bonusCrit === undefined) this.player.bonusCrit = 0;
           if (this.player.bonusLifeSteal === undefined) this.player.bonusLifeSteal = 0;
+          this.ensureWorldState();
+          this.currentRegion = this.getWorldRegion(this.player.worldLocation);
 
           this.recalculatePlayerStats();
           this.refreshMarket();
@@ -4049,6 +4354,8 @@
           if (!this.player.sectManualsBought) this.player.sectManualsBought = [];
           if (this.player.bonusCrit === undefined) this.player.bonusCrit = 0;
           if (this.player.bonusLifeSteal === undefined) this.player.bonusLifeSteal = 0;
+          this.ensureWorldState();
+          this.currentRegion = this.getWorldRegion(this.player.worldLocation);
 
           this.recalculatePlayerStats();
           this.saveToLocalStorage();
@@ -4072,6 +4379,7 @@
     updateUI() {
       if (!this.player) return;
       const p = this.player;
+      this.ensureWorldState();
       const base = REALMS[p.realmIndex];
 
       const nameEl = document.getElementById('player-name');
@@ -4248,6 +4556,7 @@
 
       this.renderInventoryUI();
       this.renderSectUI();
+      this.renderOpenWorldUI();
       this.renderCheatUI();
       this.renderForgeUI();
     }
@@ -4463,6 +4772,135 @@
 
           manualListEl.appendChild(card);
         });
+      }
+    }
+
+    renderOpenWorldUI() {
+      const p = this.player;
+      const mapEl = document.getElementById('world-map');
+      if (!p || !mapEl) return;
+      this.ensureWorldState();
+
+      const escapeWorldText = value => String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[char]));
+
+      const location = this.getWorldRegion(p.worldLocation);
+      const locationEl = document.getElementById('world-location-summary');
+      const residenceEl = document.getElementById('world-residence-info');
+      const factionInfoEl = document.getElementById('world-faction-info');
+      const factionCreateEl = document.getElementById('world-faction-create');
+      const factionActiveEl = document.getElementById('world-faction-active');
+      const allianceListEl = document.getElementById('world-alliance-list');
+      const encounterEl = document.getElementById('world-encounter-info');
+      const btnExplore = document.getElementById('btn-world-explore');
+      const btnBuild = document.getElementById('btn-world-build-residence');
+      const btnFactionUpgrade = document.getElementById('btn-world-faction-upgrade');
+
+      const routeHtml = WORLD_MAP_ROUTES.map(([fromId, toId]) => {
+        const from = this.getWorldRegion(fromId);
+        const to = this.getWorldRegion(toId);
+        const dx = to.mapX - from.mapX;
+        const dy = to.mapY - from.mapY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+        return `<div class="world-map-route" style="left:${from.mapX}%;top:${from.mapY}%;width:${distance}%;transform:rotate(${angle}deg);"></div>`;
+      }).join('');
+
+      const nodeHtml = WORLD_REGIONS.map(region => {
+        const isCurrent = region.id === location.id;
+        const isLocked = p.realmIndex < region.reqRealmIndex;
+        return `
+          <button type="button" class="world-map-node ${isCurrent ? 'current' : ''} ${isLocked ? 'locked' : ''}" data-world-region="${region.id}" style="left:${region.mapX}%;top:${region.mapY}%;" title="${region.name}">
+            <span class="world-map-node-icon">${isCurrent ? '📍' : (isLocked ? '🔒' : '✦')}</span>
+            <span class="world-map-node-label">${region.name}</span>
+          </button>
+        `;
+      }).join('');
+      mapEl.innerHTML = `${routeHtml}${nodeHtml}`;
+      mapEl.querySelectorAll('[data-world-region]').forEach(node => {
+        node.addEventListener('click', () => this.travelToWorldRegion(node.dataset.worldRegion));
+      });
+
+      const travelCost = this.getWorldTravelCost(location);
+      if (locationEl) {
+        const realm = REALMS[Math.min(location.reqRealmIndex, REALMS.length - 1)];
+        locationEl.innerHTML = `
+          <div class="world-location-title">📍 ${location.name}</div>
+          <div class="world-location-meta">${location.terrain} • ${location.dangerLevel}</div>
+          <div class="world-location-desc">${location.desc}</div>
+          <div class="world-location-meta">Đạo hữu đang ở đây • Lộ phí đến nơi này: ${travelCost} Linh Thạch</div>
+        `;
+      }
+
+      if (btnExplore) {
+        btnExplore.disabled = p.realmIndex < location.reqRealmIndex;
+        btnExplore.textContent = btnExplore.disabled ? '🔒 Chưa Đủ Cảnh Giới' : `🧭 Khám Phá ${location.name}`;
+      }
+
+      if (residenceEl) {
+        const residence = p.worldResidence;
+        if (!residence) {
+          residenceEl.innerHTML = 'Chưa có cư trú. Dựng động phủ để nhận bonus tu luyện khi ở đúng địa điểm.';
+        } else {
+          const residenceRegion = this.getWorldRegion(residence.regionId);
+          residenceEl.innerHTML = `🏠 <strong>${escapeWorldText(residence.name)}</strong> — Cấp ${residence.level}/3 tại ${residenceRegion.name}<br><span class="world-location-meta">Ở tại cư trú: +${residence.level * 5}% tốc độ hấp thu tu vi.</span>`;
+        }
+      }
+      if (btnBuild) {
+        const level = p.worldResidence ? p.worldResidence.level : 0;
+        btnBuild.disabled = level >= 3;
+        btnBuild.textContent = level === 0 ? '🏠 Dựng Cư Trú' : (level >= 3 ? '✅ Cư Trú Tối Đa' : `🏗️ Nâng Cấp Cư Trú (${level}/3)`);
+      }
+
+      if (p.worldFaction) {
+        const faction = p.worldFaction;
+        if (factionCreateEl) factionCreateEl.classList.add('hidden');
+        if (factionActiveEl) factionActiveEl.classList.remove('hidden');
+        if (factionInfoEl) factionInfoEl.innerHTML = `🏯 <strong>${escapeWorldText(faction.name)}</strong> • ${escapeWorldText(faction.type)}<br><span class="world-location-meta">“${escapeWorldText(faction.motto)}” • Cấp ${faction.level}/5 • ${faction.members ? faction.members.length : 1} thành viên • Ảnh hưởng ${faction.influence || 0}</span>`;
+        if (btnFactionUpgrade) {
+          btnFactionUpgrade.disabled = faction.level >= 5;
+          btnFactionUpgrade.textContent = faction.level >= 5 ? '✅ Đã Tối Đa' : `🏗️ Mở Rộng Thế Lực (${900 * faction.level} Linh Thạch)`;
+        }
+      } else {
+        if (factionCreateEl) factionCreateEl.classList.remove('hidden');
+        if (factionActiveEl) factionActiveEl.classList.add('hidden');
+        if (factionInfoEl) factionInfoEl.textContent = 'Chưa có thế lực riêng. Có thể lập thế lực sau khi tích lũy tài nguyên.';
+      }
+
+      if (allianceListEl) {
+        allianceListEl.innerHTML = WORLD_FACTIONS.map(faction => {
+          const isAllied = p.worldAlliances.includes(faction.id);
+          const canReach = p.realmIndex >= faction.reqRealmIndex;
+          const cost = 500 + faction.influence * 10;
+          return `<div class="world-alliance-row"><div><strong>${faction.name}</strong><br><span class="world-location-meta">${faction.type} • ${faction.desc}</span></div><button type="button" class="pixel-btn small-btn ${isAllied ? '' : 'primary-btn'}" data-world-alliance="${faction.id}" ${isAllied || !p.worldFaction || !canReach ? 'disabled' : ''}>${isAllied ? '✅ Đã Kết Minh' : (canReach ? `🤝 Kết Minh (${cost})` : `🔒 Cần ${REALMS[faction.reqRealmIndex].name}`)}</button></div>`;
+        }).join('');
+        allianceListEl.querySelectorAll('[data-world-alliance]').forEach(button => {
+          button.addEventListener('click', () => this.formWorldAlliance(button.dataset.worldAlliance));
+        });
+      }
+
+      if (encounterEl) {
+        const traveler = this.worldEncounter;
+        if (!traveler) {
+          encounterEl.innerHTML = '<span class="world-location-meta">Chưa gặp đạo hữu nào trong chuyến này. Bấm “Khám Phá” để tìm kiếm kỳ ngộ.</span>';
+        } else {
+          const travelerRealm = REALMS[Math.min(traveler.realmIndex, REALMS.length - 1)];
+          const relation = p.worldRelations[traveler.id] || 0;
+          const recruited = !!(p.worldFaction && p.worldFaction.members && p.worldFaction.members.includes(traveler.name));
+          encounterEl.innerHTML = `
+            <div class="world-encounter-title">🤝 ${traveler.name} <span class="world-location-meta">— ${traveler.title}</span></div>
+            <div class="world-location-meta">${traveler.faction} • ${travelerRealm.name} • Tâm trạng: ${traveler.mood} • Hảo cảm: ${relation}</div>
+            <div class="world-encounter-actions">
+              <button type="button" id="btn-world-socialize" class="pixel-btn small-btn primary-btn">🍵 Giao Du Luận Đạo</button>
+              <button type="button" id="btn-world-recruit" class="pixel-btn small-btn" ${!p.worldFaction || recruited ? 'disabled' : ''}>🏳️ ${recruited ? 'Đã Chiêu Mộ' : 'Mời Vào Thế Lực'}</button>
+            </div>
+          `;
+          const socializeButton = document.getElementById('btn-world-socialize');
+          const recruitButton = document.getElementById('btn-world-recruit');
+          if (socializeButton) socializeButton.onclick = () => this.socializeWorldTraveler();
+          if (recruitButton) recruitButton.onclick = () => this.recruitWorldTraveler();
+        }
       }
     }
 
@@ -4871,6 +5309,23 @@
         if (combatEngine.inCombat) switchTab('tab-combat');
       });
     }
+
+    const btnWorldExplore = document.getElementById('btn-world-explore');
+    if (btnWorldExplore) {
+      btnWorldExplore.addEventListener('click', () => {
+        systems.openWorldExplore();
+        if (combatEngine.inCombat) switchTab('tab-combat');
+      });
+    }
+
+    const btnWorldBuildResidence = document.getElementById('btn-world-build-residence');
+    if (btnWorldBuildResidence) btnWorldBuildResidence.addEventListener('click', () => systems.buildWorldResidence());
+
+    const btnWorldCreateFaction = document.getElementById('btn-world-create-faction');
+    if (btnWorldCreateFaction) btnWorldCreateFaction.addEventListener('click', () => systems.createWorldFaction());
+
+    const btnWorldFactionUpgrade = document.getElementById('btn-world-faction-upgrade');
+    if (btnWorldFactionUpgrade) btnWorldFactionUpgrade.addEventListener('click', () => systems.upgradeWorldFaction());
 
     const btnAttack = document.getElementById('btn-combat-attack');
     const btnSkill = document.getElementById('btn-combat-skill');
