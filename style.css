@@ -543,17 +543,31 @@ body {
   overflow: hidden;
 }
 
-/* Canvas Viewport */
+/* Canvas Viewport: Mặc định ẩn, CHỈ HIỂN THỊ ở Tab Nhân Vật hoặc khi Chiến Đấu */
 .canvas-viewport {
+  display: none;
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  max-height: 360px;
+  max-height: 250px;
+  height: 250px;
   background: #07090e;
   border: 2px solid var(--border-bronze);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8), inset 0 0 0 1px var(--border-gold);
   border-radius: 2px;
   overflow: hidden;
+  margin-bottom: 2px;
+}
+
+/* Chỉ hiển thị khi đang ở tab Nhân Vật */
+body.tab-nhanvat-active .canvas-viewport {
+  display: block;
+  animation: fadeInCanvas 0.18s ease-out;
+}
+
+@keyframes fadeInCanvas {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 #main-canvas {
@@ -943,6 +957,7 @@ body {
 
 /* Khi đang trong combat-active-mode: Thu gọn Canvas & Ẩn thanh Tab thừa */
 body.combat-active-mode .canvas-viewport {
+  display: block !important;
   height: 240px !important;
   max-height: 240px !important;
   border-color: #ef4444 !important;

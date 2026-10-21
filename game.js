@@ -4150,8 +4150,9 @@
   }
 
   const TAB_ALIASES = {
-    'tab-meditate': { tab: 'tab-dongphu', sub: 'subtab-meditate' },
-    'tab-alchemy': { tab: 'tab-dongphu', sub: 'subtab-alchemy' },
+    'tab-meditate': { tab: 'tab-nhanvat', sub: 'subtab-meditate' },
+    'tab-alchemy': { tab: 'tab-nhanvat', sub: 'subtab-alchemy' },
+    'tab-dongphu': { tab: 'tab-nhanvat', sub: 'subtab-meditate' },
     'tab-world': { tab: 'tab-tiengioi', sub: 'subtab-world' },
     'tab-sect': { tab: 'tab-tiengioi', sub: 'subtab-sect' },
     'tab-inventory': { tab: 'tab-bachbao', sub: 'subtab-inventory' },
@@ -4170,6 +4171,13 @@
     if (TAB_ALIASES[tabId]) {
       targetMainTab = TAB_ALIASES[tabId].tab;
       targetSubTab = TAB_ALIASES[tabId].sub;
+    }
+
+    // Quản lý hiển thị Canvas: Phần nhân vật ngồi thiền CHỈ THUỘC tab Nhân Vật
+    if (targetMainTab === 'tab-nhanvat') {
+      document.body.classList.add('tab-nhanvat-active');
+    } else {
+      document.body.classList.remove('tab-nhanvat-active');
     }
 
     document.querySelectorAll('.tab-btn').forEach(b => {
@@ -4194,15 +4202,13 @@
     if (activeGameSystems && activeGameSystems.renderer) {
       if (targetMainTab === 'tab-combat') {
         activeGameSystems.renderer.setScene(SCENES.COMBAT);
-      } else if (targetMainTab === 'tab-dongphu') {
-        const activeSub = document.querySelector('#tab-dongphu .sub-tab-btn.active')?.getAttribute('data-subtab');
+      } else if (targetMainTab === 'tab-nhanvat') {
+        const activeSub = document.querySelector('#tab-nhanvat .sub-tab-btn.active')?.getAttribute('data-subtab');
         if (activeSub === 'subtab-alchemy') {
           activeGameSystems.renderer.setScene(SCENES.ALCHEMY);
         } else {
           activeGameSystems.renderer.setScene(SCENES.MEDITATE);
         }
-      } else {
-        activeGameSystems.renderer.setScene(SCENES.MEDITATE);
       }
     }
   }
@@ -4270,7 +4276,7 @@
           c.classList.toggle('active', c.id === subId);
         });
 
-        if (parentPane.id === 'tab-dongphu' && renderer) {
+        if ((parentPane.id === 'tab-nhanvat' || parentPane.id === 'tab-dongphu') && renderer) {
           if (subId === 'subtab-alchemy') {
             renderer.setScene(SCENES.ALCHEMY);
           } else {

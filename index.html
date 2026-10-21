@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="tab-nhanvat-active">
 
   <!-- HEADER BAR -->
   <header class="game-header">
@@ -167,7 +167,15 @@
       <div class="panel-ornament-bl"></div>
       <div class="panel-ornament-br"></div>
 
-      <!-- Nửa trên: HTML5 Canvas Pixel Viewport -->
+      <!-- Thanh Tabs Điều Khiển Đặt Trên Cùng (4 Trụ Cột Tiên Đạo Tinh Gọn) -->
+      <nav class="tab-nav-bar">
+        <button class="tab-btn active" data-tab="tab-nhanvat">👤 Nhân Vật</button>
+        <button class="tab-btn" data-tab="tab-tiengioi">🗺️ Tiên Giới</button>
+        <button class="tab-btn" data-tab="tab-bachbao">🎒 Bách Bảo</button>
+        <button class="tab-btn" data-tab="tab-cheat">🌀 Kim Thủ Chỉ</button>
+      </nav>
+
+      <!-- Khung Canvas: Chỉ hiển thị ở Tab Nhân Vật (ngồi thiền) hoặc khi Chiến Đấu -->
       <div class="canvas-viewport">
         <canvas id="main-canvas" width="640" height="360"></canvas>
         <div id="canvas-status-banner" class="canvas-status-hud">
@@ -176,31 +184,13 @@
         </div>
       </div>
 
-      <!-- Banner Cảnh Báo Trạng Thái Chiến Đấu Khẩn Cấp (Hiện Khi Vào Trận) -->
-      <div id="combat-active-header" class="combat-active-banner hidden">
-        <div class="combat-banner-title">
-          <span class="combat-flame">⚔️</span>
-          <span>TRẠNG THÁI CHIẾN ĐẤU: GIAO TRANH HUNG HIỂM CÙNG <span id="combat-banner-monster" style="color: #facc15;">YÊU THÚ</span></span>
-          <span class="combat-flame">⚔️</span>
-        </div>
-        <div class="combat-banner-sub">Toàn bộ thần thức tập trung nghênh địch • Các phím tắt [1..5] sẵn sàng phát động!</div>
-      </div>
-
-      <!-- Nửa dưới: Tabs Điều Khiển (4 Trụ Cột Tiên Đạo Tinh Gọn 1 Hàng Ngang) -->
-      <nav class="tab-nav-bar">
-        <button class="tab-btn active" data-tab="tab-dongphu">🏠 Động Phủ</button>
-        <button class="tab-btn" data-tab="tab-tiengioi">🗺️ Tiên Giới</button>
-        <button class="tab-btn" data-tab="tab-bachbao">🎒 Bách Bảo</button>
-        <button class="tab-btn" data-tab="tab-cheat">🌀 Kim Thủ Chỉ</button>
-      </nav>
-
       <div class="tab-content-area">
 
-        <!-- TAB 1: ĐỘNG PHỦ (TU LUYỆN & LUYỆN ĐAN) -->
-        <section id="tab-dongphu" class="tab-pane active">
+        <!-- TAB 1: NHÂN VẬT (ĐẢ TỌA TU LUYỆN & ĐỘNG PHỦ LUYỆN ĐAN) -->
+        <section id="tab-nhanvat" class="tab-pane active">
           <div class="sub-tab-bar">
             <button class="sub-tab-btn active" data-subtab="subtab-meditate">🧘 Đả Tọa Tu Luyện</button>
-            <button class="sub-tab-btn" data-subtab="subtab-alchemy">🧪 Lò Luyện Đan</button>
+            <button class="sub-tab-btn" data-subtab="subtab-alchemy">🏠 Động Phủ Luyện Đan</button>
           </div>
 
           <!-- Phân mục 1: Đả Tọa -->
