@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tu Tiên Kỳ Truyện - Thiên Đạo Luân Hồi (Retro Pixel RPG)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- HEADER BAR -->
+  <header class="game-header">
+    <div class="game-title">
+      <span>☯️ TU TIÊN KỲ TRUYỆN: THIÊN ĐẠO LUÂN HỒI</span>
+    </div>
+    <div class="header-actions">
+      <button id="btn-sound-toggle" class="pixel-btn small-btn" title="Bật/Tắt Âm Thanh">🔊 Âm Thanh: BẬT</button>
+      <button id="btn-save" class="pixel-btn small-btn">💾 Lưu Game</button>
+      <button id="btn-export-json" class="pixel-btn small-btn">📤 Xuất JSON</button>
+      <button id="btn-import-json" class="pixel-btn small-btn">📥 Nhập JSON</button>
+      <button id="btn-reset-char" class="pixel-btn small-btn primary-btn" title="Xóa nhân vật làm lại cuộc đời">🔄 Luân Hồi</button>
+    </div>
+  </header>
+
+  <!-- 3-COLUMN DASHBOARD LAYOUT -->
+  <div class="game-container">
+
+    <!-- CỘT TRÁI: THÔNG TIN ĐẠO HỮU -->
+    <aside class="left-panel">
+      <!-- Thông tin cơ bản -->
+      <div class="character-card">
+        <div class="avatar-wrapper">
+          <canvas id="avatar-canvas" width="48" height="48"></canvas>
+        </div>
+        <div class="char-info">
+          <div id="player-name" class="char-name">Vô Danh Tu Sĩ</div>
+          <div id="player-path" class="char-path">Kiếm Tu</div>
+          <div id="player-realm" class="char-realm-badge">Luyện Khí Tầng 1</div>
+          <div id="player-age" class="char-age">16 / 100 tuổi (Tháng 1)</div>
+        </div>
+      </div>
+
+      <!-- Thanh trạng thái HP / MP / EXP -->
+      <div class="bar-group">
+        <div class="bar-container">
+          <div class="bar-label-row">
+            <span>Khí Huyết (HP)</span>
+            <span id="player-hp-text">150 / 150</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div id="player-hp-bar" class="progress-bar-fill hp-fill" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <div class="bar-container">
+          <div class="bar-label-row">
+            <span>Linh Lực (MP)</span>
+            <span id="player-mp-text">60 / 60</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div id="player-mp-bar" class="progress-bar-fill mp-fill" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <div class="bar-container">
+          <div class="bar-label-row">
+            <span>Tu Vi (EXP)</span>
+            <span id="player-exp-text">0 / 100 (0%)</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div id="player-exp-bar" class="progress-bar-fill exp-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nút Đột Phá Nổi Bật -->
+      <button id="btn-breakthrough" class="pixel-btn primary-btn btn-breakthrough" disabled>Tu Vi Chưa Đủ</button>
+
+      <!-- Bảng Chỉ Số Chi Tiết -->
+      <div class="stats-table">
+        <div class="stat-row">
+          <span class="stat-label">Công Kích</span>
+          <span id="player-stat-atk" class="stat-val text-red">25</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Phòng Ngự</span>
+          <span id="player-stat-def" class="stat-val text-cyan">12</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Thân Pháp</span>
+          <span id="player-stat-spd" class="stat-val">15</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Tỷ Lệ Bạo Kích</span>
+          <span id="player-stat-crit" class="stat-val text-gold">5%</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Linh Căn</span>
+          <span id="player-stat-root" class="stat-val text-cyan">Đang tải...</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Thể Chất</span>
+          <span id="player-stat-phy" class="stat-val text-purple">Phàm Thể</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Ngộ Tính</span>
+          <span id="player-stat-comp" class="stat-val text-green">100% (x1.00)</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Linh Thạch</span>
+          <span id="player-stones" class="stat-val text-gold">100</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CỘT GIỮA: MÀN HÌNH CHÍNH & BẢNG ĐIỀU KHIỂN TABS -->
+    <main class="center-panel">
+      <!-- Nửa trên: HTML5 Canvas Pixel Viewport -->
+      <div class="canvas-viewport">
+        <canvas id="main-canvas" width="640" height="360"></canvas>
+      </div>
+
+      <!-- Nửa dưới: Tabs Điều Khiển -->
+      <nav class="tab-nav-bar">
+        <button class="tab-btn active" data-tab="tab-meditate">🧘 Tu Luyện</button>
+        <button class="tab-btn" data-tab="tab-world">🗺️ Thế Giới Mở</button>
+        <button class="tab-btn" data-tab="tab-combat" id="tab-nav-combat">⚔️ Chiến Đấu</button>
+        <button class="tab-btn" data-tab="tab-cheat">🌀 Kim Thủ Chỉ</button>
+        <button class="tab-btn" data-tab="tab-sect">🏯 Tông Môn</button>
+        <button class="tab-btn" data-tab="tab-alchemy">🧪 Động Phủ</button>
+        <button class="tab-btn" data-tab="tab-inventory">🎒 Túi Đồ</button>
+        <button class="tab-btn" data-tab="tab-market">⚖️ Phường Thị</button>
+      </nav>
+
+      <div class="tab-content-area">
+
+        <!-- TAB 1: TU LUYỆN -->
+        <section id="tab-meditate" class="tab-pane active">
+          <div class="pixel-box">
+            <h3>🧘 Đả Tọa Hấp Thu Thiên Địa Linh Khí</h3>
+            <p style="color: var(--text-dim); margin-top: 4px;">Ngồi thiền đả tọa, vận chuyển chu thiên kinh mạch. Tu vi tự động tăng theo thời gian thực (ảnh hưởng trực tiếp bởi Ngộ Tính và Linh Căn).</p>
+            <div style="display: flex; gap: 10px; margin-top: 12px;">
+              <button id="btn-gather-qi" class="pixel-btn primary-btn">✨ Tụ Linh Khí (Click Thủ Công)</button>
+              <button id="btn-use-exp-pill" class="pixel-btn">💊 Nuốt Tụ Khí Đan (+350 Tu Vi)</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 2: THẾ GIỚI MỞ -->
+        <section id="tab-world" class="tab-pane">
+          <div class="pixel-box">
+            <h3>🗺️ Bản Đồ Bí Cảnh Cửu Châu</h3>
+            <p style="color: var(--text-dim); margin: 6px 0;">Lựa chọn vùng đất phù hợp với cảnh giới để du ngoạn lịch luyện, săn yêu thú thu thập thiên tài địa bảo hoặc gặp kỳ ngộ bất ngờ.</p>
+            <div class="input-row" style="margin-bottom: 12px;">
+              <label>Khu vực khám phá:</label>
+              <select id="select-region" class="pixel-input" style="max-width: 300px;"></select>
+            </div>
+            <div id="region-info" class="destiny-results" style="margin-bottom: 12px;"></div>
+            <button id="btn-explore" class="pixel-btn primary-btn">🧭 Bắt Đầu Du Ngoạn / Lịch Luyện</button>
+          </div>
+        </section>
+
+        <!-- TAB 3: CHIẾN ĐẤU THEO LƯỢT (COMBAT) -->
+        <section id="tab-combat" class="tab-pane">
+          <div class="combat-hud">
+            <!-- Đạo hữu -->
+            <div class="combat-unit">
+              <div class="combat-name" style="color: var(--text-gold);">Đạo Hữu: <span id="combat-player-name">Nhân vật</span></div>
+              <div class="bar-container">
+                <div class="progress-bar-bg"><div id="combat-player-hp" class="progress-bar-fill hp-fill" style="width: 100%;"></div></div>
+              </div>
+              <div class="bar-container" style="margin-top: 4px;">
+                <div class="progress-bar-bg"><div id="combat-player-mp" class="progress-bar-fill mp-fill" style="width: 100%;"></div></div>
+              </div>
+              <div class="bar-container" style="margin-top: 4px;">
+                <div class="progress-bar-bg"><div id="combat-player-gauge" class="progress-bar-fill exp-fill" style="width: 0%;"></div></div>
+              </div>
+            </div>
+
+            <!-- Yêu thú / Đối thủ -->
+            <div class="combat-unit" style="text-align: right;">
+              <div class="combat-name" style="color: var(--text-red);"><span id="combat-monster-name">Yêu Thú</span> :Kẻ Địch</div>
+              <div class="bar-container">
+                <div class="progress-bar-bg"><div id="combat-monster-hp" class="progress-bar-fill hp-fill" style="width: 100%; margin-left: auto;"></div></div>
+              </div>
+              <div class="bar-container" style="margin-top: 8px;">
+                <div class="progress-bar-bg"><div id="combat-monster-gauge" class="progress-bar-fill exp-fill" style="width: 0%; margin-left: auto;"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5 Nút Lựa Chọn Chiến Đấu -->
+          <div class="action-buttons-grid">
+            <button id="btn-combat-attack" class="pixel-btn" disabled>1. Công Kích Thường</button>
+            <button id="btn-combat-skill" class="pixel-btn primary-btn" disabled>2. Thi Triển Tuyệt Kỹ</button>
+            <button id="btn-combat-artifact" class="pixel-btn" disabled>3. Tế Pháp Bảo</button>
+            <button id="btn-combat-pill" class="pixel-btn" disabled>4. Dùng Hồi Xuân Đan</button>
+            <button id="btn-combat-flee" class="pixel-btn" style="grid-column: span 2;" disabled>5. Thi Triển Thân Pháp Bỏ Chạy</button>
+          </div>
+        </section>
+
+        <!-- TAB 4: KIM THỦ CHỈ -->
+        <section id="tab-cheat" class="tab-pane">
+          <div class="pixel-box">
+            <h3 id="cheat-title" style="color: var(--text-gold);">Hệ Thống Kim Thủ Chỉ</h3>
+            <div style="margin: 8px 0; color: var(--text-cyan);">Cơ Chế Cốt Lõi: <span id="cheat-core-name">...</span></div>
+            <div style="margin-bottom: 12px; color: var(--text-purple);">Đặc Quyền Phụ: <span id="cheat-perk-name">...</span></div>
+            <div id="cheat-action-container"></div>
+          </div>
+        </section>
+
+        <!-- TAB 5: TÔNG MÔN -->
+        <section id="tab-sect" class="tab-pane">
+          <!-- Khi chưa gia nhập -->
+          <div id="sect-no-join" class="pixel-box">
+            <h3>🏯 Bái Nhập Sơn Môn Tông Môn</h3>
+            <p style="color: var(--text-dim); margin: 6px 0;">Gia nhập tông môn để nhận bổng lộc hàng năm, làm nhiệm vụ cống hiến và đổi các bí tịch tuyệt đỉnh tại Tàng Kinh Các.</p>
+            <div id="sect-options-list" class="cards-select-row" style="margin-top: 10px;"></div>
+          </div>
+
+          <!-- Khi đã gia nhập -->
+          <div id="sect-joined" class="pixel-box hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h3 id="sect-name-display" style="color: var(--text-gold);">Tông Môn</h3>
+                <div>Chức Vị: <span id="sect-rank-display" style="color: var(--text-cyan); font-weight: bold;">Đệ Tử</span> | Cống Hiến: <span id="sect-contrib-display" style="color: var(--text-purple); font-weight: bold;">0</span></div>
+              </div>
+              <button id="btn-sect-salary" class="pixel-btn small-btn">Lĩnh Bổng Lộc Hàng Năm</button>
+            </div>
+
+            <h4 style="margin-top: 14px; margin-bottom: 6px; color: var(--text-gold);">📜 Nhiệm Vụ Tông Môn</h4>
+            <div id="sect-quest-list"></div>
+
+            <h4 style="margin-top: 14px; margin-bottom: 6px; color: var(--text-gold);">📖 Tàng Kinh Các</h4>
+            <div id="sect-manual-list"></div>
+          </div>
+        </section>
+
+        <!-- TAB 6: ĐỘNG PHỦ (LUYỆN ĐAN & LUYỆN KHÍ) -->
+        <section id="tab-alchemy" class="tab-pane">
+          <div class="pixel-box">
+            <h3>🧪 Động Phủ: Bát Quái Đan Lò & Luyện Khí Đài</h3>
+            <p style="color: var(--text-dim); margin-top: 4px;">Sử dụng linh thảo và khoáng thạch thu thập được khi lịch luyện để luyện chế thần đan và pháp khí hộ thân.</p>
+            <div id="recipe-list" class="item-grid" style="margin-top: 12px;"></div>
+          </div>
+        </section>
+
+        <!-- TAB 7: TÚI ĐỒ & TRANG BỊ -->
+        <section id="tab-inventory" class="tab-pane">
+          <!-- Khung trang bị đang mang -->
+          <div class="pixel-box" style="margin-bottom: 10px;">
+            <h4>Trang Bị Hiện Tại</h4>
+            <div style="display: flex; gap: 16px; margin-top: 6px; font-size: 12px;">
+              <div>🗡️ Vũ Khí: <strong id="equip-weapon" style="color: var(--text-gold);">Chưa có</strong></div>
+              <div>🛡️ Hộ Giáp: <strong id="equip-armor" style="color: var(--text-cyan);">Chưa có</strong></div>
+              <div>🔮 Pháp Bảo: <strong id="equip-artifact" style="color: var(--text-purple);">Chưa có</strong></div>
+            </div>
+          </div>
+
+          <!-- Danh sách vật phẩm trong túi -->
+          <div id="inventory-list" class="item-grid"></div>
+        </section>
+
+        <!-- TAB 8: PHƯỜNG THỊ -->
+        <section id="tab-market" class="tab-pane">
+          <div class="pixel-box">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h3>⚖️ Phường Thị Tiên Giới</h3>
+              <button id="btn-refresh-market" class="pixel-btn small-btn">🔄 Làm Mới (20 Linh Thạch)</button>
+            </div>
+            <div id="market-item-list" class="item-grid" style="margin-top: 12px;"></div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- CỘT PHẢI: THIÊN CƠ LỤC (NHẬT KÝ TU TIÊN) -->
+    <aside class="right-panel">
+      <div class="log-header">
+        <span>📜 THIÊN CƠ LỤC</span>
+        <button id="btn-clear-log" class="pixel-btn small-btn">Xóa Log</button>
+      </div>
+      <div id="log-messages" class="log-messages"></div>
+    </aside>
+
+  </div>
+
+  <!-- ================= MODAL: THIÊN MỆNH LUÂN HỒI (KHỞI TẠO NHÂN VẬT) ================= -->
+  <div id="creation-modal" class="modal-overlay">
+    <div class="modal-window">
+      <div class="modal-header">
+        ☸️ THIÊN MỆNH LUÂN HỒI: TÁI TẠO TIÊN THÂN
+      </div>
+      <div class="modal-body">
+
+        <!-- BƯỚC 1: NHẬP ĐẠO HIỆU & QUAY THIÊN MỆNH (DUY NHẤT 1 LẦN) -->
+        <div class="creation-step">
+          <div class="step-title">Bước 1: Nhập Đạo Hiệu & Quay Thiên Mệnh (Giới hạn đúng 1 lần quay duy nhất)</div>
+          <div class="input-row">
+            <label for="input-dao-hieu">Đạo Hiệu:</label>
+            <input id="input-dao-hieu" type="text" class="pixel-input" placeholder="Nhập đạo hiệu..." value="Hàn Lập">
+            <button id="btn-roll-destiny" class="pixel-btn primary-btn">🎲 Quay Thiên Mệnh (1 Lần Duy Nhất)</button>
+          </div>
+          <!-- Kết quả quay -->
+          <div id="destiny-result-box" class="destiny-results hidden">
+            <div>Linh Căn: <strong id="roll-root" style="color: var(--text-cyan);">...</strong></div>
+            <div>Thể Chất: <strong id="roll-physique" style="color: var(--text-purple);">...</strong></div>
+            <div>Ngộ Tính: <strong id="roll-comp" style="color: var(--text-green);">...</strong></div>
+          </div>
+        </div>
+
+        <!-- BƯỚC 2: CHỌN HỆ TU LUYỆN CHỦ ĐẠO -->
+        <div class="creation-step">
+          <div class="step-title">Bước 2: Chọn Con Đường Tu Luyện Khởi Đầu</div>
+          <div id="paths-container" class="cards-select-row"></div>
+        </div>
+
+        <!-- BƯỚC 3: TỰ TẠO HỆ THỐNG KIM THỦ CHỈ -->
+        <div class="creation-step">
+          <div class="step-title">Bước 3: Tự Tạo Hệ Thống "Kim Thủ Chỉ" (Custom Cheat System)</div>
+          <div class="input-row">
+            <label for="input-cheat-name">Tên Hệ Thống:</label>
+            <input id="input-cheat-name" type="text" class="pixel-input" placeholder="Tự đặt tên hệ thống..." value="Hệ Thống Vạn Đạo Đánh Dấu">
+          </div>
+          <div style="font-size: 12px; color: var(--text-gold); margin-top: 6px;">Chọn 1 Cơ Chế Cốt Lõi:</div>
+          <div id="cheat-cores-container" class="cards-select-row"></div>
+
+          <div style="font-size: 12px; color: var(--text-purple); margin-top: 6px;">Chọn 1 Đặc Quyền Phụ:</div>
+          <div id="cheat-perks-container" class="cards-select-row"></div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button id="btn-start-game" class="pixel-btn primary-btn" disabled>🚀 Bước Vào Tiên Đồ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: KỲ NGỘ LỰA CHỌN ================= -->
+  <div id="event-modal" class="modal-overlay hidden">
+    <div class="modal-window" style="max-width: 540px;">
+      <div id="event-title" class="modal-header">Kỳ Ngộ Tiên Duyên</div>
+      <div class="modal-body">
+        <div id="event-desc" style="line-height: 1.6; color: var(--text-main);"></div>
+        <div id="event-choices" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: XUẤT / NHẬP JSON ================= -->
+  <div id="json-modal" class="modal-overlay hidden">
+    <div class="modal-window" style="max-width: 540px;">
+      <div id="json-modal-title" class="modal-header">Quản Lý Dữ Liệu Nhân Vật (JSON)</div>
+      <div class="modal-body">
+        <textarea id="json-textarea" class="pixel-input" style="width: 100%; height: 180px; resize: none; font-size: 12px;"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-json-action" class="pixel-btn primary-btn">Thực Hiện</button>
+        <button id="btn-json-close" class="pixel-btn">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nạp file game.js trực tiếp -->
+  <script src="game.js"></script>
+</body>
+</html>
