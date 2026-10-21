@@ -3262,8 +3262,6 @@
           const cultistMon = MONSTERS['cultist_dark'];
           if (this.combatEngine && cultistMon) {
             this.combatEngine.startCombat(this.player, cultistMon);
-            const tabCombatBtn = document.querySelector('[data-tab="tab-combat"]');
-            if (tabCombatBtn) tabCombatBtn.click();
           }
           break;
         case 'accept_deal':
@@ -4151,18 +4149,62 @@
     }
   }
 
+  const TAB_ALIASES = {
+    'tab-meditate': { tab: 'tab-dongphu', sub: 'subtab-meditate' },
+    'tab-alchemy': { tab: 'tab-dongphu', sub: 'subtab-alchemy' },
+    'tab-world': { tab: 'tab-tiengioi', sub: 'subtab-world' },
+    'tab-sect': { tab: 'tab-tiengioi', sub: 'subtab-sect' },
+    'tab-inventory': { tab: 'tab-bachbao', sub: 'subtab-inventory' },
+    'tab-market': { tab: 'tab-bachbao', sub: 'subtab-market' }
+  };
+
   function switchTab(tabId) {
     if (activeCombatEngine && activeCombatEngine.inCombat && tabId !== 'tab-combat') {
       if (activeGameSystems) activeGameSystems.addLog('⚠️ Đang trong sinh tử chiến! Thần thức tập trung, không thể rời trận!', 'warning');
       sound.playHurt();
       return;
     }
+
+    let targetMainTab = tabId;
+    let targetSubTab = null;
+    if (TAB_ALIASES[tabId]) {
+      targetMainTab = TAB_ALIASES[tabId].tab;
+      targetSubTab = TAB_ALIASES[tabId].sub;
+    }
+
     document.querySelectorAll('.tab-btn').forEach(b => {
-      b.classList.toggle('active', b.getAttribute('data-tab') === tabId);
+      b.classList.toggle('active', b.getAttribute('data-tab') === targetMainTab);
     });
     document.querySelectorAll('.tab-pane').forEach(p => {
-      p.classList.toggle('active', p.id === tabId);
+      p.classList.toggle('active', p.id === targetMainTab);
     });
+
+    if (targetSubTab) {
+      const pane = document.getElementById(targetMainTab);
+      if (pane) {
+        pane.querySelectorAll('.sub-tab-btn').forEach(b => {
+          b.classList.toggle('active', b.getAttribute('data-subtab') === targetSubTab);
+        });
+        pane.querySelectorAll('.sub-tab-content').forEach(c => {
+          c.classList.toggle('active', c.id === targetSubTab);
+        });
+      }
+    }
+
+    if (activeGameSystems && activeGameSystems.renderer) {
+      if (targetMainTab === 'tab-combat') {
+        activeGameSystems.renderer.setScene(SCENES.COMBAT);
+      } else if (targetMainTab === 'tab-dongphu') {
+        const activeSub = document.querySelector('#tab-dongphu .sub-tab-btn.active')?.getAttribute('data-subtab');
+        if (activeSub === 'subtab-alchemy') {
+          activeGameSystems.renderer.setScene(SCENES.ALCHEMY);
+        } else {
+          activeGameSystems.renderer.setScene(SCENES.MEDITATE);
+        }
+      } else {
+        activeGameSystems.renderer.setScene(SCENES.MEDITATE);
+      }
+    }
   }
   window.switchTab = switchTab;
 
@@ -4176,7 +4218,7 @@
 
     const combatEngine = new CombatEngine(renderer, addLog, () => {
       systems.updateUI();
-      switchTab('tab-world');
+      switchTab('tab-tiengioi');
     });
     activeCombatEngine = combatEngine;
     window.activeCombatEngine = combatEngine;
@@ -4203,19 +4245,37 @@
   });
 
   function setupUIEvents(systems, combatEngine, renderer) {
+    // Xử lý chuyển tab chính (4 Trụ Cột)
     const tabButtons = document.querySelectorAll('.tab-btn');
     tabButtons.forEach(btn => {
       btn.addEventListener('click', () => {
         sound.playClick();
         const tabId = btn.getAttribute('data-tab');
         switchTab(tabId);
+      });
+    });
 
-        if (tabId === 'tab-alchemy') {
-          renderer.setScene(SCENES.ALCHEMY);
-        } else if (tabId === 'tab-combat' && combatEngine.inCombat) {
-          renderer.setScene(SCENES.COMBAT);
-        } else {
-          renderer.setScene(SCENES.MEDITATE);
+    // Xử lý chuyển sub-tab (Phân mục con)
+    document.querySelectorAll('.sub-tab-btn').forEach(subBtn => {
+      subBtn.addEventListener('click', () => {
+        sound.playClick();
+        const parentPane = subBtn.closest('.tab-pane');
+        if (!parentPane) return;
+        const subId = subBtn.getAttribute('data-subtab');
+
+        parentPane.querySelectorAll('.sub-tab-btn').forEach(b => {
+          b.classList.toggle('active', b === subBtn);
+        });
+        parentPane.querySelectorAll('.sub-tab-content').forEach(c => {
+          c.classList.toggle('active', c.id === subId);
+        });
+
+        if (parentPane.id === 'tab-dongphu' && renderer) {
+          if (subId === 'subtab-alchemy') {
+            renderer.setScene(SCENES.ALCHEMY);
+          } else {
+            renderer.setScene(SCENES.MEDITATE);
+          }
         }
       });
     });

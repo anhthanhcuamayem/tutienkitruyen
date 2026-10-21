@@ -186,47 +186,161 @@
         <div class="combat-banner-sub">Toàn bộ thần thức tập trung nghênh địch • Các phím tắt [1..5] sẵn sàng phát động!</div>
       </div>
 
-      <!-- Nửa dưới: Tabs Điều Khiển (Lưới 2 Hàng Không Bao Giờ Tràn Ngang) -->
+      <!-- Nửa dưới: Tabs Điều Khiển (4 Trụ Cột Tiên Đạo Tinh Gọn 1 Hàng Ngang) -->
       <nav class="tab-nav-bar">
-        <button class="tab-btn active" data-tab="tab-meditate">🧘 Tu Luyện</button>
-        <button class="tab-btn" data-tab="tab-world">🗺️ Thế Giới</button>
-        <button class="tab-btn" data-tab="tab-combat" id="tab-nav-combat">⚔️ Chiến Đấu</button>
+        <button class="tab-btn active" data-tab="tab-dongphu">🏠 Động Phủ</button>
+        <button class="tab-btn" data-tab="tab-tiengioi">🗺️ Tiên Giới</button>
+        <button class="tab-btn" data-tab="tab-bachbao">🎒 Bách Bảo</button>
         <button class="tab-btn" data-tab="tab-cheat">🌀 Kim Thủ Chỉ</button>
-        <button class="tab-btn" data-tab="tab-sect">🏯 Tông Môn</button>
-        <button class="tab-btn" data-tab="tab-alchemy">🧪 Động Phủ</button>
-        <button class="tab-btn" data-tab="tab-inventory">🎒 Túi Đồ</button>
-        <button class="tab-btn" data-tab="tab-market">⚖️ Phường Thị</button>
       </nav>
 
       <div class="tab-content-area">
 
-        <!-- TAB 1: TU LUYỆN -->
-        <section id="tab-meditate" class="tab-pane active">
-          <div class="pixel-box">
-            <h3>🧘 Đả Tọa Hấp Thu Thiên Địa Linh Khí</h3>
-            <p style="color: var(--text-dim); margin-top: 6px; line-height: 1.6;">Ngồi thiền đả tọa, vận chuyển chu thiên kinh mạch. Tu vi tự động tăng theo thời gian thực (ảnh hưởng trực tiếp bởi Ngộ Tính và Linh Căn).</p>
-            <div class="action-buttons-row" style="display: flex; gap: 12px; margin-top: 14px;">
-              <button id="btn-gather-qi" class="pixel-btn primary-btn btn-3d">✨ Tụ Linh Khí (Click Thủ Công)</button>
-              <button id="btn-use-exp-pill" class="pixel-btn btn-3d">💊 Nuốt Tụ Khí Đan (+350 Tu Vi)</button>
+        <!-- TAB 1: ĐỘNG PHỦ (TU LUYỆN & LUYỆN ĐAN) -->
+        <section id="tab-dongphu" class="tab-pane active">
+          <div class="sub-tab-bar">
+            <button class="sub-tab-btn active" data-subtab="subtab-meditate">🧘 Đả Tọa Tu Luyện</button>
+            <button class="sub-tab-btn" data-subtab="subtab-alchemy">🧪 Lò Luyện Đan</button>
+          </div>
+
+          <!-- Phân mục 1: Đả Tọa -->
+          <div id="subtab-meditate" class="sub-tab-content active">
+            <div class="pixel-box">
+              <h3>🧘 Đả Tọa Hấp Thu Thiên Địa Linh Khí</h3>
+              <p style="color: var(--text-dim); margin-top: 6px; line-height: 1.6;">Ngồi thiền đả tọa, vận chuyển chu thiên kinh mạch. Tu vi tự động tăng theo thời gian thực (ảnh hưởng trực tiếp bởi Ngộ Tính và Linh Căn).</p>
+              <div class="action-buttons-row" style="display: flex; gap: 12px; margin-top: 14px;">
+                <button id="btn-gather-qi" class="pixel-btn primary-btn btn-3d">✨ Tụ Linh Khí (Click Thủ Công)</button>
+                <button id="btn-use-exp-pill" class="pixel-btn btn-3d">💊 Nuốt Tụ Khí Đan (+350 Tu Vi)</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phân mục 2: Luyện Đan -->
+          <div id="subtab-alchemy" class="sub-tab-content">
+            <div class="pixel-box">
+              <h3>🧪 Bát Quái Đan Lò & Luyện Khí Đài</h3>
+              <p style="color: var(--text-dim); margin-top: 4px;">Sử dụng linh thảo và khoáng thạch thu thập được khi lịch luyện để luyện chế thần đan và pháp khí hộ thân.</p>
+              <div id="recipe-list" class="item-grid" style="margin-top: 12px;"></div>
             </div>
           </div>
         </section>
 
-        <!-- TAB 2: THẾ GIỚI MỞ -->
-        <section id="tab-world" class="tab-pane">
-          <div class="pixel-box">
-            <h3>🗺️ Bản Đồ Bí Cảnh Cửu Châu</h3>
-            <p style="color: var(--text-dim); margin: 6px 0;">Lựa chọn vùng đất phù hợp với cảnh giới để du ngoạn lịch luyện, săn yêu thú thu thập thiên tài địa bảo hoặc gặp kỳ ngộ bất ngờ.</p>
-            <div class="input-row" style="margin-bottom: 12px;">
-              <label>Khu vực khám phá:</label>
-              <select id="select-region" class="pixel-input" style="max-width: 300px;"></select>
+        <!-- TAB 2: TIÊN GIỚI (BÍ CẢNH & TÔNG MÔN) -->
+        <section id="tab-tiengioi" class="tab-pane">
+          <div class="sub-tab-bar">
+            <button class="sub-tab-btn active" data-subtab="subtab-world">🧭 Bí Cảnh Khám Phá</button>
+            <button class="sub-tab-btn" data-subtab="subtab-sect">🏯 Sơn Môn Tông Môn</button>
+          </div>
+
+          <!-- Phân mục 1: Bí Cảnh -->
+          <div id="subtab-world" class="sub-tab-content active">
+            <div class="pixel-box">
+              <h3>🗺️ Bản Đồ Bí Cảnh Cửu Châu</h3>
+              <p style="color: var(--text-dim); margin: 6px 0;">Lựa chọn vùng đất phù hợp với cảnh giới để du ngoạn lịch luyện, săn yêu thú thu thập thiên tài địa bảo hoặc gặp kỳ ngộ bất ngờ.</p>
+              <div class="input-row" style="margin-bottom: 12px;">
+                <label>Khu vực khám phá:</label>
+                <select id="select-region" class="pixel-input" style="max-width: 300px;"></select>
+              </div>
+              <div id="region-info" class="destiny-results" style="margin-bottom: 12px;"></div>
+              <button id="btn-explore" class="pixel-btn primary-btn">🧭 Bắt Đầu Du Ngoạn / Lịch Luyện</button>
             </div>
-            <div id="region-info" class="destiny-results" style="margin-bottom: 12px;"></div>
-            <button id="btn-explore" class="pixel-btn primary-btn">🧭 Bắt Đầu Du Ngoạn / Lịch Luyện</button>
+          </div>
+
+          <!-- Phân mục 2: Tông Môn -->
+          <div id="subtab-sect" class="sub-tab-content">
+            <!-- Khi chưa gia nhập -->
+            <div id="sect-no-join" class="pixel-box">
+              <h3>🏯 Bái Nhập Sơn Môn Tông Môn</h3>
+              <p style="color: var(--text-dim); margin: 6px 0;">Gia nhập tông môn để nhận bổng lộc hàng năm, làm nhiệm vụ cống hiến và đổi các bí tịch tuyệt đỉnh tại Tàng Kinh Các.</p>
+              <div id="sect-options-list" class="cards-select-row" style="margin-top: 10px;"></div>
+            </div>
+
+            <!-- Khi đã gia nhập -->
+            <div id="sect-joined" class="pixel-box hidden">
+              <div class="sect-header-card pixel-box" style="background: rgba(15, 23, 42, 0.75); margin-bottom: 12px; border-color: var(--border-gold);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                  <div>
+                    <h3 id="sect-name-display" style="color: var(--text-gold); margin: 0; font-size: 1.25rem;">Tông Môn</h3>
+                    <div style="font-size: 0.85rem; color: var(--text-cyan);" id="sect-type-display">Chính Đạo Tông Môn</div>
+                  </div>
+                  <button id="btn-sect-salary" class="pixel-btn btn-3d primary-btn small-btn">🎁 Lĩnh Bổng Lộc Hàng Năm</button>
+                </div>
+
+                <div class="sect-rank-progress-box" style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border-inner);">
+                  <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; margin-bottom: 5px;">
+                    <div>Chức Vị Hiện Tại: <span id="sect-rank-display" class="badge-realm" style="font-size: 0.85rem; padding: 2px 8px;">Đệ Tử</span></div>
+                    <div>Cống Hiến Khả Dụng: <span id="sect-contrib-display" style="color: #38bdf8; font-weight: bold; font-size: 1rem;">0</span> <span style="font-size: 0.75rem; color: var(--text-dim);">(đổi bí kíp)</span></div>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-dim); margin-bottom: 3px;">
+                    <span>Tiến độ thăng chức: <span id="sect-rank-target" style="color: var(--text-gold);">Ngoại Môn Đệ Tử</span></span>
+                    <span id="sect-progress-text" style="color: var(--text-main);">0 / 100</span>
+                  </div>
+                  <div class="progress-bar-bg" style="height: 10px;">
+                    <div id="sect-rank-progress-fill" class="progress-bar-fill exp-fill" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Danh Sách Nhiệm Vụ Tông Môn -->
+              <h4 style="margin-top: 14px; margin-bottom: 8px; color: var(--text-gold); display: flex; align-items: center; justify-content: space-between;">
+                <span>📜 Nhiệm Vụ Tông Môn</span>
+                <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: normal;">Làm nhiệm vụ nhận Cống Hiến & Linh Thạch</span>
+              </h4>
+              <div id="sect-quest-list" class="sect-quest-grid"></div>
+
+              <!-- Tàng Kinh Các -->
+              <h4 style="margin-top: 18px; margin-bottom: 8px; color: var(--text-gold); display: flex; align-items: center; justify-content: space-between;">
+                <span>📖 Tàng Kinh Các</span>
+                <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: normal;">Đổi bí tịch tăng vĩnh viễn thuộc tính • Không bị hạ chức vị</span>
+              </h4>
+              <div id="sect-manual-list" class="sect-manual-grid"></div>
+            </div>
           </div>
         </section>
 
-        <!-- TAB 3: CHIẾN ĐẤU THEO LƯỢT (COMBAT ARENA) -->
+        <!-- TAB 3: BÁCH BẢO (TÚI ĐỒ & PHƯỜNG THỊ) -->
+        <section id="tab-bachbao" class="tab-pane">
+          <div class="sub-tab-bar">
+            <button class="sub-tab-btn active" data-subtab="subtab-inventory">🎒 Túi Càn Khôn & Trang Bị</button>
+            <button class="sub-tab-btn" data-subtab="subtab-market">⚖️ Phường Thị Tiên Giới</button>
+          </div>
+
+          <!-- Phân mục 1: Túi Đồ & Trang Bị -->
+          <div id="subtab-inventory" class="sub-tab-content active">
+            <div class="pixel-box" style="margin-bottom: 10px;">
+              <h4>Trang Bị Hiện Tại</h4>
+              <div style="display: flex; gap: 16px; margin-top: 6px; font-size: 12px;">
+                <div>🗡️ Vũ Khí: <strong id="equip-weapon" style="color: var(--text-gold);">Chưa có</strong></div>
+                <div>🛡️ Hộ Giáp: <strong id="equip-armor" style="color: var(--text-cyan);">Chưa có</strong></div>
+                <div>🔮 Pháp Bảo: <strong id="equip-artifact" style="color: var(--text-purple);">Chưa có</strong></div>
+              </div>
+            </div>
+            <div id="inventory-list" class="item-grid"></div>
+          </div>
+
+          <!-- Phân mục 2: Phường Thị -->
+          <div id="subtab-market" class="sub-tab-content">
+            <div class="pixel-box">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>⚖️ Phường Thị Tiên Giới</h3>
+                <button id="btn-refresh-market" class="pixel-btn small-btn">🔄 Làm Mới (20 Linh Thạch)</button>
+              </div>
+              <div id="market-item-list" class="item-grid" style="margin-top: 12px;"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 4: KIM THỦ CHỈ -->
+        <section id="tab-cheat" class="tab-pane">
+          <div class="pixel-box">
+            <h3 id="cheat-title" style="color: var(--text-gold);">Hệ Thống Kim Thủ Chỉ</h3>
+            <div style="margin: 8px 0; color: var(--text-cyan);">Cơ Chế Cốt Lõi: <span id="cheat-core-name">...</span></div>
+            <div style="margin-bottom: 12px; color: var(--text-purple);">Đặc Quyền Phụ: <span id="cheat-perk-name">...</span></div>
+            <div id="cheat-action-container"></div>
+          </div>
+        </section>
+
+        <!-- TAB ĐẤU TRƯỜNG CHIẾN ĐẤU (CHỈ KÍCH HOẠT KHI VÀO TRẬN) -->
         <section id="tab-combat" class="tab-pane">
           <!-- Combat Command Bar (Header + Controls: Speed + Auto) -->
           <div class="combat-top-control-bar">
@@ -327,105 +441,6 @@
               <div id="combat-result-body" class="combat-result-body"></div>
               <button id="btn-combat-close-result" class="pixel-btn primary-btn btn-3d" style="margin-top: 12px; width: 100%;">Tiếp Tục Tiên Đồ ➔</button>
             </div>
-          </div>
-        </section>
-
-        <!-- TAB 4: KIM THỦ CHỈ -->
-        <section id="tab-cheat" class="tab-pane">
-          <div class="pixel-box">
-            <h3 id="cheat-title" style="color: var(--text-gold);">Hệ Thống Kim Thủ Chỉ</h3>
-            <div style="margin: 8px 0; color: var(--text-cyan);">Cơ Chế Cốt Lõi: <span id="cheat-core-name">...</span></div>
-            <div style="margin-bottom: 12px; color: var(--text-purple);">Đặc Quyền Phụ: <span id="cheat-perk-name">...</span></div>
-            <div id="cheat-action-container"></div>
-          </div>
-        </section>
-
-        <!-- TAB 5: TÔNG MÔN -->
-        <section id="tab-sect" class="tab-pane">
-          <!-- Khi chưa gia nhập -->
-          <div id="sect-no-join" class="pixel-box">
-            <h3>🏯 Bái Nhập Sơn Môn Tông Môn</h3>
-            <p style="color: var(--text-dim); margin: 6px 0;">Gia nhập tông môn để nhận bổng lộc hàng năm, làm nhiệm vụ cống hiến và đổi các bí tịch tuyệt đỉnh tại Tàng Kinh Các.</p>
-            <div id="sect-options-list" class="cards-select-row" style="margin-top: 10px;"></div>
-          </div>
-
-          <!-- Khi đã gia nhập -->
-          <div id="sect-joined" class="pixel-box hidden">
-            <!-- Sect Header Card: Chức Vị & Cống Hiến & Bổng Lộc -->
-            <div class="sect-header-card pixel-box" style="background: rgba(15, 23, 42, 0.75); margin-bottom: 12px; border-color: var(--border-gold);">
-              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                <div>
-                  <h3 id="sect-name-display" style="color: var(--text-gold); margin: 0; font-size: 1.25rem;">Tông Môn</h3>
-                  <div style="font-size: 0.85rem; color: var(--text-cyan);" id="sect-type-display">Chính Đạo Tông Môn</div>
-                </div>
-                <button id="btn-sect-salary" class="pixel-btn btn-3d primary-btn small-btn">🎁 Lĩnh Bổng Lộc Hàng Năm</button>
-              </div>
-
-              <!-- Thanh Tiến Độ Cống Hiến & Thăng Chức -->
-              <div class="sect-rank-progress-box" style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border-inner);">
-                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; margin-bottom: 5px;">
-                  <div>Chức Vị Hiện Tại: <span id="sect-rank-display" class="badge-realm" style="font-size: 0.85rem; padding: 2px 8px;">Đệ Tử</span></div>
-                  <div>Cống Hiến Khả Dụng: <span id="sect-contrib-display" style="color: #38bdf8; font-weight: bold; font-size: 1rem;">0</span> <span style="font-size: 0.75rem; color: var(--text-dim);">(đổi bí kíp)</span></div>
-                </div>
-                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-dim); margin-bottom: 3px;">
-                  <span>Tiến độ thăng chức: <span id="sect-rank-target" style="color: var(--text-gold);">Ngoại Môn Đệ Tử</span></span>
-                  <span id="sect-progress-text" style="color: var(--text-main);">0 / 100</span>
-                </div>
-                <div class="progress-bar-bg" style="height: 10px;">
-                  <div id="sect-rank-progress-fill" class="progress-bar-fill exp-fill" style="width: 0%;"></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Danh Sách Nhiệm Vụ Tông Môn -->
-            <h4 style="margin-top: 14px; margin-bottom: 8px; color: var(--text-gold); display: flex; align-items: center; justify-content: space-between;">
-              <span>📜 Nhiệm Vụ Tông Môn</span>
-              <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: normal;">Làm nhiệm vụ nhận Cống Hiến & Linh Thạch</span>
-            </h4>
-            <div id="sect-quest-list" class="sect-quest-grid"></div>
-
-            <!-- Tàng Kinh Các -->
-            <h4 style="margin-top: 18px; margin-bottom: 8px; color: var(--text-gold); display: flex; align-items: center; justify-content: space-between;">
-              <span>📖 Tàng Kinh Các</span>
-              <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: normal;">Đổi bí tịch tăng vĩnh viễn thuộc tính • Không bị hạ chức vị</span>
-            </h4>
-            <div id="sect-manual-list" class="sect-manual-grid"></div>
-          </div>
-        </section>
-
-        <!-- TAB 6: ĐỘNG PHỦ (LUYỆN ĐAN & LUYỆN KHÍ) -->
-        <section id="tab-alchemy" class="tab-pane">
-          <div class="pixel-box">
-            <h3>🧪 Động Phủ: Bát Quái Đan Lò & Luyện Khí Đài</h3>
-            <p style="color: var(--text-dim); margin-top: 4px;">Sử dụng linh thảo và khoáng thạch thu thập được khi lịch luyện để luyện chế thần đan và pháp khí hộ thân.</p>
-            <div id="recipe-list" class="item-grid" style="margin-top: 12px;"></div>
-          </div>
-        </section>
-
-        <!-- TAB 7: TÚI ĐỒ & TRANG BỊ -->
-        <section id="tab-inventory" class="tab-pane">
-          <!-- Khung trang bị đang mang -->
-          <div class="pixel-box" style="margin-bottom: 10px;">
-            <h4>Trang Bị Hiện Tại</h4>
-            <div style="display: flex; gap: 16px; margin-top: 6px; font-size: 12px;">
-              <div>🗡️ Vũ Khí: <strong id="equip-weapon" style="color: var(--text-gold);">Chưa có</strong></div>
-              <div>🛡️ Hộ Giáp: <strong id="equip-armor" style="color: var(--text-cyan);">Chưa có</strong></div>
-              <div>🔮 Pháp Bảo: <strong id="equip-artifact" style="color: var(--text-purple);">Chưa có</strong></div>
-            </div>
-          </div>
-
-          <!-- Danh sách vật phẩm trong túi -->
-          <div id="inventory-list" class="item-grid"></div>
-        </section>
-
-        <!-- TAB 8: PHƯỜNG THỊ -->
-        <section id="tab-market" class="tab-pane">
-          <div class="pixel-box">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <h3>⚖️ Phường Thị Tiên Giới</h3>
-              <button id="btn-refresh-market" class="pixel-btn small-btn">🔄 Làm Mới (20 Linh Thạch)</button>
-            </div>
-            <div id="market-item-list" class="item-grid" style="margin-top: 12px;"></div>
           </div>
         </section>
 
