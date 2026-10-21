@@ -1709,3 +1709,558 @@ body.combat-active-mode #tab-combat {
 .text-green { color: var(--text-emerald); }
 .text-gold { color: var(--text-gold); }
 .text-purple { color: var(--text-purple); }
+
+/* ================= 8. TAB NHÂN VẬT & ĐẢ TỌA CHU THIÊN (BEAUTIFIED CULTIVATION) ================= */
+.meditation-sanctum-card {
+  background: linear-gradient(180deg, rgba(17, 23, 38, 0.95) 0%, rgba(10, 14, 24, 0.95) 100%);
+  border: 2px solid var(--border-gold);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(200, 155, 60, 0.12);
+  padding: 14px 16px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.sanctum-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sanctum-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sanctum-icon {
+  font-size: 16px;
+}
+
+.sanctum-title {
+  font-family: var(--font-title);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-gold);
+  letter-spacing: 0.5px;
+}
+
+.sanctum-subtitle {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+/* Thanh Chu Thiên Kinh Mạch */
+.meridian-circulation-wrapper {
+  margin-top: 12px;
+  background: rgba(8, 12, 20, 0.6);
+  border: 1px solid var(--border-dark);
+  padding: 8px 10px;
+  border-radius: 3px;
+}
+
+.meridian-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+
+.meridian-label {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.meridian-value {
+  font-family: var(--font-mono);
+  font-weight: bold;
+}
+
+.meridian-track {
+  width: 100%;
+  height: 8px;
+  background: #090d16;
+  border: 1px solid var(--border-inner);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.meridian-flow-bar {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #0284c7 0%, #38bdf8 50%, #c084fc 100%);
+  background-size: 200% 100%;
+  animation: meridianFlow 2.8s linear infinite;
+  opacity: 0.75;
+}
+
+.meridian-pulse-orb {
+  position: absolute;
+  top: 0;
+  width: 25px;
+  height: 100%;
+  background: radial-gradient(circle, #ffffff 10%, rgba(56, 189, 248, 0.8) 60%, transparent 100%);
+  box-shadow: 0 0 10px #38bdf8;
+  animation: meridianOrbPulse 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes meridianFlow {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes meridianOrbPulse {
+  0% { left: -10%; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { left: 105%; opacity: 0; }
+}
+
+/* 3 Ô thông số Động Phủ */
+.sanctum-stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.sanctum-stat-pill {
+  background: rgba(13, 20, 36, 0.7);
+  border: 1px solid var(--border-dark);
+  padding: 6px 10px;
+  border-radius: 3px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+.sanctum-stat-pill .pill-label {
+  color: var(--text-dim);
+}
+
+.sanctum-stat-pill .pill-val {
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+/* Hàng Nút Hành Động Đả Tọa */
+.sanctum-actions-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.sanctum-actions-row button {
+  flex: 1;
+  min-width: 150px;
+}
+
+/* Bảng Chỉ Số Nhân Vật Gom Vào Tab Nhân Vật */
+.char-sheet-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 820px) {
+  .char-sheet-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.char-sheet-card {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid var(--border-bronze);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.4);
+  padding: 12px 14px;
+  border-radius: 4px;
+}
+
+.sheet-card-title {
+  font-family: var(--font-title);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-gold);
+  border-bottom: 1px dashed var(--border-inner);
+  padding-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+/* Bản Thân Trang Bị */
+.char-equipment-section {
+  background: rgba(10, 14, 24, 0.6);
+  border: 1px solid var(--border-dark);
+  padding: 8px 10px;
+  border-radius: 3px;
+}
+
+.equipment-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.char-equipment-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+.gear-slot-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(18, 25, 43, 0.7);
+  border: 1px solid var(--border-dark);
+  padding: 5px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.gear-slot-item:hover {
+  border-color: var(--border-gold);
+  background: rgba(30, 41, 65, 0.9);
+  transform: translateX(2px);
+  box-shadow: 0 0 8px rgba(200, 155, 60, 0.3);
+}
+
+.gear-slot-icon {
+  font-size: 16px;
+  width: 24px;
+  text-align: center;
+}
+
+.gear-slot-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+}
+
+.gear-slot-type {
+  font-size: 9px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.gear-slot-name {
+  font-size: 11px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ================= 9. MODALS: ĐỘT PHÁ, GIÁM ĐỊNH & XÁC NHẬN ================= */
+
+/* Breakthrough Modal */
+.breakthrough-modal-window {
+  max-width: 540px;
+  border-color: var(--border-gold);
+  box-shadow: 0 0 45px rgba(200, 155, 60, 0.5), inset 0 0 20px rgba(251, 191, 36, 0.15);
+  animation: modalPopIn 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+@keyframes modalPopIn {
+  0% { transform: scale(0.92); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.breakthrough-header {
+  background: linear-gradient(180deg, #2e1065 0%, #1e1b4b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 17px;
+  color: var(--text-gold);
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.7);
+}
+
+.breakthrough-banner-icon {
+  font-size: 20px;
+  animation: rotateGlow 2s infinite ease-in-out;
+}
+
+@keyframes rotateGlow {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px #fbbf24); }
+  50% { transform: scale(1.15); filter: drop-shadow(0 0 12px #f59e0b); }
+}
+
+.breakthrough-realm-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(10, 15, 29, 0.85);
+  border: 1px solid var(--border-gold);
+  padding: 12px 16px;
+  border-radius: 4px;
+}
+
+.realm-box {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: center;
+  flex: 1;
+}
+
+.realm-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.realm-name {
+  font-family: var(--font-title);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.realm-arrow {
+  font-size: 20px;
+  color: var(--text-gold);
+  animation: arrowGlow 1.2s infinite alternate;
+  padding: 0 10px;
+}
+
+@keyframes arrowGlow {
+  0% { transform: translateX(-3px); opacity: 0.6; }
+  100% { transform: translateX(3px); opacity: 1; text-shadow: 0 0 8px #fbbf24; }
+}
+
+.breakthrough-gains-box {
+  background: rgba(13, 20, 36, 0.7);
+  border: 1px dashed var(--border-gold);
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.gains-title {
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--text-emerald);
+  margin-bottom: 8px;
+}
+
+.bt-gains-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+}
+
+.bt-gain-pill {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 6px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bt-extra-note {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-gold);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  padding: 8px 12px;
+  border-radius: 3px;
+  text-align: center;
+}
+
+/* Item Detail Modal */
+.item-detail-window {
+  max-width: 480px;
+  border-color: var(--border-gold);
+  box-shadow: 0 0 35px rgba(200, 155, 60, 0.4);
+  animation: modalPopIn 0.2s ease-out;
+}
+
+.item-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+  transition: color 0.15s ease;
+}
+
+.modal-close-btn:hover {
+  color: var(--text-red);
+}
+
+.item-detail-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.item-detail-icon-box {
+  width: 58px;
+  height: 58px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 2px solid var(--border-gold);
+  box-shadow: 0 0 15px rgba(200, 155, 60, 0.3);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  flex-shrink: 0;
+}
+
+.item-detail-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.item-detail-name {
+  font-family: var(--font-title);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.item-detail-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.item-detail-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-gold), transparent);
+  margin: 4px 0;
+}
+
+.item-detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.item-section-label {
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--text-cyan);
+}
+
+.item-detail-desc-text {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-main);
+  background: rgba(10, 15, 28, 0.6);
+  padding: 8px 10px;
+  border: 1px solid var(--border-dark);
+  border-radius: 3px;
+}
+
+.item-stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.item-stat-badge {
+  padding: 4px 8px;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid var(--border-dark);
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--text-emerald);
+}
+
+.item-detail-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(13, 20, 36, 0.8);
+  border: 1px solid var(--border-inner);
+  padding: 8px 12px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Custom Confirm Modal */
+.confirm-modal-window {
+  max-width: 460px;
+  border-color: #ef4444;
+  box-shadow: 0 0 35px rgba(239, 68, 68, 0.4);
+}
+
+.confirm-header {
+  background: linear-gradient(180deg, #450a0a 0%, #1c0505 100%);
+  border-bottom: 2px solid #ef4444;
+  color: #fca5a5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.confirm-message {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-main);
+  text-align: center;
+  padding: 6px 10px;
+}
+
+.confirm-footer {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.btn-danger {
+  background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%);
+  border-color: #ef4444;
+  color: #fff;
+  box-shadow: 0 3px 0 #7f1d1d;
+}
+
+.btn-danger:hover {
+  background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
+  box-shadow: 0 3px 0 #7f1d1d, 0 0 12px rgba(239, 68, 68, 0.5);
+}
+
+/* Custom Alert Modal */
+.alert-modal-window {
+  max-width: 440px;
+}
+
+.alert-message {
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: center;
+  color: var(--text-main);
+  padding: 6px 12px;
+}

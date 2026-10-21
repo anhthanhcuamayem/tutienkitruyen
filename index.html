@@ -193,14 +193,192 @@
             <button class="sub-tab-btn" data-subtab="subtab-alchemy">🏠 Động Phủ Luyện Đan</button>
           </div>
 
-          <!-- Phân mục 1: Đả Tọa -->
+          <!-- Phân mục 1: Đả Tọa & Chỉ Số Nhân Vật -->
           <div id="subtab-meditate" class="sub-tab-content active">
-            <div class="pixel-box">
-              <h3>🧘 Đả Tọa Hấp Thu Thiên Địa Linh Khí</h3>
-              <p style="color: var(--text-dim); margin-top: 6px; line-height: 1.6;">Ngồi thiền đả tọa, vận chuyển chu thiên kinh mạch. Tu vi tự động tăng theo thời gian thực (ảnh hưởng trực tiếp bởi Ngộ Tính và Linh Căn).</p>
-              <div class="action-buttons-row" style="display: flex; gap: 12px; margin-top: 14px;">
-                <button id="btn-gather-qi" class="pixel-btn primary-btn btn-3d">✨ Tụ Linh Khí (Click Thủ Công)</button>
-                <button id="btn-use-exp-pill" class="pixel-btn btn-3d">💊 Nuốt Tụ Khí Đan (+350 Tu Vi)</button>
+            <!-- KHỐI 1: BẢNG CHU THIÊN VẬN KHÍ & ĐỘNG PHỦ TU HÀNH -->
+            <div class="meditation-sanctum-card pixel-box">
+              <div class="sanctum-header">
+                <div class="sanctum-title-row">
+                  <span class="sanctum-icon">🧘</span>
+                  <span class="sanctum-title">Động Phủ Bế Quan • Chu Thiên Vận Khí</span>
+                  <span id="meditation-status-badge" class="badge-chip root-chip">Vô Vi Thanh Tịnh</span>
+                </div>
+                <div class="sanctum-subtitle">Hấp thu linh khí cửu châu, vận chuyển 12 đường kinh mạch, bồi đắp đại đạo tiên cơ.</div>
+              </div>
+
+              <!-- Thanh tiến độ Chu Thiên Kinh Mạch (Meridian circulation animation) -->
+              <div class="meridian-circulation-wrapper">
+                <div class="meridian-info-row">
+                  <span class="meridian-label">🌀 Chu Thiên Kinh Mạch</span>
+                  <span id="meridian-speed-text" class="meridian-value text-cyan">Tốc độ: +2 Tu Vi/giây</span>
+                </div>
+                <div class="meridian-track">
+                  <div class="meridian-flow-bar"></div>
+                  <div class="meridian-pulse-orb"></div>
+                </div>
+              </div>
+
+              <!-- 3 Ô thông số linh khí động phủ -->
+              <div class="sanctum-stats-row">
+                <div class="sanctum-stat-pill">
+                  <span class="pill-label">🏯 Trận Pháp:</span>
+                  <span id="dongphu-array-level" class="pill-val text-gold">Tụ Linh Trận Bậc 1</span>
+                </div>
+                <div class="sanctum-stat-pill">
+                  <span class="pill-label">✨ Linh Khí:</span>
+                  <span id="dongphu-qi-density" class="pill-val text-emerald">Nồng Đậm 100%</span>
+                </div>
+                <div class="sanctum-stat-pill">
+                  <span class="pill-label">🧠 Lĩnh Ngộ:</span>
+                  <span id="char-cult-rate" class="pill-val text-purple">1.00x</span>
+                </div>
+              </div>
+
+              <!-- Hàng nút hành động Đả Tọa 3D -->
+              <div class="sanctum-actions-row">
+                <button id="btn-gather-qi" class="pixel-btn primary-btn btn-3d">✨ Tụ Linh Nhập Thể</button>
+                <button id="btn-use-exp-pill" class="pixel-btn btn-3d">💊 Nuốt Tụ Khí Đan (+350)</button>
+                <button id="btn-breakthrough-sanctum" class="pixel-btn btn-3d btn-breakthrough" disabled>
+                  <span class="lock-icon">🔒</span> <span class="breakthrough-btn-text">Tu Vi Chưa Đủ</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- KHỐI 2: TOÀN BỘ CHỈ SỐ NHÂN VẬT GOM VÀO ĐÂY (Full Character Stats Sheet) -->
+            <div class="char-sheet-grid">
+              <!-- Cột Trái: Sinh Mệnh & Tứ Đại Thuộc Tính Chiến Đấu -->
+              <div class="char-sheet-card pixel-box">
+                <div class="sheet-card-title">⚔️ Sinh Mệnh & Chiến Đấu</div>
+                
+                <!-- Thanh HP / MP / EXP nội bộ tab -->
+                <div class="bar-group" style="margin-top: 6px;">
+                  <div class="bar-container">
+                    <div class="bar-title-row">
+                      <span class="bar-name">Khí Huyết (HP)</span>
+                    </div>
+                    <div class="progress-bar-bg hp-bg">
+                      <div id="char-hp-bar" class="progress-bar-fill hp-fill" style="width: 100%;"></div>
+                      <div class="bar-highlight"></div>
+                      <div id="char-hp-text" class="bar-center-text">150 / 150</div>
+                    </div>
+                  </div>
+
+                  <div class="bar-container">
+                    <div class="bar-title-row">
+                      <span class="bar-name">Linh Lực (MP)</span>
+                    </div>
+                    <div class="progress-bar-bg mp-bg">
+                      <div id="char-mp-bar" class="progress-bar-fill mp-fill" style="width: 100%;"></div>
+                      <div class="bar-highlight"></div>
+                      <div id="char-mp-text" class="bar-center-text">60 / 60</div>
+                    </div>
+                  </div>
+
+                  <div class="bar-container">
+                    <div class="bar-title-row">
+                      <span class="bar-name">Tu Vi (EXP)</span>
+                    </div>
+                    <div class="progress-bar-bg exp-bg">
+                      <div id="char-exp-bar" class="progress-bar-fill exp-fill" style="width: 0%;"></div>
+                      <div class="bar-highlight"></div>
+                      <div id="char-exp-text" class="bar-center-text">0 / 100 (0%)</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tứ Đại Chỉ Số Chiến Đấu 2x2 Grid -->
+                <div class="stats-grid-2x2" style="margin-top: 10px;">
+                  <div class="stat-card atk-card">
+                    <div class="stat-card-header">
+                      <span class="stat-icon">⚔️</span>
+                      <span class="stat-name">Công Kích</span>
+                    </div>
+                    <div id="char-stat-atk" class="stat-number text-red">25</div>
+                  </div>
+
+                  <div class="stat-card def-card">
+                    <div class="stat-card-header">
+                      <span class="stat-icon">🛡️</span>
+                      <span class="stat-name">Phòng Ngự</span>
+                    </div>
+                    <div id="char-stat-def" class="stat-number text-cyan">12</div>
+                  </div>
+
+                  <div class="stat-card spd-card">
+                    <div class="stat-card-header">
+                      <span class="stat-icon">👟</span>
+                      <span class="stat-name">Thân Pháp</span>
+                    </div>
+                    <div id="char-stat-spd" class="stat-number text-emerald">15</div>
+                  </div>
+
+                  <div class="stat-card crit-card">
+                    <div class="stat-card-header">
+                      <span class="stat-icon">⚡</span>
+                      <span class="stat-name">Bạo Kích</span>
+                    </div>
+                    <div id="char-stat-crit" class="stat-number text-gold">5%</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Cột Phải: Tiên Duyên, Căn Cơ & Trang Bị Bản Thân -->
+              <div class="char-sheet-card pixel-box">
+                <div class="sheet-card-title">🔮 Tiên Duyên & Bản Thân Pháp Bảo</div>
+
+                <div class="talent-badges-grid" style="margin-top: 6px;">
+                  <div class="talent-badge-item">
+                    <span class="badge-label">Linh Căn:</span>
+                    <span id="char-stat-root" class="badge-chip root-chip">Đang tải...</span>
+                  </div>
+                  <div class="talent-badge-item">
+                    <span class="badge-label">Thể Chất:</span>
+                    <span id="char-stat-phy" class="badge-chip phy-chip">Phàm Thể</span>
+                  </div>
+                  <div class="talent-badge-item">
+                    <span class="badge-label">Ngộ Tính:</span>
+                    <span id="char-stat-comp" class="badge-chip comp-chip">100% (x1.00)</span>
+                  </div>
+                  <div class="talent-badge-item">
+                    <span class="badge-label">Thọ Nguyên:</span>
+                    <span id="char-stat-age" class="badge-chip" style="background: rgba(245, 158, 11, 0.15); border: 1px solid #d97706; color: #fcd34d;">16 / 120 tuổi</span>
+                  </div>
+                  <div class="talent-badge-item">
+                    <span class="badge-label">Linh Thạch:</span>
+                    <span id="char-stat-stones" class="badge-chip stone-chip">100</span>
+                  </div>
+                </div>
+
+                <!-- Khung Trang Bị Đang Mặc (Clickable to inspect via Item Detail Modal!) -->
+                <div class="char-equipment-section" style="margin-top: 10px;">
+                  <div class="equipment-title-row">
+                    <span>🥋 Bản Thân Trang Bị</span>
+                    <span style="font-size: 10px; color: var(--text-dim);">(Bấm để xem chi tiết)</span>
+                  </div>
+                  <div class="char-equipment-grid">
+                    <div id="slot-weapon" class="gear-slot-item" data-slot="weapon" title="Xem chi tiết vũ khí">
+                      <span class="gear-slot-icon">🗡️</span>
+                      <div class="gear-slot-info">
+                        <div class="gear-slot-type">Binh Khí</div>
+                        <div id="char-gear-weapon" class="gear-slot-name text-gold">Chưa có</div>
+                      </div>
+                    </div>
+                    <div id="slot-armor" class="gear-slot-item" data-slot="armor" title="Xem chi tiết hộ giáp">
+                      <span class="gear-slot-icon">🛡️</span>
+                      <div class="gear-slot-info">
+                        <div class="gear-slot-type">Hộ Giáp</div>
+                        <div id="char-gear-armor" class="gear-slot-name text-cyan">Chưa có</div>
+                      </div>
+                    </div>
+                    <div id="slot-artifact" class="gear-slot-item" data-slot="artifact" title="Xem chi tiết pháp bảo">
+                      <span class="gear-slot-icon">🔮</span>
+                      <div class="gear-slot-info">
+                        <div class="gear-slot-type">Pháp Bảo</div>
+                        <div id="char-gear-artifact" class="gear-slot-name text-purple">Chưa có</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -543,6 +721,129 @@
       <div class="modal-footer">
         <button id="btn-json-action" class="pixel-btn primary-btn">Thực Hiện</button>
         <button id="btn-json-close" class="pixel-btn">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: ĐỘT PHÁ CẢNH GIỚI & THIÊN KIẾP ================= -->
+  <div id="breakthrough-modal" class="modal-overlay hidden">
+    <div class="modal-window breakthrough-modal-window">
+      <div id="breakthrough-modal-header" class="modal-header breakthrough-header">
+        <span class="breakthrough-banner-icon">⚡</span>
+        <span id="breakthrough-title-text">ĐỘT PHÁ CẢNH GIỚI THÀNH CÔNG</span>
+      </div>
+      <div class="modal-body breakthrough-body">
+        <!-- Cảnh giới chuyển tiếp -->
+        <div class="breakthrough-realm-row">
+          <div class="realm-box old-realm">
+            <span class="realm-label">Cảnh Giới Trước</span>
+            <span id="bt-old-realm" class="realm-name">Luyện Khí Tầng 9</span>
+          </div>
+          <div class="realm-arrow">➔</div>
+          <div class="realm-box new-realm">
+            <span class="realm-label">Cảnh Giới Mới</span>
+            <span id="bt-new-realm" class="realm-name text-gold">Trúc Cơ Sơ Kỳ</span>
+          </div>
+        </div>
+
+        <!-- Thuộc tính gia tăng -->
+        <div id="bt-gains-container" class="breakthrough-gains-box">
+          <div class="gains-title">📈 Thuộc Tính Tăng Trưởng Đại Phúc:</div>
+          <div id="bt-gains-grid" class="bt-gains-grid"></div>
+        </div>
+
+        <!-- Lời bình thiên đạo / Ghi chú hộ mệnh -->
+        <div id="bt-extra-note" class="bt-extra-note">
+          ✨ Chúc mừng đạo hữu ngưng tụ đạo căn, bước lên một nấc thang mới trên con đường trường sinh bất tử!
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content: center;">
+        <button id="btn-close-breakthrough" class="pixel-btn primary-btn btn-3d" style="min-width: 220px;">
+          🧘 Tiếp Tục Tu Đạo (Space / Enter)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: CHI TIẾT & GIÁM ĐỊNH BẢO VẬT ================= -->
+  <div id="item-detail-modal" class="modal-overlay hidden">
+    <div class="modal-window item-detail-window">
+      <div class="modal-header item-detail-header">
+        <span>🔍 Giám Định Bảo Vật</span>
+        <button id="btn-close-item-detail-x" class="modal-close-btn" title="Đóng">&times;</button>
+      </div>
+      <div class="modal-body item-detail-body">
+        <div class="item-detail-top">
+          <div id="item-detail-icon" class="item-detail-icon-box">🗡️</div>
+          <div class="item-detail-header-info">
+            <div id="item-detail-name" class="item-detail-name text-gold">Thanh Phong Kiếm</div>
+            <div class="item-detail-badges">
+              <span id="item-detail-rarity" class="badge-chip">Hoàng Giai</span>
+              <span id="item-detail-type" class="badge-chip">Vũ Khí</span>
+              <span id="item-detail-count" class="badge-chip">Sở Hữu: 1</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="item-detail-divider"></div>
+
+        <div class="item-detail-section">
+          <div class="item-section-label">📜 Điển Tích & Mô Tả:</div>
+          <div id="item-detail-desc" class="item-detail-desc-text">
+            Bảo kiếm sắc bén như gió lướt, rèn từ Huyền Thiết ngàn năm.
+          </div>
+        </div>
+
+        <div id="item-detail-stats-section" class="item-detail-section">
+          <div class="item-section-label">⚡ Hiệu Quả & Thuộc Tính Gia Tăng:</div>
+          <div id="item-detail-stats" class="item-stats-list"></div>
+        </div>
+
+        <div class="item-detail-price-row">
+          <span>💰 Giá Trị Ước Tính:</span>
+          <span id="item-detail-price" class="text-gold">150 Linh Thạch</span>
+        </div>
+      </div>
+      <div id="item-detail-actions" class="modal-footer">
+        <button id="btn-item-action-primary" class="pixel-btn primary-btn btn-3d">Sử Dụng</button>
+        <button id="btn-item-action-sell" class="pixel-btn btn-3d">Bán Vật Phẩm</button>
+        <button id="btn-close-item-detail" class="pixel-btn btn-3d">Đóng (ESC)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: XÁC NHẬN THIÊN ĐẠO ================= -->
+  <div id="custom-confirm-modal" class="modal-overlay hidden">
+    <div class="modal-window confirm-modal-window">
+      <div id="confirm-modal-header" class="modal-header confirm-header">
+        <span class="confirm-icon">⚠️</span>
+        <span id="confirm-title-text">THIÊN ĐẠO CẢNH BÁO</span>
+      </div>
+      <div class="modal-body confirm-body">
+        <div id="confirm-message-text" class="confirm-message">
+          Đạo hữu có chắc chắn muốn thực hiện hành động này không?
+        </div>
+      </div>
+      <div class="modal-footer confirm-footer">
+        <button id="btn-confirm-yes" class="pixel-btn btn-danger btn-3d">Quyết Định Thực Hiện</button>
+        <button id="btn-confirm-no" class="pixel-btn primary-btn btn-3d">Hủy Bỏ / Quay Lại</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: THIÊN THƯ THÔNG BÁO ================= -->
+  <div id="custom-alert-modal" class="modal-overlay hidden">
+    <div class="modal-window alert-modal-window">
+      <div id="alert-modal-header" class="modal-header alert-header">
+        <span>📜 THIÊN THƯ THÔNG BÁO</span>
+      </div>
+      <div class="modal-body alert-body">
+        <div id="alert-message-text" class="alert-message">
+          Thông báo từ thiên đạo...
+        </div>
+      </div>
+      <div class="modal-footer alert-footer" style="justify-content: center;">
+        <button id="btn-alert-ok" class="pixel-btn primary-btn btn-3d" style="min-width: 140px;">Đã Rõ (Enter)</button>
       </div>
     </div>
   </div>

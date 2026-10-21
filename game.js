@@ -3091,7 +3091,15 @@
 
     resolveBreakthrough(successChance, usedPill) {
       const p = this.player;
-      const realm = REALMS[p.realmIndex];
+      if (!p) return;
+      const oldRealm = REALMS[p.realmIndex];
+      const oldHp = p.maxHp;
+      const oldMp = p.maxMp;
+      const oldAtk = p.totalAtk;
+      const oldDef = p.totalDef;
+      const oldLifespan = p.maxLifespan;
+      const oldExp = p.exp;
+
       const isSuccess = Math.random() < successChance;
 
       if (isSuccess) {
@@ -3112,20 +3120,333 @@
         if (newRealm.isAscension) {
           this.addLog(`🌟 PHI THĂNG TIÊN GIỚI! Đạo hữu đã vượt qua cửu cửu thiên kiếp, công đức viên mãn, phi thăng hóa tiên!`, 'golden');
         }
+
+        const gains = {
+          hp: Math.max(0, p.maxHp - oldHp),
+          mp: Math.max(0, p.maxMp - oldMp),
+          atk: Math.max(0, p.totalAtk - oldAtk),
+          def: Math.max(0, p.totalDef - oldDef),
+          lifespan: Math.max(0, p.maxLifespan - oldLifespan)
+        };
+
+        this.showBreakthroughModal({
+          success: true,
+          oldRealm,
+          newRealm,
+          gains,
+          usedPill,
+          isAscension: !!newRealm.isAscension
+        });
       } else {
         sound.playHurt();
         this.renderer.setScene(SCENES.MEDITATE);
         p.exp = Math.floor(p.exp * 0.6);
+        const savedByCheat = !!(p.cheatPerk && p.cheatPerk.id === 'breakthrough_guard');
 
-        if (p.cheatPerk && p.cheatPerk.id === 'breakthrough_guard') {
+        if (savedByCheat) {
           this.addLog(`💔 Đột phá thất bại! May nhờ có 【Thiên Đạo Hộ Thể】 bảo hộ chân nguyên, miễn trừ tâm ma phản phệ!`, 'system');
         } else {
           p.curHp = Math.max(1, Math.floor(p.curHp * 0.3));
           this.addLog(`💀 Đột phá thất bại! Bị lôi kiếp cùng tâm ma phản phệ, thổ huyết trọng thương, mất đi 40% tu vi!`, 'danger');
         }
+
+        this.showBreakthroughModal({
+          success: false,
+          oldRealm,
+          expLost: oldExp - p.exp,
+          hpLost: savedByCheat ? 0 : Math.floor(oldHp * 0.7),
+          savedByCheat
+        });
       }
 
       this.updateUI();
+    }
+
+    showBreakthroughModal(data) {
+      const modal = document.getElementById('breakthrough-modal');
+      if (!modal) return;
+
+      const headerText = document.getElementById('breakthrough-title-text');
+      const oldRealmEl = document.getElementById('bt-old-realm');
+      const newRealmEl = document.getElementById('bt-new-realm');
+      const gainsGrid = document.getElementById('bt-gains-grid');
+      const gainsBox = document.getElementById('bt-gains-container');
+      const noteEl = document.getElementById('bt-extra-note');
+      const btnClose = document.getElementById('btn-close-breakthrough');
+
+      if (data.success) {
+        if (headerText) headerText.textContent = data.isAscension ? '🌟 ĐỘ KIẾP PHI THĂNG HÓA TIÊN 🌟' : '⚡ ĐỘT PHÁ CẢNH GIỚI THÀNH CÔNG ⚡';
+        if (oldRealmEl) oldRealmEl.textContent = data.oldRealm.name;
+        if (newRealmEl) {
+          newRealmEl.textContent = data.newRealm.name;
+          newRealmEl.className = 'realm-name text-gold';
+        }
+
+        if (gainsBox) gainsBox.style.display = 'block';
+        if (gainsGrid) {
+          gainsGrid.innerHTML = `
+            <div class="bt-gain-pill text-red">🩸 Khí Huyết: +${data.gains.hp} HP</div>
+            <div class="bt-gain-pill text-cyan">💧 Linh Lực: +${data.gains.mp} MP</div>
+            <div class="bt-gain-pill text-red">⚔️ Công Kích: +${data.gains.atk}</div>
+            <div class="bt-gain-pill text-emerald">🛡️ Phòng Ngự: +${data.gains.def}</div>
+            <div class="bt-gain-pill text-gold">⏳ Thọ Nguyên: +${data.gains.lifespan} Năm</div>
+          `;
+        }
+
+        if (noteEl) {
+          if (data.usedPill) {
+            noteEl.innerHTML = `✨ Đã tiêu hao 1 viên <strong>【${data.usedPill}】</strong> hộ trì tâm mạch, ngưng tụ đạo quả bình an vô sự!`;
+          } else if (data.isAscension) {
+            noteEl.innerHTML = `🌟 Công đức viên mãn, vượt qua Cửu Cửu Thiên Kiếp, rũ bỏ phàm thai phi thăng Tiên Giới!`;
+          } else {
+            noteEl.innerHTML = `✨ Đại đạo viên mãn, chúc mừng đạo hữu tiến thêm một bước trên con đường trường sinh bất tử!`;
+          }
+        }
+      } else {
+        if (headerText) headerText.textContent = '💔 ĐỘ KIẾP THẤT BẠI 💔';
+        if (oldRealmEl) oldRealmEl.textContent = data.oldRealm.name;
+        if (newRealmEl) {
+          newRealmEl.textContent = 'Bình Cảnh Vỡ Tan';
+          newRealmEl.className = 'realm-name text-red';
+        }
+
+        if (gainsBox) gainsBox.style.display = 'none';
+
+        if (noteEl) {
+          if (data.savedByCheat) {
+            noteEl.innerHTML = `🛡️ <strong>Kim Thủ Chỉ 【Thiên Đạo Hộ Thể】</strong> bảo hộ chân nguyên, miễn trừ tâm ma phản phệ! Mất ${data.expLost} Tu Vi tích lũy.`;
+          } else {
+            noteEl.innerHTML = `💀 Thiên kiếp và tâm ma phản phệ, thổ huyết trọng thương! Tổn thất <strong>${data.expLost} Tu Vi</strong> và suy giảm nguyên khí!`;
+          }
+        }
+      }
+
+      if (btnClose) {
+        btnClose.onclick = () => {
+          modal.classList.add('hidden');
+        };
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    showItemDetail(itemId, source) {
+      const p = this.player;
+      if (!p) return;
+      let item = ITEMS[itemId];
+
+      // Nếu xem từ slot trang bị
+      if (!item && source && source.startsWith('equipped_')) {
+        const slot = source.replace('equipped_', '');
+        if (slot === 'weapon') item = p.equippedWeapon;
+        if (slot === 'armor') item = p.equippedArmor;
+        if (slot === 'artifact') item = p.equippedArtifact;
+      }
+
+      if (!item) return;
+
+      const modal = document.getElementById('item-detail-modal');
+      if (!modal) return;
+
+      const iconEl = document.getElementById('item-detail-icon');
+      const nameEl = document.getElementById('item-detail-name');
+      const rarityEl = document.getElementById('item-detail-rarity');
+      const typeEl = document.getElementById('item-detail-type');
+      const countEl = document.getElementById('item-detail-count');
+      const descEl = document.getElementById('item-detail-desc');
+      const statsList = document.getElementById('item-detail-stats');
+      const priceEl = document.getElementById('item-detail-price');
+      const btnPrimary = document.getElementById('btn-item-action-primary');
+      const btnSell = document.getElementById('btn-item-action-sell');
+      const btnClose = document.getElementById('btn-close-item-detail');
+      const btnCloseX = document.getElementById('btn-close-item-detail-x');
+
+      // Phẩm cấp màu
+      const price = item.price || 50;
+      let rarity = 'Phàm Phẩm';
+      let rarityColor = '#94a3b8';
+      if (price > 30000) { rarity = 'Tiên Phẩm'; rarityColor = '#f87171'; }
+      else if (price > 6000) { rarity = 'Thiên Giai'; rarityColor = '#fbbf24'; }
+      else if (price > 1500) { rarity = 'Địa Giai'; rarityColor = '#c084fc'; }
+      else if (price > 250) { rarity = 'Huyền Giai'; rarityColor = '#38bdf8'; }
+      else if (price > 50) { rarity = 'Hoàng Giai'; rarityColor = '#34d399'; }
+
+      // Icon & Loại
+      let icon = '💎';
+      let typeName = 'Kỳ Trân Dị Bảo';
+      if (item.type === 'pill') { icon = '💊'; typeName = 'Đan Dược'; }
+      else if (item.type === 'weapon') { icon = '🗡️'; typeName = 'Binh Khí'; }
+      else if (item.type === 'armor') { icon = '🛡️'; typeName = 'Hộ Giáp'; }
+      else if (item.type === 'artifact') { icon = '🔮'; typeName = 'Pháp Bảo'; }
+      else if (item.type === 'herb') { icon = '🌿'; typeName = 'Linh Dược'; }
+      else if (item.type === 'ore') { icon = '⛏️'; typeName = 'Khoáng Thạch'; }
+
+      if (iconEl) iconEl.textContent = icon;
+      if (nameEl) {
+        nameEl.textContent = item.name;
+        nameEl.style.color = rarityColor;
+      }
+      if (rarityEl) {
+        rarityEl.textContent = rarity;
+        rarityEl.style.color = rarityColor;
+        rarityEl.style.borderColor = rarityColor;
+      }
+      if (typeEl) typeEl.textContent = typeName;
+
+      const ownedCount = (p.inventory && p.inventory[item.id]) || (source && source.startsWith('equipped_') ? 1 : 0);
+      if (countEl) countEl.textContent = `Sở Hữu: ${ownedCount}`;
+
+      if (descEl) descEl.textContent = item.desc || 'Bảo vật linh diệu ẩn chứa thiên cơ.';
+      if (priceEl) priceEl.textContent = `${item.price || 0} Linh Thạch`;
+
+      // Thuộc tính
+      if (statsList) {
+        statsList.innerHTML = '';
+        if (item.atk) statsList.innerHTML += `<div class="item-stat-badge text-red">⚔️ Công Kích: +${item.atk}</div>`;
+        if (item.def) statsList.innerHTML += `<div class="item-stat-badge text-cyan">🛡️ Phòng Ngự: +${item.def}</div>`;
+        if (item.hp) statsList.innerHTML += `<div class="item-stat-badge text-red">🩸 Khí Huyết: +${item.hp} HP</div>`;
+        if (item.mp) statsList.innerHTML += `<div class="item-stat-badge text-cyan">💧 Linh Lực: +${item.mp} MP</div>`;
+        if (item.crit) statsList.innerHTML += `<div class="item-stat-badge text-gold">⚡ Bạo Kích: +${Math.floor(item.crit * 100)}%</div>`;
+        if (item.healPercent) statsList.innerHTML += `<div class="item-stat-badge text-emerald">🩸 Hồi Phục: +${Math.floor(item.healPercent * 100)}% Khí Huyết</div>`;
+        if (item.mpPercent) statsList.innerHTML += `<div class="item-stat-badge text-cyan">💧 Hồi Phục: +${Math.floor(item.mpPercent * 100)}% Linh Lực</div>`;
+        if (item.expGain) statsList.innerHTML += `<div class="item-stat-badge text-purple">🌟 Đan Khí: +${item.expGain} Tu Vi</div>`;
+        if (item.breakBonus) statsList.innerHTML += `<div class="item-stat-badge text-gold">⚡ Tỷ Lệ Đột Phá: +${Math.floor(item.breakBonus * 100)}%</div>`;
+        if (item.lifespanGain) statsList.innerHTML += `<div class="item-stat-badge text-gold">⏳ Kéo Dài Thọ Nguyên: +${item.lifespanGain} Năm</div>`;
+
+        if (statsList.innerHTML === '') {
+          statsList.innerHTML = `<div class="item-stat-badge" style="color: var(--text-dim);">Vật phẩm tài nguyên quý giá dùng trong luyện đan hoặc rèn đúc pháp khí.</div>`;
+        }
+      }
+
+      // Thao tác
+      const closeModal = () => modal.classList.add('hidden');
+      if (btnClose) btnClose.onclick = closeModal;
+      if (btnCloseX) btnCloseX.onclick = closeModal;
+
+      if (source === 'inventory') {
+        if (item.type === 'pill') {
+          btnPrimary.style.display = 'inline-block';
+          btnPrimary.textContent = '💊 Nuốt Dược';
+          btnPrimary.onclick = () => {
+            this.useInventoryItem(item.id);
+            closeModal();
+          };
+        } else if (item.type === 'weapon' || item.type === 'armor' || item.type === 'artifact') {
+          btnPrimary.style.display = 'inline-block';
+          btnPrimary.textContent = '⚔️ Trang Bị';
+          btnPrimary.onclick = () => {
+            this.useInventoryItem(item.id);
+            closeModal();
+          };
+        } else {
+          btnPrimary.style.display = 'none';
+        }
+
+        btnSell.style.display = 'inline-block';
+        const sellPrice = Math.max(1, Math.floor((item.price || 10) * 0.5));
+        btnSell.textContent = `💰 Bán (+${sellPrice} Linh Thạch)`;
+        btnSell.onclick = () => {
+          this.sellItem(item.id);
+          closeModal();
+        };
+      } else if (source === 'market') {
+        btnPrimary.style.display = 'inline-block';
+        btnPrimary.textContent = `🛒 Mua (${item.price} Linh Thạch)`;
+        btnPrimary.onclick = () => {
+          this.buyItem(item.id);
+          closeModal();
+        };
+        btnSell.style.display = 'none';
+      } else if (source && source.startsWith('equipped_')) {
+        const slot = source.replace('equipped_', '');
+        btnPrimary.style.display = 'inline-block';
+        btnPrimary.textContent = '🎽 Tháo Trang Bị';
+        btnPrimary.onclick = () => {
+          this.unequipItem(slot);
+          closeModal();
+        };
+        btnSell.style.display = 'none';
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    unequipItem(slot) {
+      const p = this.player;
+      if (!p) return;
+      if (slot === 'weapon' && p.equippedWeapon) {
+        const id = p.equippedWeapon.id;
+        if (id) p.inventory[id] = (p.inventory[id] || 0) + 1;
+        this.addLog(`Đã tháo vũ khí 【${p.equippedWeapon.name}】 cất vào túi đồ!`, 'system');
+        p.equippedWeapon = null;
+      } else if (slot === 'armor' && p.equippedArmor) {
+        const id = p.equippedArmor.id;
+        if (id) p.inventory[id] = (p.inventory[id] || 0) + 1;
+        this.addLog(`Đã tháo hộ giáp 【${p.equippedArmor.name}】 cất vào túi đồ!`, 'system');
+        p.equippedArmor = null;
+      } else if (slot === 'artifact' && p.equippedArtifact) {
+        const id = p.equippedArtifact.id;
+        if (id) p.inventory[id] = (p.inventory[id] || 0) + 1;
+        this.addLog(`Đã tháo pháp bảo 【${p.equippedArtifact.name}】 cất vào túi đồ!`, 'system');
+        p.equippedArtifact = null;
+      }
+      this.recalculatePlayerStats();
+      sound.playClick();
+      this.updateUI();
+    }
+
+    showConfirm(title, message, onConfirm, onCancel) {
+      const modal = document.getElementById('custom-confirm-modal');
+      const titleEl = document.getElementById('confirm-title-text');
+      const msgEl = document.getElementById('confirm-message-text');
+      const btnYes = document.getElementById('btn-confirm-yes');
+      const btnNo = document.getElementById('btn-confirm-no');
+      if (!modal) {
+        if (confirm(message)) { if (onConfirm) onConfirm(); } else { if (onCancel) onCancel(); }
+        return;
+      }
+      if (titleEl) titleEl.textContent = title || 'THIÊN ĐẠO CẢNH BÁO';
+      if (msgEl) msgEl.textContent = message || '';
+
+      const cleanup = () => {
+        modal.classList.add('hidden');
+        btnYes.onclick = null;
+        btnNo.onclick = null;
+      };
+
+      btnYes.onclick = () => {
+        cleanup();
+        if (onConfirm) onConfirm();
+      };
+      btnNo.onclick = () => {
+        cleanup();
+        if (onCancel) onCancel();
+      };
+
+      modal.classList.remove('hidden');
+    }
+
+    showAlert(title, message, onClose) {
+      const modal = document.getElementById('custom-alert-modal');
+      const titleEl = document.getElementById('alert-modal-header');
+      const msgEl = document.getElementById('alert-message-text');
+      const btnOk = document.getElementById('btn-alert-ok');
+      if (!modal) {
+        alert(message);
+        if (onClose) onClose();
+        return;
+      }
+      if (titleEl) titleEl.textContent = title || 'THIÊN THƯ THÔNG BÁO';
+      if (msgEl) msgEl.textContent = message || '';
+
+      const cleanup = () => {
+        modal.classList.add('hidden');
+        btnOk.onclick = null;
+        if (onClose) onClose();
+      };
+
+      btnOk.onclick = cleanup;
+      modal.classList.remove('hidden');
     }
 
     exploreWorld() {
@@ -3623,15 +3944,32 @@
           this.addLog(`【${item.name}】 là đan dược dùng khi bấm nút [Đột Phá] cảnh giới! Hãy giữ lại trong túi!`, 'warning');
         }
       } else if (item.type === 'weapon') {
+        if (p.equippedWeapon && p.equippedWeapon.id) {
+          p.inventory[p.equippedWeapon.id] = (p.inventory[p.equippedWeapon.id] || 0) + 1;
+        }
+        p.inventory[itemId]--;
         p.equippedWeapon = item;
         this.recalculatePlayerStats();
         sound.playClick();
         this.addLog(`Đã trang bị vũ khí: 【${item.name}】!`, 'system');
       } else if (item.type === 'armor') {
+        if (p.equippedArmor && p.equippedArmor.id) {
+          p.inventory[p.equippedArmor.id] = (p.inventory[p.equippedArmor.id] || 0) + 1;
+        }
+        p.inventory[itemId]--;
         p.equippedArmor = item;
         this.recalculatePlayerStats();
         sound.playClick();
         this.addLog(`Đã trang bị hộ giáp: 【${item.name}】!`, 'system');
+      } else if (item.type === 'artifact') {
+        if (p.equippedArtifact && p.equippedArtifact.id) {
+          p.inventory[p.equippedArtifact.id] = (p.inventory[p.equippedArtifact.id] || 0) + 1;
+        }
+        p.inventory[itemId]--;
+        p.equippedArtifact = item;
+        this.recalculatePlayerStats();
+        sound.playClick();
+        this.addLog(`Đã trang bị pháp bảo: 【${item.name}】!`, 'system');
       }
 
       this.updateUI();
@@ -3639,8 +3977,11 @@
 
     handleDeathByAge() {
       sound.playHurt();
-      alert(`Đại Hạn Đã Tới! Đạo hữu 【${this.player.name}】 thọ nguyên cạn kiệt, tọa hóa tán tiêu vào thiên địa... Hãy luân hồi chuyển thế!`);
-      this.resetCharacter();
+      this.showAlert(
+        '💀 ĐẠI HẠN TỌA HÓA',
+        `Đại Hạn Đã Tới! Đạo hữu 【${this.player.name}】 thọ nguyên cạn kiệt, tọa hóa tán tiêu vào thiên địa... Hãy luân hồi chuyển thế!`,
+        () => this.resetCharacter()
+      );
     }
 
     resetCharacter() {
@@ -3765,8 +4106,62 @@
       if (compEl) compEl.textContent = `${p.comprehension}% (x${(p.comprehension / 100).toFixed(2)})`;
       if (stonesEl) stonesEl.textContent = p.spiritStones || 0;
 
+      // ================= CẬP NHẬT CHỈ SỐ GOM VÀO TAB NHÂN VẬT =================
+      const charHpText = document.getElementById('char-hp-text');
+      const charHpBar = document.getElementById('char-hp-bar');
+      const charMpText = document.getElementById('char-mp-text');
+      const charMpBar = document.getElementById('char-mp-bar');
+      const charExpText = document.getElementById('char-exp-text');
+      const charExpBar = document.getElementById('char-exp-bar');
+
+      const charAtk = document.getElementById('char-stat-atk');
+      const charDef = document.getElementById('char-stat-def');
+      const charSpd = document.getElementById('char-stat-spd');
+      const charCrit = document.getElementById('char-stat-crit');
+      const charRoot = document.getElementById('char-stat-root');
+      const charPhy = document.getElementById('char-stat-phy');
+      const charComp = document.getElementById('char-stat-comp');
+      const charAge = document.getElementById('char-stat-age');
+      const charStones = document.getElementById('char-stat-stones');
+
+      const charGearWpn = document.getElementById('char-gear-weapon');
+      const charGearArm = document.getElementById('char-gear-armor');
+      const charGearArt = document.getElementById('char-gear-artifact');
+      const btnBreakthroughSanctum = document.getElementById('btn-breakthrough-sanctum');
+
+      const medStatusBadge = document.getElementById('meditation-status-badge');
+      const meridianSpeedText = document.getElementById('meridian-speed-text');
+      const dongphuArrayLevel = document.getElementById('dongphu-array-level');
+      const dongphuQiDensity = document.getElementById('dongphu-qi-density');
+      const charCultRate = document.getElementById('char-cult-rate');
+
+      if (charHpText) charHpText.textContent = `${p.curHp} / ${p.maxHp}`;
+      if (charHpBar) charHpBar.style.width = `${Math.max(0, Math.min(100, (p.curHp / p.maxHp) * 100))}%`;
+
+      if (charMpText) charMpText.textContent = `${p.curMp} / ${p.maxMp}`;
+      if (charMpBar) charMpBar.style.width = `${Math.max(0, Math.min(100, (p.curMp / p.maxMp) * 100))}%`;
+
+      if (charExpText) charExpText.textContent = `${p.exp} / ${base.maxExp} (${Math.floor((p.exp / base.maxExp) * 100)}%)`;
+      if (charExpBar) charExpBar.style.width = `${Math.max(0, Math.min(100, (p.exp / base.maxExp) * 100))}%`;
+
+      if (charAtk) charAtk.textContent = p.totalAtk;
+      if (charDef) charDef.textContent = p.totalDef;
+      if (charSpd) charSpd.textContent = p.totalSpd;
+      if (charCrit) charCrit.textContent = `${Math.floor(p.totalCrit * 100)}%`;
+
+      if (charRoot) charRoot.textContent = p.spiritualRoot ? p.spiritualRoot.name : 'Chưa rõ';
+      if (charPhy) charPhy.textContent = p.physique ? p.physique.name : 'Phàm Thể';
+      if (charComp) charComp.textContent = `${p.comprehension}% (x${(p.comprehension / 100).toFixed(2)})`;
+      if (charAge) charAge.textContent = `${p.age} / ${p.maxLifespan} tuổi (Tháng ${p.month})`;
+      if (charStones) charStones.textContent = p.spiritStones || 0;
+
+      if (charGearWpn) charGearWpn.textContent = p.equippedWeapon ? `${p.equippedWeapon.name} (+${p.equippedWeapon.atk} Công)` : 'Chưa có';
+      if (charGearArm) charGearArm.textContent = p.equippedArmor ? `${p.equippedArmor.name} (+${p.equippedArmor.def} Thủ)` : 'Chưa có';
+      if (charGearArt) charGearArt.textContent = p.equippedArtifact ? `${p.equippedArtifact.name}` : 'Chưa có';
+
+      const isReadyToBreak = p.exp >= base.maxExp;
       if (btnBreakthrough) {
-        if (p.exp >= base.maxExp) {
+        if (isReadyToBreak) {
           btnBreakthrough.disabled = false;
           btnBreakthrough.classList.add('glow-breakthrough');
           btnBreakthrough.innerHTML = `⚡ <span>${base.isMajorBreakthrough ? 'ĐỘ KIẾP ĐỘT PHÁ' : 'ĐỘT PHÁ CẢNH GIỚI'}</span> ✨`;
@@ -3776,6 +4171,41 @@
           btnBreakthrough.innerHTML = '<span class="lock-icon">🔒</span> <span class="breakthrough-btn-text">Tu Vi Chưa Đủ</span>';
         }
       }
+
+      if (btnBreakthroughSanctum) {
+        if (isReadyToBreak) {
+          btnBreakthroughSanctum.disabled = false;
+          btnBreakthroughSanctum.classList.add('glow-breakthrough');
+          btnBreakthroughSanctum.innerHTML = `⚡ <span>${base.isMajorBreakthrough ? 'ĐỘ KIẾP ĐỘT PHÁ' : 'ĐỘT PHÁ BÌNH CẢNH'}</span> ✨`;
+        } else {
+          btnBreakthroughSanctum.disabled = true;
+          btnBreakthroughSanctum.classList.remove('glow-breakthrough');
+          btnBreakthroughSanctum.innerHTML = '<span class="lock-icon">🔒</span> <span class="breakthrough-btn-text">Tu Vi Chưa Đủ</span>';
+        }
+      }
+
+      if (medStatusBadge) {
+        if (isReadyToBreak) {
+          medStatusBadge.textContent = '⚡ Bình Cảnh Đỉnh Phong';
+          medStatusBadge.className = 'badge-chip stone-chip';
+        } else {
+          medStatusBadge.textContent = 'Vô Vi Thanh Tịnh';
+          medStatusBadge.className = 'badge-chip root-chip';
+        }
+      }
+
+      // Tốc độ hấp thu tu vi thực tế
+      const baseExpPerSec = Math.max(1, Math.floor(Math.sqrt(base.maxExp) * 0.12));
+      let expGainRate = baseExpPerSec * (p.comprehension / 100);
+      if (p.spiritualRoot && p.spiritualRoot.speedMod) expGainRate *= p.spiritualRoot.speedMod;
+      if (p.physique && p.physique.expBonus) expGainRate *= (1 + p.physique.expBonus);
+      if (p.cheatCore && p.cheatCore.id === 'proficiency') expGainRate *= 1.25;
+      const actualExpSec = Math.max(1, Math.floor(expGainRate));
+
+      if (meridianSpeedText) meridianSpeedText.textContent = `Tốc độ: +${actualExpSec} Tu Vi/giây`;
+      if (dongphuArrayLevel) dongphuArrayLevel.textContent = `Tụ Linh Trận Bậc ${Math.min(9, Math.floor(p.realmIndex / 3) + 1)}`;
+      if (dongphuQiDensity) dongphuQiDensity.textContent = `Nồng Đậm ${100 + p.realmIndex * 15}%`;
+      if (charCultRate) charCultRate.textContent = `${(p.comprehension / 100).toFixed(2)}x`;
 
       this.renderInventoryUI();
       this.renderSectUI();
@@ -3803,15 +4233,27 @@
         const itemCard = document.createElement('div');
         itemCard.className = 'inventory-card pixel-box';
         itemCard.innerHTML = `
-          <div class="item-name">${item.name} <span class="item-count">x${p.inventory[k]}</span></div>
+          <div class="item-name" style="cursor: pointer;" title="Bấm để xem chi tiết">${item.name} <span class="item-count">x${p.inventory[k]}</span></div>
           <div class="item-desc">${item.desc}</div>
-          <div class="item-actions">
-            <button class="pixel-btn small-btn btn-use">${item.type === 'pill' ? 'Dùng' : (item.type === 'weapon' || item.type === 'armor' ? 'Trang bị' : 'Bán')}</button>
+          <div class="item-actions" style="display: flex; gap: 6px; margin-top: 6px;">
+            <button class="pixel-btn small-btn btn-inspect" style="background: rgba(30, 41, 59, 0.7);">🔍 Chi Tiết</button>
+            <button class="pixel-btn small-btn btn-use primary-btn">${item.type === 'pill' ? 'Dùng' : (item.type === 'weapon' || item.type === 'armor' || item.type === 'artifact' ? 'Trang bị' : 'Bán')}</button>
           </div>
         `;
 
-        itemCard.querySelector('.btn-use').onclick = () => {
-          if (item.type === 'pill' || item.type === 'weapon' || item.type === 'armor') {
+        itemCard.querySelector('.btn-inspect').onclick = (e) => {
+          e.stopPropagation();
+          this.showItemDetail(k, 'inventory');
+        };
+
+        itemCard.querySelector('.item-name').onclick = (e) => {
+          e.stopPropagation();
+          this.showItemDetail(k, 'inventory');
+        };
+
+        itemCard.querySelector('.btn-use').onclick = (e) => {
+          e.stopPropagation();
+          if (item.type === 'pill' || item.type === 'weapon' || item.type === 'armor' || item.type === 'artifact') {
             this.useInventoryItem(k);
           } else {
             this.sellItem(k);
@@ -4055,12 +4497,26 @@
         const card = document.createElement('div');
         card.className = 'market-card pixel-box';
         card.innerHTML = `
-          <div class="item-name">${item.name}</div>
+          <div class="item-name" style="cursor: pointer;" title="Bấm để xem chi tiết">${item.name}</div>
           <div class="item-desc">${item.desc}</div>
           <div class="item-price" style="color: var(--text-gold);">💰 Giá: ${item.price} Linh Thạch</div>
-          <button class="pixel-btn small-btn">Mua</button>
+          <div class="item-actions" style="display: flex; gap: 6px; margin-top: 6px;">
+            <button class="pixel-btn small-btn btn-market-inspect" style="background: rgba(30, 41, 59, 0.7);">🔍 Xem</button>
+            <button class="pixel-btn small-btn primary-btn btn-market-buy">Mua</button>
+          </div>
         `;
-        card.querySelector('button').onclick = () => this.buyItem(item.id);
+        card.querySelector('.btn-market-inspect').onclick = (e) => {
+          e.stopPropagation();
+          this.showItemDetail(item.id, 'market');
+        };
+        card.querySelector('.item-name').onclick = (e) => {
+          e.stopPropagation();
+          this.showItemDetail(item.id, 'market');
+        };
+        card.querySelector('.btn-market-buy').onclick = (e) => {
+          e.stopPropagation();
+          this.buyItem(item.id);
+        };
         container.appendChild(card);
       });
     }
@@ -4301,6 +4757,40 @@
     const btnBreakthrough = document.getElementById('btn-breakthrough');
     if (btnBreakthrough) btnBreakthrough.addEventListener('click', () => systems.breakthrough());
 
+    const btnBreakthroughSanctum = document.getElementById('btn-breakthrough-sanctum');
+    if (btnBreakthroughSanctum) btnBreakthroughSanctum.addEventListener('click', () => systems.breakthrough());
+
+    // Xem chi tiết / tháo lắp trang bị khi bấm vào slot
+    ['weapon', 'armor', 'artifact'].forEach(slot => {
+      const slotEl = document.getElementById(`slot-${slot}`);
+      if (slotEl) {
+        slotEl.addEventListener('click', () => {
+          const p = systems.player;
+          if (!p) return;
+          const gear = slot === 'weapon' ? p.equippedWeapon : (slot === 'armor' ? p.equippedArmor : p.equippedArtifact);
+          if (gear) {
+            systems.showItemDetail(gear.id, 'equipped_' + slot);
+          } else {
+            systems.showAlert('Chưa Trang Bị', `Chưa có ${slot === 'weapon' ? 'vũ khí' : (slot === 'armor' ? 'hộ giáp' : 'pháp bảo')} nào được trang bị! Hãy mở Bách Bảo để trang bị.`);
+          }
+        });
+      }
+
+      const equipTextEl = document.getElementById(`equip-${slot}`);
+      if (equipTextEl) {
+        equipTextEl.style.cursor = 'pointer';
+        equipTextEl.title = 'Bấm để xem chi tiết / tháo trang bị';
+        equipTextEl.addEventListener('click', () => {
+          const p = systems.player;
+          if (!p) return;
+          const gear = slot === 'weapon' ? p.equippedWeapon : (slot === 'armor' ? p.equippedArmor : p.equippedArtifact);
+          if (gear) {
+            systems.showItemDetail(gear.id, 'equipped_' + slot);
+          }
+        });
+      }
+    });
+
     const selectRegion = document.getElementById('select-region');
     const regionInfo = document.getElementById('region-info');
     if (selectRegion && regionInfo) {
@@ -4412,7 +4902,7 @@
         btnJsonAction.textContent = 'Sao Chép JSON';
         btnJsonAction.onclick = () => {
           navigator.clipboard.writeText(jsonText.value);
-          alert('Đã sao chép chuỗi JSON vào bộ nhớ đệm!');
+          systems.showAlert('Sao Chép Thành Công', 'Đã sao chép chuỗi JSON vào bộ nhớ đệm!');
         };
         jsonModal.classList.remove('hidden');
       });
@@ -4439,9 +4929,11 @@
     const btnReset = document.getElementById('btn-reset-char');
     if (btnReset) {
       btnReset.addEventListener('click', () => {
-        if (confirm('Đạo hữu có chắc chắn muốn tán công luân hồi, xóa bỏ toàn bộ tu vi để tái sinh không?')) {
-          systems.resetCharacter();
-        }
+        systems.showConfirm(
+          '⚠️ TÁN CÔNG LUÂN HỒI',
+          'Đạo hữu có chắc chắn muốn tán công luân hồi, xóa bỏ toàn bộ tu vi để tái sinh không? Mọi căn cơ, đạo hạnh sẽ tán biến vào hư không!',
+          () => systems.resetCharacter()
+        );
       });
     }
 
@@ -4563,9 +5055,10 @@
       });
     }
 
-    // Phím tắt bàn phím: 'L' mở/đóng Thiên Cơ Lục, 'Escape' đóng
+    // Phím tắt bàn phím: 'L' mở/đóng Thiên Cơ Lục, 'Escape' đóng modals/drawer, 'Space/Enter' xác nhận
     window.addEventListener('keydown', (e) => {
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+
       if (e.key === 'l' || e.key === 'L') {
         e.preventDefault();
         if (isLogPinned) {
@@ -4575,9 +5068,64 @@
           toggleLogDrawer();
         }
       } else if (e.key === 'Escape') {
+        const itemModal = document.getElementById('item-detail-modal');
+        const btModal = document.getElementById('breakthrough-modal');
+        const confirmModal = document.getElementById('custom-confirm-modal');
+        const alertModal = document.getElementById('custom-alert-modal');
+        const jsonModal = document.getElementById('json-modal');
+        const eventModal = document.getElementById('event-modal');
+
+        if (alertModal && !alertModal.classList.contains('hidden')) {
+          e.preventDefault();
+          alertModal.classList.add('hidden');
+          return;
+        }
+        if (confirmModal && !confirmModal.classList.contains('hidden')) {
+          e.preventDefault();
+          const btnNo = document.getElementById('btn-confirm-no');
+          if (btnNo) btnNo.click();
+          else confirmModal.classList.add('hidden');
+          return;
+        }
+        if (btModal && !btModal.classList.contains('hidden')) {
+          e.preventDefault();
+          btModal.classList.add('hidden');
+          return;
+        }
+        if (itemModal && !itemModal.classList.contains('hidden')) {
+          e.preventDefault();
+          itemModal.classList.add('hidden');
+          return;
+        }
+        if (jsonModal && !jsonModal.classList.contains('hidden')) {
+          e.preventDefault();
+          jsonModal.classList.add('hidden');
+          return;
+        }
+        if (eventModal && !eventModal.classList.contains('hidden')) {
+          e.preventDefault();
+          eventModal.classList.add('hidden');
+          return;
+        }
+
         if (isLogDrawerOpen) {
           e.preventDefault();
           setLogDrawerOpen(false);
+        }
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        const btModal = document.getElementById('breakthrough-modal');
+        if (btModal && !btModal.classList.contains('hidden')) {
+          e.preventDefault();
+          btModal.classList.add('hidden');
+          return;
+        }
+        const alertModal = document.getElementById('custom-alert-modal');
+        if (alertModal && !alertModal.classList.contains('hidden')) {
+          e.preventDefault();
+          const btnOk = document.getElementById('btn-alert-ok');
+          if (btnOk) btnOk.click();
+          else alertModal.classList.add('hidden');
+          return;
         }
       }
     });
