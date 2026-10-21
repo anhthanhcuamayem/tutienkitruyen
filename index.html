@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tu Tiên Kỳ Truyện - Thiên Đạo Luân Hồi (Retro Pixel RPG)</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☯️</text></svg>">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -300,7 +301,7 @@
           <div class="input-row">
             <label for="input-dao-hieu">Đạo Hiệu:</label>
             <input id="input-dao-hieu" type="text" class="pixel-input" placeholder="Nhập đạo hiệu..." value="Hàn Lập">
-            <button id="btn-roll-destiny" class="pixel-btn primary-btn">🎲 Quay Thiên Mệnh (1 Lần Duy Nhất)</button>
+            <button id="btn-roll-destiny" class="pixel-btn primary-btn btn-pulse">🎲 Quay Thiên Mệnh (1 Lần Duy Nhất)</button>
           </div>
           <!-- Kết quả quay -->
           <div id="destiny-result-box" class="destiny-results hidden">
@@ -331,8 +332,11 @@
         </div>
 
       </div>
-      <div class="modal-footer">
-        <button id="btn-start-game" class="pixel-btn primary-btn" disabled>🚀 Bước Vào Tiên Đồ</button>
+      <div class="modal-footer" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+        <div id="creation-guide-hint" style="color: var(--text-gold); font-size: 12px; font-weight: bold; text-align: center;">
+          👉 Vui lòng bấm <strong>[Quay Thiên Mệnh (1 Lần Duy Nhất)]</strong> ở Bước 1 để bắt đầu!
+        </div>
+        <button id="btn-start-game" class="pixel-btn primary-btn" style="min-width: 200px;" disabled>🚀 Bước Vào Tiên Đồ</button>
       </div>
     </div>
   </div>

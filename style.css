@@ -594,6 +594,34 @@ body {
   background: #312e81;
 }
 
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(212, 175, 55, 0.6);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.9), 0 0 30px rgba(212, 175, 55, 0.5);
+    transform: scale(1.03);
+  }
+}
+
+.btn-pulse {
+  animation: pulseGlow 1.6s infinite ease-in-out;
+  cursor: pointer;
+}
+
+/* Modal Body Scrollbar */
+.modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+.modal-body::-webkit-scrollbar-track {
+  background: #090d16;
+}
+.modal-body::-webkit-scrollbar-thumb {
+  background: var(--border-gold);
+  border-radius: 4px;
+}
+
 .card-title {
   font-weight: bold;
   font-size: 13px;

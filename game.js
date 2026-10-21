@@ -1676,6 +1676,8 @@
 
     startCombat(player, monsterData) {
       this.inCombat = true;
+      this.isPlayerTurn = false;
+      this.isProcessingTurn = false;
       this.player = player;
       this.monster = JSON.parse(JSON.stringify(monsterData));
 
@@ -1708,6 +1710,9 @@
       this.renderer.combatState.monsterSpriteKey = this.monster.spriteKey || 'monsterWolf';
       this.renderer.setScene(SCENES.COMBAT);
 
+      const tabCombatBtn = document.querySelector('[data-tab="tab-combat"]');
+      if (tabCombatBtn) tabCombatBtn.click();
+
       this.addLog(`⚔️ Đụng độ hung hiểm! Đạo hữu tao ngộ 【${this.monster.name}】! Chuẩn bị nghênh địch!`, 'battle');
       sound.playThunder();
 
@@ -1717,7 +1722,7 @@
     runCombatLoop() {
       if (this.combatInterval) clearInterval(this.combatInterval);
       this.combatInterval = setInterval(() => {
-        if (!this.inCombat || this.isPlayerTurn) return;
+        if (!this.inCombat || this.isPlayerTurn || this.isProcessingTurn) return;
 
         const pSpeed = Math.max(10, this.player.totalSpd);
         const mSpeed = Math.max(10, this.monster.spd);
@@ -1739,6 +1744,7 @@
 
     triggerPlayerTurn() {
       if (this.playerCombat.curHp <= 0) return;
+      this.isProcessingTurn = true;
 
       if (this.playerCombat.poisonTurns > 0) {
         const pDmg = Math.floor(this.playerCombat.maxHp * 0.05);
@@ -1765,6 +1771,7 @@
     playerNormalAttack() {
       if (!this.isPlayerTurn) return;
       this.isPlayerTurn = false;
+      this.isProcessingTurn = true;
       this.updateCombatButtons(false);
 
       sound.playSwordSlash();
@@ -1796,6 +1803,7 @@
         this.handleLifeSteal(dmg);
         this.updateCombatUI();
         if (this.checkCombatOver()) return;
+        this.isProcessingTurn = false;
       }, 200);
     }
 
@@ -1822,6 +1830,7 @@
 
       this.playerCombat.skillCooldown = skill.cd || 2;
       this.isPlayerTurn = false;
+      this.isProcessingTurn = true;
       this.updateCombatButtons(false);
 
       sound.playThunder();
@@ -1868,6 +1877,7 @@
 
         this.updateCombatUI();
         if (this.checkCombatOver()) return;
+        this.isProcessingTurn = false;
       }, 250);
     }
 
@@ -1886,6 +1896,7 @@
 
       this.playerCombat.artifactCooldown = 3;
       this.isPlayerTurn = false;
+      this.isProcessingTurn = true;
       this.updateCombatButtons(false);
 
       sound.playCheatSystem();
@@ -1901,6 +1912,7 @@
         this.playerCombat.isDefending = true;
         this.updateCombatUI();
         if (this.checkCombatOver()) return;
+        this.isProcessingTurn = false;
       }, 200);
     }
 
@@ -1914,6 +1926,7 @@
 
       this.player.inventory[pillId]--;
       this.isPlayerTurn = false;
+      this.isProcessingTurn = true;
       this.updateCombatButtons(false);
 
       sound.playLoot();
@@ -1929,6 +1942,7 @@
         this.addLog(`Đạo hữu nuốt vào Tụ Linh Đan, linh đan tan ra hồi phục ${mana} Linh Lực!`, 'heal');
       }
       this.updateCombatUI();
+      this.isProcessingTurn = false;
     }
 
     playerFlee() {
@@ -1945,23 +1959,27 @@
         this.updateCombatButtons(false);
         this.addLog(`Bỏ chạy bất thành! Bị 【${this.monster.name}】 phong tỏa đường lui!`, 'danger');
         sound.playHurt();
+        this.isProcessingTurn = false;
       }
     }
 
     triggerMonsterTurn() {
-      if (this.monsterCombat.curHp <= 0) return;
+      if (this.monsterCombat.curHp <= 0 || !this.inCombat) return;
 
       if (this.monsterCombat.stunnedTurns > 0) {
         this.monsterCombat.stunnedTurns--;
         this.addLog(`【${this.monster.name}】 bị choáng váng không thể hành động!`, 'skill');
+        this.isProcessingTurn = false;
         return;
       }
       if (this.monsterCombat.frozenTurns > 0) {
         this.monsterCombat.frozenTurns--;
         this.addLog(`【${this.monster.name}】 bị hàn băng đóng băng không thể nhúc nhích!`, 'skill');
+        this.isProcessingTurn = false;
         return;
       }
 
+      this.isProcessingTurn = true;
       this.renderer.combatState.monsterOffsetX = -35;
       this.renderer.addSlashEffect(190, 200, 'sword');
       sound.playHurt();
@@ -2016,6 +2034,7 @@
 
         this.updateCombatUI();
         if (this.checkCombatOver()) return;
+        this.isProcessingTurn = false;
       }, 200);
     }
 
@@ -2064,7 +2083,9 @@
           if (this.player.cheatPerk && this.player.cheatPerk.id === 'double_loot') chance = Math.min(1.0, chance * 1.5);
           if (Math.random() < chance) {
             this.player.inventory[drop.item] = (this.player.inventory[drop.item] || 0) + 1;
-            this.addLog(`Nhặt được chiến lợi phẩm: 【${drop.item}】 x1!`, 'loot');
+            const dropItem = ITEMS[drop.item];
+            const dropName = dropItem ? dropItem.name : drop.item;
+            this.addLog(`Nhặt được chiến lợi phẩm: 【${dropName}】 x1!`, 'loot');
           }
         });
       }
@@ -2096,6 +2117,8 @@
 
     endCombat(won, fled) {
       this.inCombat = false;
+      this.isPlayerTurn = false;
+      this.isProcessingTurn = false;
       if (this.combatInterval) clearInterval(this.combatInterval);
 
       this.player.curHp = this.playerCombat.curHp;
@@ -3445,7 +3468,14 @@
     btnRoll.onclick = () => {
       sound.playCheatSystem();
       btnRoll.disabled = true;
+      btnRoll.classList.remove('btn-pulse');
       btnRoll.textContent = '🔒 Đã Định Thiên Mệnh';
+
+      const hint = document.getElementById('creation-guide-hint');
+      if (hint) {
+        hint.innerHTML = '✨ Thiên mệnh đã an bài! Chọn Con Đường & Kim Thủ Chỉ rồi nhấn <strong>[Bước Vào Tiên Đồ]</strong>!';
+        hint.style.color = '#34d399';
+      }
 
       const rootRoll = Math.random();
       let root = SPIRITUAL_ROOTS[0];
@@ -3540,6 +3570,7 @@
     function checkReady() {
       if (rolledDestiny && selectedPathId && selectedCoreId && selectedPerkId) {
         btnStart.disabled = false;
+        btnStart.classList.add('btn-pulse');
       }
     }
 
