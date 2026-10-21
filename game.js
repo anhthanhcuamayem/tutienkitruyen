@@ -4172,6 +4172,23 @@
       if (charGearArm) charGearArm.textContent = p.equippedArmor ? `${p.equippedArmor.name} (+${p.equippedArmor.def} Thủ)` : 'Chưa có';
       if (charGearArt) charGearArt.textContent = p.equippedArtifact ? `${p.equippedArtifact.name}` : 'Chưa có';
 
+      // ================= CẬP NHẬT HUD MOBILE =================
+      const mobName = document.getElementById('mobile-player-name');
+      const mobRealm = document.getElementById('mobile-player-realm');
+      const mobHpBar = document.getElementById('mobile-hp-bar');
+      const mobHpText = document.getElementById('mobile-hp-text');
+      const mobMpBar = document.getElementById('mobile-mp-bar');
+      const mobMpText = document.getElementById('mobile-mp-text');
+      const mobStones = document.getElementById('mobile-player-stones');
+
+      if (mobName) mobName.textContent = p.name;
+      if (mobRealm) mobRealm.textContent = base.name;
+      if (mobHpBar) mobHpBar.style.width = `${Math.max(0, Math.min(100, (p.curHp / p.maxHp) * 100))}%`;
+      if (mobHpText) mobHpText.textContent = `${p.curHp}/${p.maxHp}`;
+      if (mobMpBar) mobMpBar.style.width = `${Math.max(0, Math.min(100, (p.curMp / p.maxMp) * 100))}%`;
+      if (mobMpText) mobMpText.textContent = `${p.curMp}/${p.maxMp}`;
+      if (mobStones) mobStones.textContent = p.spiritStones || 0;
+
       const isReadyToBreak = p.exp >= base.maxExp;
       const isBreakthroughInProgress = this.breakthroughInProgress;
       if (btnBreakthrough) {
@@ -4717,6 +4734,15 @@
       drawPixelSprite(actx, SPRITES.playerMeditate, 0, 0, 3);
     }
 
+    const mobAvatarCanvas = document.getElementById('mobile-avatar-canvas');
+    if (mobAvatarCanvas) {
+      const mctx = mobAvatarCanvas.getContext('2d');
+      mctx.imageSmoothingEnabled = false;
+      mctx.fillStyle = '#0f172a';
+      mctx.fillRect(0, 0, 32, 32);
+      drawPixelSprite(mctx, SPRITES.playerMeditate, 0, 0, 2);
+    }
+
     const hasSave = systems.loadFromLocalStorage();
     if (hasSave) {
       document.getElementById('creation-modal').classList.add('hidden');
@@ -4959,6 +4985,81 @@
       });
     }
 
+    // ================= XỬ LÝ GIAO DIỆN MOBILE =================
+    const mobProfileBtn = document.getElementById('btn-mobile-goto-profile');
+    if (mobProfileBtn) {
+      mobProfileBtn.addEventListener('click', () => {
+        sound.playClick();
+        switchTab('tab-nhanvat');
+      });
+    }
+
+    const btnMobileMenu = document.getElementById('btn-mobile-menu');
+    const mobileMenuModal = document.getElementById('mobile-menu-modal');
+    const btnCloseMobileMenu = document.getElementById('btn-close-mobile-menu');
+
+    if (btnMobileMenu && mobileMenuModal) {
+      btnMobileMenu.addEventListener('click', () => {
+        sound.playClick();
+        mobileMenuModal.classList.remove('hidden');
+      });
+    }
+
+    if (btnCloseMobileMenu && mobileMenuModal) {
+      btnCloseMobileMenu.addEventListener('click', () => {
+        mobileMenuModal.classList.add('hidden');
+      });
+    }
+
+    const btnMobileSave = document.getElementById('btn-mobile-save');
+    if (btnMobileSave) {
+      btnMobileSave.addEventListener('click', () => {
+        systems.saveToLocalStorage();
+        sound.playLoot();
+        systems.showAlert('Lưu Thành Công', 'Đã lưu dữ liệu tu tiên vào thần thức (localStorage)!');
+        mobileMenuModal.classList.add('hidden');
+      });
+    }
+
+    const btnMobileExport = document.getElementById('btn-mobile-export-json');
+    if (btnMobileExport) {
+      btnMobileExport.addEventListener('click', () => {
+        mobileMenuModal.classList.add('hidden');
+        const btnExp = document.getElementById('btn-export-json');
+        if (btnExp) btnExp.click();
+      });
+    }
+
+    const btnMobileImport = document.getElementById('btn-mobile-import-json');
+    if (btnMobileImport) {
+      btnMobileImport.addEventListener('click', () => {
+        mobileMenuModal.classList.add('hidden');
+        const btnImp = document.getElementById('btn-import-json');
+        if (btnImp) btnImp.click();
+      });
+    }
+
+    const btnMobileSound = document.getElementById('btn-mobile-sound-toggle');
+    if (btnMobileSound) {
+      btnMobileSound.addEventListener('click', () => {
+        const isMuted = sound.toggleMute();
+        btnMobileSound.textContent = isMuted ? '🔇 Âm Thanh: TẮT' : '🔊 Âm Thanh: BẬT';
+        const deskSoundBtn = document.getElementById('btn-sound-toggle');
+        if (deskSoundBtn) {
+          deskSoundBtn.innerHTML = isMuted ? '<span class="desktop-text">🔇 Âm Thanh: TẮT</span><span class="mobile-icon">🔇</span>' : '<span class="desktop-text">🔊 Âm Thanh: BẬT</span><span class="mobile-icon">🔊</span>';
+        }
+      });
+    }
+
+    const btnMobileReset = document.getElementById('btn-mobile-reset-char');
+    if (btnMobileReset) {
+      btnMobileReset.addEventListener('click', () => {
+        mobileMenuModal.classList.add('hidden');
+        const btnResetDesk = document.getElementById('btn-reset-char');
+        if (btnResetDesk) btnResetDesk.click();
+      });
+    }
+
     const btnClearLog = document.getElementById('btn-clear-log');
     if (btnClearLog) {
       btnClearLog.addEventListener('click', () => {
@@ -5090,6 +5191,12 @@
           toggleLogDrawer();
         }
       } else if (e.key === 'Escape') {
+        const mobMenuModal = document.getElementById('mobile-menu-modal');
+        if (mobMenuModal && !mobMenuModal.classList.contains('hidden')) {
+          e.preventDefault();
+          mobMenuModal.classList.add('hidden');
+          return;
+        }
         const itemModal = document.getElementById('item-detail-modal');
         const btModal = document.getElementById('breakthrough-modal');
         const confirmModal = document.getElementById('custom-confirm-modal');

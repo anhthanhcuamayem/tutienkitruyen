@@ -15,15 +15,25 @@
   <!-- HEADER BAR -->
   <header class="game-header">
     <div class="game-title">
-      <span>☯️ TU TIÊN KỲ TRUYỆN: THIÊN ĐẠO LUÂN HỒI</span>
+      <span class="desktop-title">☯️ TU TIÊN KỲ TRUYỆN: THIÊN ĐẠO LUÂN HỒI</span>
+      <span class="mobile-title">☯️ TU TIÊN KỲ TRUYỆN</span>
     </div>
     <div class="header-actions">
-      <button id="btn-sound-toggle" class="pixel-btn small-btn" title="Bật/Tắt Âm Thanh">🔊 Âm Thanh: BẬT</button>
-      <button id="btn-save" class="pixel-btn small-btn">💾 Lưu Game</button>
-      <button id="btn-export-json" class="pixel-btn small-btn">📤 Xuất JSON</button>
-      <button id="btn-import-json" class="pixel-btn small-btn">📥 Nhập JSON</button>
-      <button id="btn-reset-char" class="pixel-btn small-btn primary-btn" title="Xóa nhân vật làm lại cuộc đời">🔄 Luân Hồi</button>
-      <button id="btn-toggle-log" class="pixel-btn small-btn btn-3d" title="Mở/Đóng Nhật Ký Thiên Cơ Lục (Phím L)">📜 Thiên Cơ Lục <span id="log-unread-badge" class="badge-unread hidden">0</span></button>
+      <button id="btn-sound-toggle" class="pixel-btn small-btn" title="Bật/Tắt Âm Thanh">
+        <span class="desktop-text">🔊 Âm Thanh: BẬT</span>
+        <span class="mobile-icon">🔊</span>
+      </button>
+      <button id="btn-save" class="pixel-btn small-btn" title="Lưu Dữ Liệu">
+        <span class="desktop-text">💾 Lưu Game</span>
+        <span class="mobile-icon">💾</span>
+      </button>
+      <button id="btn-export-json" class="pixel-btn small-btn desktop-only">📤 Xuất JSON</button>
+      <button id="btn-import-json" class="pixel-btn small-btn desktop-only">📥 Nhập JSON</button>
+      <button id="btn-reset-char" class="pixel-btn small-btn primary-btn desktop-only" title="Xóa nhân vật làm lại cuộc đời">🔄 Luân Hồi</button>
+      <button id="btn-mobile-menu" class="pixel-btn small-btn mobile-only" title="Quản Lý Dữ Liệu">⚙️</button>
+      <button id="btn-toggle-log" class="pixel-btn small-btn btn-3d" title="Mở/Đóng Nhật Ký Thiên Cơ Lục (Phím L)">
+        📜 <span class="desktop-text">Thiên Cơ Lục</span> <span id="log-unread-badge" class="badge-unread hidden">0</span>
+      </button>
     </div>
   </header>
 
@@ -167,12 +177,54 @@
       <div class="panel-ornament-bl"></div>
       <div class="panel-ornament-br"></div>
 
-      <!-- Thanh Tabs Điều Khiển Đặt Trên Cùng (4 Trụ Cột Tiên Đạo Tinh Gọn) -->
+      <!-- THANH HUD ĐẠO HỮU MOBILE (Hiển thị cố định trên điện thoại) -->
+      <div id="mobile-top-hud" class="mobile-top-hud">
+        <div class="mobile-hud-profile-pill" id="btn-mobile-goto-profile" title="Chạm để xem hồ sơ nhân vật">
+          <canvas id="mobile-avatar-canvas" width="32" height="32" class="mobile-hud-avatar"></canvas>
+          <div class="mobile-hud-identity">
+            <span id="mobile-player-name" class="mobile-hud-name">Hàn Lập</span>
+            <span id="mobile-player-realm" class="mobile-hud-realm">Luyện Khí Tầng 1</span>
+          </div>
+        </div>
+        <div class="mobile-hud-meters">
+          <div class="mobile-meter-item hp-meter" title="Khí Huyết">
+            <span class="meter-label">HP</span>
+            <div class="mobile-meter-bar hp-bg">
+              <div id="mobile-hp-bar" class="mobile-meter-fill hp-fill" style="width: 100%;"></div>
+            </div>
+            <span id="mobile-hp-text" class="meter-num">150/150</span>
+          </div>
+          <div class="mobile-meter-item mp-meter" title="Linh Lực">
+            <span class="meter-label">MP</span>
+            <div class="mobile-meter-bar mp-bg">
+              <div id="mobile-mp-bar" class="mobile-meter-fill mp-fill" style="width: 100%;"></div>
+            </div>
+            <span id="mobile-mp-text" class="meter-num">60/60</span>
+          </div>
+        </div>
+        <div class="mobile-hud-stones" title="Linh Thạch">
+          <span>🪙</span><span id="mobile-player-stones">100</span>
+        </div>
+      </div>
+
+      <!-- Thanh Tabs Điều Khiển Đặt Trên Cùng (Trên Mobile là Bottom Navigation Bar) -->
       <nav class="tab-nav-bar">
-        <button class="tab-btn active" data-tab="tab-nhanvat">👤 Nhân Vật</button>
-        <button class="tab-btn" data-tab="tab-tiengioi">🗺️ Tiên Giới</button>
-        <button class="tab-btn" data-tab="tab-bachbao">🎒 Bách Bảo</button>
-        <button class="tab-btn" data-tab="tab-cheat">🌀 Kim Thủ Chỉ</button>
+        <button class="tab-btn active" data-tab="tab-nhanvat">
+          <span class="tab-icon">👤</span>
+          <span class="tab-label">Nhân Vật</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-tiengioi">
+          <span class="tab-icon">🗺️</span>
+          <span class="tab-label">Tiên Giới</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-bachbao">
+          <span class="tab-icon">🎒</span>
+          <span class="tab-label">Bách Bảo</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-cheat">
+          <span class="tab-icon">🌀</span>
+          <span class="tab-label">Kim Thủ Chỉ</span>
+        </button>
       </nav>
 
       <!-- Khung Canvas: Chỉ hiển thị ở Tab Nhân Vật (ngồi thiền) hoặc khi Chiến Đấu -->
@@ -707,6 +759,23 @@
       <div class="modal-body">
         <div id="event-desc" style="line-height: 1.6; color: var(--text-main);"></div>
         <div id="event-choices" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: MENU CÀI ĐẶT & QUẢN LÝ CHO MOBILE ================= -->
+  <div id="mobile-menu-modal" class="modal-overlay hidden">
+    <div class="modal-window" style="max-width: 380px;">
+      <div class="modal-header">⚙️ Cài Đặt & Thần Thức</div>
+      <div class="modal-body" style="gap: 10px;">
+        <button id="btn-mobile-save" class="pixel-btn primary-btn btn-3d" style="min-height: 44px; width: 100%;">💾 Lưu Game (Thần Thức)</button>
+        <button id="btn-mobile-export-json" class="pixel-btn btn-3d" style="min-height: 44px; width: 100%;">📤 Xuất Dữ Liệu (JSON)</button>
+        <button id="btn-mobile-import-json" class="pixel-btn btn-3d" style="min-height: 44px; width: 100%;">📥 Nhập Dữ Liệu (JSON)</button>
+        <button id="btn-mobile-sound-toggle" class="pixel-btn btn-3d" style="min-height: 44px; width: 100%;">🔊 Âm Thanh: BẬT</button>
+        <button id="btn-mobile-reset-char" class="pixel-btn btn-danger btn-3d" style="min-height: 44px; width: 100%;">🔄 Tán Công Luân Hồi (Xóa)</button>
+      </div>
+      <div class="modal-footer" style="justify-content: center;">
+        <button id="btn-close-mobile-menu" class="pixel-btn btn-3d" style="min-width: 140px;">Đóng</button>
       </div>
     </div>
   </div>

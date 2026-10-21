@@ -2264,3 +2264,455 @@ body.combat-active-mode #tab-combat {
   color: var(--text-main);
   padding: 6px 12px;
 }
+
+/* ================= 10. DEDICATED MOBILE UI & RESPONSIVE STYLES ================= */
+.desktop-only { display: inline-flex; }
+.mobile-only { display: none !important; }
+.desktop-text { display: inline; }
+.mobile-icon { display: none !important; }
+.desktop-title { display: inline; }
+.mobile-title { display: none !important; }
+
+/* Mobile Top Immortal HUD */
+.mobile-top-hud {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(180deg, #111728 0%, #090e1a 100%);
+  border: 1px solid var(--border-gold);
+  border-radius: 4px;
+  padding: 5px 8px;
+  margin-bottom: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mobile-top-hud:active {
+  transform: scale(0.99);
+  border-color: var(--text-gold);
+}
+
+.mobile-hud-profile-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  background: rgba(30, 41, 59, 0.4);
+}
+
+.mobile-hud-avatar {
+  border-radius: 3px;
+  border: 1px solid var(--border-gold);
+  background: #070a12;
+  width: 32px;
+  height: 32px;
+}
+
+.mobile-hud-identity {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.mobile-hud-name {
+  font-family: var(--font-title);
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--text-gold);
+}
+
+.mobile-hud-realm {
+  font-size: 10px;
+  color: var(--text-cyan);
+}
+
+.mobile-hud-meters {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  max-width: 140px;
+  margin: 0 6px;
+}
+
+.mobile-meter-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9px;
+  font-weight: bold;
+}
+
+.mobile-meter-item .meter-label {
+  width: 16px;
+  color: var(--text-dim);
+}
+
+.mobile-meter-bar {
+  flex: 1;
+  height: 6px;
+  border-radius: 2px;
+  background: #090d16;
+  border: 1px solid var(--border-dark);
+  overflow: hidden;
+  position: relative;
+}
+
+.mobile-meter-fill {
+  height: 100%;
+  transition: width 0.25s ease;
+}
+
+.mobile-meter-item .meter-num {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: #fff;
+  width: 48px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.mobile-hud-stones {
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--text-gold);
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid var(--border-gold);
+  padding: 3px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+/* @media: DÀNH RIÊNG CHO MOBILE & MÀN HÌNH NHỎ (<= 768px) */
+@media (max-width: 768px) {
+  .desktop-only { display: none !important; }
+  .mobile-only { display: inline-flex !important; }
+  .desktop-text { display: none !important; }
+  .mobile-icon { display: inline !important; }
+  .desktop-title { display: none !important; }
+  .mobile-title { display: inline !important; font-size: 13px; font-weight: bold; }
+  .mobile-top-hud { display: flex !important; }
+
+  html, body {
+    overflow: hidden;
+    height: 100%;
+    height: 100dvh;
+    touch-action: manipulation;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .game-header {
+    height: 42px;
+    padding: 4px 8px;
+    flex-shrink: 0;
+  }
+
+  .game-title {
+    font-size: 13px;
+  }
+
+  .header-actions {
+    gap: 4px;
+  }
+
+  .header-actions .pixel-btn {
+    padding: 4px 6px;
+    font-size: 11px;
+    min-height: 32px;
+  }
+
+  .game-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100dvh - 42px);
+    padding: 4px;
+    gap: 4px;
+    overflow: hidden;
+  }
+
+  /* Cột trái ẩn trên mobile để tối đa hóa không gian */
+  .left-panel {
+    display: none !important;
+  }
+
+  /* Cột giữa chiếm 100% diện tích màn hình */
+  .center-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 6px 6px 58px 6px;
+    border-width: 1px;
+    overflow: hidden;
+  }
+
+  /* Thanh Tabs chuyển thành Fixed Bottom Navigation Bar ở đáy */
+  .tab-nav-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 54px;
+    background: #090e1a;
+    border-top: 2px solid var(--border-gold);
+    box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.95);
+    z-index: 900;
+    display: flex;
+    justify-content: space-around;
+    padding: 3px 4px calc(3px + env(safe-area-inset-bottom, 0px));
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .tab-nav-bar .tab-btn {
+    flex: 1;
+    height: 100%;
+    margin: 0 2px;
+    padding: 2px 2px;
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    background: transparent;
+    box-shadow: none;
+    transition: all 0.15s ease;
+  }
+
+  .tab-nav-bar .tab-btn .tab-icon {
+    font-size: 17px;
+    line-height: 1;
+  }
+
+  .tab-nav-bar .tab-btn .tab-label {
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .tab-nav-bar .tab-btn.active {
+    background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);
+    border-color: var(--border-gold);
+    color: var(--text-gold);
+    box-shadow: 0 0 10px rgba(200, 155, 60, 0.4);
+    transform: translateY(-2px);
+  }
+
+  /* Khung Canvas trên mobile: tỷ lệ 16/9 chuẩn responsive */
+  .canvas-viewport {
+    height: auto !important;
+    aspect-ratio: 16 / 9;
+    max-height: 190px !important;
+    margin-bottom: 4px;
+  }
+
+  #main-canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .canvas-status-hud {
+    font-size: 10px;
+    padding: 3px 8px;
+    bottom: 4px;
+    left: 4px;
+  }
+
+  /* Nội dung Tab cuộn mượt */
+  .tab-content-area {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 4px 2px 14px 2px;
+  }
+
+  .sub-tab-bar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .sub-tab-btn {
+    flex: 1;
+    min-height: 38px;
+    font-size: 11px;
+    padding: 6px 4px;
+    text-align: center;
+  }
+
+  /* Động phủ bế quan */
+  .meditation-sanctum-card {
+    padding: 10px;
+    margin-bottom: 8px;
+  }
+
+  .sanctum-title {
+    font-size: 13px;
+  }
+
+  .sanctum-subtitle {
+    font-size: 10px;
+  }
+
+  .sanctum-stats-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .sanctum-actions-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .sanctum-actions-row button {
+    width: 100%;
+    min-height: 42px;
+    font-size: 12px;
+  }
+
+  /* Chỉ số nhân vật */
+  .char-sheet-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .char-sheet-card {
+    padding: 10px;
+  }
+
+  .stats-grid-2x2 {
+    gap: 6px;
+  }
+
+  .stat-card {
+    padding: 6px 8px;
+  }
+
+  /* Chiến đấu trên Mobile */
+  .combat-top-control-bar {
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px 8px;
+  }
+
+  .combat-enemy-title {
+    font-size: 12px;
+  }
+
+  .combat-hud {
+    gap: 6px;
+  }
+
+  .combat-unit {
+    padding: 6px 8px;
+  }
+
+  .combat-center-column {
+    width: 36px;
+  }
+
+  .combat-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .combat-actions-grid button {
+    min-height: 44px;
+    font-size: 11px;
+    padding: 6px 2px;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .combat-actions-grid #btn-combat-pill {
+    grid-column: span 1;
+  }
+
+  .combat-actions-grid #btn-combat-flee {
+    grid-column: span 2;
+  }
+
+  .combat-key-badge {
+    display: none;
+  }
+
+  /* Drawer Thiên Cơ Lục */
+  .right-panel {
+    width: 92vw;
+    max-width: 380px;
+  }
+
+  .floating-log-tab {
+    top: auto;
+    bottom: 64px;
+    right: 8px;
+    padding: 8px 12px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Modals trên mobile */
+  .modal-window {
+    width: 95vw;
+    max-width: 420px;
+    max-height: 88vh;
+    border-width: 2px;
+  }
+
+  .modal-header {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  .modal-body {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .modal-footer {
+    padding: 10px 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .modal-footer button {
+    min-height: 42px;
+    flex: 1;
+  }
+
+  .cards-select-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .selectable-card {
+    padding: 6px;
+  }
+
+  .card-title {
+    font-size: 12px;
+  }
+
+  .card-desc {
+    font-size: 10px;
+  }
+
+  .item-detail-icon-box {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+  }
+}
