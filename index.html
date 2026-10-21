@@ -23,6 +23,7 @@
       <button id="btn-export-json" class="pixel-btn small-btn">📤 Xuất JSON</button>
       <button id="btn-import-json" class="pixel-btn small-btn">📥 Nhập JSON</button>
       <button id="btn-reset-char" class="pixel-btn small-btn primary-btn" title="Xóa nhân vật làm lại cuộc đời">🔄 Luân Hồi</button>
+      <button id="btn-toggle-log" class="pixel-btn small-btn btn-3d" title="Mở/Đóng Nhật Ký Thiên Cơ Lục (Phím L)">📜 Thiên Cơ Lục <span id="log-unread-badge" class="badge-unread hidden">0</span></button>
     </div>
   </header>
 
@@ -413,8 +414,11 @@
       </div>
     </main>
 
-    <!-- CỘT PHẢI: THIÊN CƠ LỤC (NHẬT KÝ TU TIÊN) -->
-    <aside class="right-panel xianxia-panel">
+    <!-- LỚP PHỦ MỜ KHI MỞ THIÊN CƠ LỤC -->
+    <div id="log-drawer-backdrop" class="log-drawer-backdrop"></div>
+
+    <!-- CỘT PHẢI: THIÊN CƠ LỤC (DRAWER / COLLAPSIBLE PANEL) -->
+    <aside id="right-log-panel" class="right-panel xianxia-panel">
       <div class="panel-ornament-tl"></div>
       <div class="panel-ornament-tr"></div>
       <div class="panel-ornament-bl"></div>
@@ -424,10 +428,20 @@
           <span class="log-icon">📜</span>
           <span>THIÊN CƠ LỤC</span>
         </div>
-        <button id="btn-clear-log" class="pixel-btn small-btn">Xóa Log</button>
+        <div style="display: flex; gap: 6px; align-items: center;">
+          <button id="btn-pin-log" class="pixel-btn small-btn" title="Ghim/Tháo ghim bảng">📌 Ghim</button>
+          <button id="btn-clear-log" class="pixel-btn small-btn" title="Xóa toàn bộ nhật ký">🗑️ Xóa</button>
+          <button id="btn-close-log" class="pixel-btn small-btn primary-btn" title="Đóng bảng nhật ký (Phím ESC hoặc L)">✕</button>
+        </div>
       </div>
       <div id="log-messages" class="log-messages"></div>
     </aside>
+
+    <!-- Nút Tab Nổi Bên Cạnh Phải Màn Hình -->
+    <button id="btn-floating-log" class="floating-log-tab" title="Mở Thiên Cơ Lục (Phím L)">
+      <span>📜 Thiên Cơ Lục</span>
+      <span id="floating-unread-badge" class="badge-unread hidden">0</span>
+    </button>
 
   </div>
 

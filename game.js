@@ -3906,6 +3906,61 @@
   // ==========================================================================
   let activeGameSystems = null;
   let activeCombatEngine = null;
+  let isLogDrawerOpen = false;
+  let logUnreadCount = 0;
+  let isLogPinned = false;
+
+  function updateLogUnreadBadges() {
+    const badgeHeader = document.getElementById('log-unread-badge');
+    const badgeFloat = document.getElementById('floating-unread-badge');
+    if (logUnreadCount > 0) {
+      const displayTxt = logUnreadCount > 99 ? '99+' : `${logUnreadCount}`;
+      if (badgeHeader) {
+        badgeHeader.textContent = displayTxt;
+        badgeHeader.classList.remove('hidden');
+      }
+      if (badgeFloat) {
+        badgeFloat.textContent = displayTxt;
+        badgeFloat.classList.remove('hidden');
+      }
+    } else {
+      if (badgeHeader) badgeHeader.classList.add('hidden');
+      if (badgeFloat) badgeFloat.classList.add('hidden');
+    }
+  }
+
+  function setLogDrawerOpen(isOpen) {
+    const rightPanel = document.getElementById('right-log-panel');
+    const backdrop = document.getElementById('log-drawer-backdrop');
+    if (!rightPanel) return;
+
+    if (isLogPinned) {
+      isLogDrawerOpen = false;
+      rightPanel.classList.remove('open');
+      if (backdrop) backdrop.classList.remove('active');
+      logUnreadCount = 0;
+      updateLogUnreadBadges();
+      return;
+    }
+
+    isLogDrawerOpen = !!isOpen;
+    if (isLogDrawerOpen) {
+      rightPanel.classList.add('open');
+      if (backdrop) backdrop.classList.add('active');
+      logUnreadCount = 0;
+      updateLogUnreadBadges();
+      sound.playClick();
+      const container = document.getElementById('log-messages');
+      if (container) container.scrollTop = container.scrollHeight;
+    } else {
+      rightPanel.classList.remove('open');
+      if (backdrop) backdrop.classList.remove('active');
+    }
+  }
+
+  function toggleLogDrawer() {
+    setLogDrawerOpen(!isLogDrawerOpen);
+  }
 
   function addLog(text, type = 'normal') {
     const container = document.getElementById('log-messages');
@@ -3921,6 +3976,12 @@
     entry.innerHTML = `${timeBadge}<span>${text}</span>`;
     container.appendChild(entry);
     container.scrollTop = container.scrollHeight;
+
+    // Track unread if not open and not pinned
+    if (!isLogPinned && !isLogDrawerOpen) {
+      logUnreadCount++;
+      updateLogUnreadBadges();
+    }
   }
 
   function switchTab(tabId) {
@@ -4176,6 +4237,98 @@
         sectListContainer.appendChild(card);
       });
     }
+
+    // ================= XỬ LÝ THU GỌN / MỞ THIÊN CƠ LỤC =================
+    const gameContainer = document.querySelector('.game-container');
+    const btnPinLog = document.getElementById('btn-pin-log');
+    const btnToggleLog = document.getElementById('btn-toggle-log');
+    const btnFloatingLog = document.getElementById('btn-floating-log');
+    const btnCloseLog = document.getElementById('btn-close-log');
+    const logBackdrop = document.getElementById('log-drawer-backdrop');
+
+    // Khởi tạo trạng thái Ghim từ LocalStorage
+    try {
+      isLogPinned = localStorage.getItem('tutien_log_pinned') === 'true';
+    } catch (e) {
+      isLogPinned = false;
+    }
+    if (gameContainer && isLogPinned) {
+      gameContainer.classList.add('log-pinned');
+      if (btnPinLog) btnPinLog.textContent = '🔓 Tháo Ghim';
+    }
+
+    if (btnToggleLog) {
+      btnToggleLog.addEventListener('click', () => {
+        if (isLogPinned) {
+          const container = document.getElementById('log-messages');
+          if (container) container.scrollTop = container.scrollHeight;
+        } else {
+          toggleLogDrawer();
+        }
+      });
+    }
+
+    if (btnFloatingLog) {
+      btnFloatingLog.addEventListener('click', () => {
+        toggleLogDrawer();
+      });
+    }
+
+    if (btnCloseLog) {
+      btnCloseLog.addEventListener('click', () => {
+        if (isLogPinned) {
+          // Khi đang ghim mà bấm nút X: Tháo ghim và thu gọn
+          isLogPinned = false;
+          try { localStorage.setItem('tutien_log_pinned', 'false'); } catch (e) {}
+          if (gameContainer) gameContainer.classList.remove('log-pinned');
+          if (btnPinLog) btnPinLog.textContent = '📌 Ghim';
+          setLogDrawerOpen(false);
+        } else {
+          setLogDrawerOpen(false);
+        }
+      });
+    }
+
+    if (logBackdrop) {
+      logBackdrop.addEventListener('click', () => {
+        setLogDrawerOpen(false);
+      });
+    }
+
+    if (btnPinLog) {
+      btnPinLog.addEventListener('click', () => {
+        isLogPinned = !isLogPinned;
+        try { localStorage.setItem('tutien_log_pinned', isLogPinned ? 'true' : 'false'); } catch (e) {}
+        if (gameContainer) {
+          gameContainer.classList.toggle('log-pinned', isLogPinned);
+        }
+        btnPinLog.textContent = isLogPinned ? '🔓 Tháo Ghim' : '📌 Ghim';
+        setLogDrawerOpen(false);
+        if (isLogPinned) {
+          logUnreadCount = 0;
+          updateLogUnreadBadges();
+        }
+      });
+    }
+
+    // Phím tắt bàn phím: 'L' mở/đóng Thiên Cơ Lục, 'Escape' đóng
+    window.addEventListener('keydown', (e) => {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+      if (e.key === 'l' || e.key === 'L') {
+        e.preventDefault();
+        if (isLogPinned) {
+          const container = document.getElementById('log-messages');
+          if (container) container.scrollTop = container.scrollHeight;
+        } else {
+          toggleLogDrawer();
+        }
+      } else if (e.key === 'Escape') {
+        if (isLogDrawerOpen) {
+          e.preventDefault();
+          setLogDrawerOpen(false);
+        }
+      }
+    });
   }
 
   // ==========================================================================
