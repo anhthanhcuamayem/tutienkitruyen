@@ -118,9 +118,12 @@ body {
 .game-container {
   flex: 1;
   display: grid;
-  grid-template-columns: 290px 1fr;
-  gap: 12px;
-  padding: 10px;
+  grid-template-columns: 310px minmax(0, 840px);
+  justify-content: center;
+  gap: 14px;
+  padding: 10px 16px;
+  max-width: 1200px;
+  margin: 0 auto;
   overflow: hidden;
   height: calc(100vh - 48px);
   position: relative;
@@ -129,7 +132,8 @@ body {
 
 /* Khi người chơi bấm Ghim Thiên Cơ Lục (Pinned Mode) */
 .game-container.log-pinned {
-  grid-template-columns: 290px 1fr 330px;
+  grid-template-columns: 300px minmax(0, 720px) 340px;
+  max-width: 1400px;
 }
 
 /* ================= PHONG CÁCH KHUNG PANEL "HUYỀN KIM CỔ NGỌC" ================= */
@@ -548,15 +552,15 @@ body {
   display: none;
   position: relative;
   width: 100%;
+  max-width: 540px;
   aspect-ratio: 16 / 9;
-  max-height: 250px;
-  height: 250px;
+  height: auto;
+  margin: 0 auto 8px auto;
   background: #07090e;
   border: 2px solid var(--border-bronze);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8), inset 0 0 0 1px var(--border-gold);
   border-radius: 2px;
   overflow: hidden;
-  margin-bottom: 2px;
 }
 
 /* Chỉ hiển thị khi đang ở tab Nhân Vật */
@@ -574,6 +578,7 @@ body.tab-nhanvat-active .canvas-viewport {
   width: 100%;
   height: 100%;
   display: block;
+  object-fit: contain;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
@@ -798,31 +803,34 @@ body.tab-nhanvat-active .canvas-viewport {
   pointer-events: auto;
 }
 
-/* Nút Tab Nổi Bên Cạnh Phải Màn Hình */
+/* Nút Tab Nổi Bên Cạnh Phải Màn Hình (Chỉ hiển thị trên Mobile, Desktop đã có nút ở Header) */
 .floating-log-tab {
-  position: fixed;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-  color: var(--text-gold);
-  border: 1px solid var(--border-gold);
-  border-right: none;
-  border-radius: 6px 0 0 6px;
-  padding: 12px 7px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  z-index: 950;
-  box-shadow: -4px 4px 14px rgba(0, 0, 0, 0.7);
-  font-family: var(--font-title);
-  font-size: 12px;
-  font-weight: 700;
-  transition: all 0.15s ease;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .floating-log-tab {
+    position: fixed;
+    bottom: 64px;
+    right: 8px;
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    color: var(--text-gold);
+    border: 1px solid var(--border-gold);
+    border-radius: 20px;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    z-index: 950;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+    font-family: var(--font-title);
+    font-size: 12px;
+    font-weight: 700;
+    transition: all 0.15s ease;
+    writing-mode: horizontal-tb;
+  }
 }
 
 .floating-log-tab:hover {
@@ -958,8 +966,12 @@ body.tab-nhanvat-active .canvas-viewport {
 /* Khi đang trong combat-active-mode: Thu gọn Canvas & Ẩn thanh Tab thừa */
 body.combat-active-mode .canvas-viewport {
   display: block !important;
-  height: 240px !important;
-  max-height: 240px !important;
+  width: 100%;
+  max-width: 540px;
+  aspect-ratio: 16 / 9;
+  height: auto !important;
+  max-height: none !important;
+  margin: 0 auto 8px auto;
   border-color: #ef4444 !important;
   box-shadow: 0 0 20px rgba(239, 68, 68, 0.45), inset 0 0 16px rgba(239, 68, 68, 0.25) !important;
 }
@@ -1906,15 +1918,21 @@ body.combat-active-mode #tab-combat {
 
 /* Hàng Nút Hành Động Đả Tọa */
 .sanctum-actions-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   margin-top: 12px;
-  flex-wrap: wrap;
 }
 
 .sanctum-actions-row button {
-  flex: 1;
-  min-width: 150px;
+  width: 100%;
+  min-height: 42px;
+  font-size: 13px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 /* Bảng Chỉ Số Nhân Vật Gom Vào Tab Nhân Vật */
@@ -2709,15 +2727,6 @@ body.combat-active-mode #tab-combat {
   .right-panel {
     width: 92vw;
     max-width: 380px;
-  }
-
-  .floating-log-tab {
-    top: auto;
-    bottom: 64px;
-    right: 8px;
-    padding: 8px 12px;
-    border-radius: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
   }
 
   /* Modals trên mobile */
