@@ -758,33 +758,409 @@ body {
   color: #fed7aa;
 }
 
+/* ================= TRẠNG THÁI CHIẾN ĐẤU (COMBAT MODE OVERHAUL) ================= */
+
+/* Banner cảnh báo khi vào trận */
+.combat-active-banner {
+  background: linear-gradient(90deg, #38070b 0%, #1f0814 50%, #38070b 100%);
+  border: 2px solid #ef4444;
+  border-radius: 4px;
+  padding: 8px 14px;
+  margin-bottom: 10px;
+  text-align: center;
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.45);
+  animation: combatHeaderGlow 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes combatHeaderGlow {
+  0% { box-shadow: 0 0 8px rgba(239, 68, 68, 0.35); border-color: #b91c1c; }
+  100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.75); border-color: #f87171; }
+}
+
+.combat-banner-title {
+  font-family: var(--font-title);
+  font-size: 14px;
+  font-weight: 800;
+  color: #fca5a5;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 4px #000, 0 0 6px rgba(239, 68, 68, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.combat-banner-sub {
+  font-size: 11px;
+  color: #fed7aa;
+  opacity: 0.85;
+  margin-top: 3px;
+  font-family: var(--font-mono);
+}
+
+/* Khi đang trong combat-active-mode: Khung Canvas rực lửa chiến ý */
+body.combat-active-mode .canvas-viewport {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 22px rgba(239, 68, 68, 0.4), inset 0 0 16px rgba(239, 68, 68, 0.25) !important;
+}
+
+/* Các tab khác bị khóa khi đang giao chiến */
+body.combat-active-mode .tab-nav-bar .tab-btn:not(#tab-nav-combat) {
+  opacity: 0.4;
+  filter: grayscale(80%);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Tab chiến đấu sáng rực */
+body.combat-active-mode #tab-nav-combat.active {
+  background: linear-gradient(180deg, #991b1b 0%, #450a0a 100%) !important;
+  border-color: #f87171 !important;
+  color: #fff !important;
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.8) !important;
+  animation: combatTabPulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes combatTabPulse {
+  0% { box-shadow: 0 0 6px rgba(239, 68, 68, 0.5); }
+  100% { box-shadow: 0 0 16px rgba(239, 68, 68, 0.9); }
+}
+
+/* Header bên trong tab combat */
+.combat-state-header {
+  background: rgba(15, 23, 42, 0.6);
+  border-bottom: 1px dashed var(--border-inner);
+  padding: 6px 10px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 3px;
+}
+
+.combat-state-tag {
+  font-family: var(--font-title);
+  font-size: 11px;
+  font-weight: 800;
+  color: #f87171;
+  letter-spacing: 0.5px;
+}
+
+.combat-state-title {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
 /* ================= COMBAT OVERLAY HUD ================= */
 .combat-hud {
   display: flex;
   justify-content: space-between;
-  background: linear-gradient(180deg, #151d30 0%, #0d1424 100%);
+  align-items: stretch;
+  background: linear-gradient(180deg, #151d30 0%, #0c1220 100%);
   border: 1px solid var(--border-gold);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
-  padding: 10px 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
+  padding: 10px 12px;
   border-radius: 4px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  gap: 8px;
 }
 
 .combat-unit {
-  width: 46%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.player-combat-box {
+  border-right: 1px dashed rgba(200, 155, 60, 0.2);
+  padding-right: 8px;
+}
+
+.enemy-combat-box {
+  border-left: 1px dashed rgba(239, 68, 68, 0.2);
+  padding-left: 8px;
+}
+
+.combat-header-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+}
+
+.combat-unit-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 2px;
+  background: rgba(56, 189, 248, 0.2);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+.combat-unit-tag.enemy-tag {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.4);
 }
 
 .combat-name {
   font-family: var(--font-title);
   font-weight: 700;
   font-size: 13px;
+}
+
+.combat-bar-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.combat-bar-overlay-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 1px 3px #000000, 0 0 2px #000000;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Cột giữa hiển thị VS & Trạng thái Lượt */
+.combat-center-column {
+  width: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.combat-vs-badge {
+  font-family: var(--font-title);
+  font-weight: 900;
+  font-size: 16px;
+  color: #ef4444;
+  text-shadow: 0 0 8px rgba(239, 68, 68, 0.8), 0 2px 4px #000;
   margin-bottom: 4px;
 }
 
-.action-buttons-grid {
+.combat-turn-indicator {
+  font-family: var(--font-title);
+  font-size: 10px;
+  font-weight: 800;
+  text-align: center;
+  padding: 4px 6px;
+  border-radius: 3px;
+  width: 100%;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.combat-turn-indicator.player-turn {
+  background: linear-gradient(90deg, #78350f 0%, #b45309 50%, #78350f 100%);
+  color: #fef08a;
+  border: 1px solid #facc15;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.7);
+  animation: playerTurnPulse 0.9s ease-in-out infinite alternate;
+}
+
+@keyframes playerTurnPulse {
+  0% { transform: scale(0.97); box-shadow: 0 0 6px rgba(250, 204, 21, 0.5); }
+  100% { transform: scale(1.03); box-shadow: 0 0 14px rgba(250, 204, 21, 0.9); }
+}
+
+.combat-turn-indicator.processing-turn {
+  background: linear-gradient(90deg, #581c87 0%, #7e22ce 50%, #581c87 100%);
+  color: #e9d5ff;
+  border: 1px solid #c084fc;
+}
+
+.combat-turn-indicator.waiting-turn {
+  background: #1e293b;
+  color: var(--text-dim);
+  border: 1px solid #334155;
+}
+
+/* Badges trạng thái hiệu ứng */
+.combat-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 18px;
+  margin-top: 5px;
+}
+
+.combat-status-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.status-poison { background: rgba(168, 85, 247, 0.25); color: #d8b4fe; border: 1px solid #a855f7; }
+.status-burn   { background: rgba(239, 68, 68, 0.25);   color: #fca5a5; border: 1px solid #ef4444; }
+.status-freeze { background: rgba(56, 189, 248, 0.25);  color: #7dd3fc; border: 1px solid #38bdf8; }
+.status-stun   { background: rgba(234, 179, 8, 0.25);   color: #fde047; border: 1px solid #eab308; }
+.status-defend { background: rgba(52, 211, 153, 0.25);  color: #6ee7b7; border: 1px solid #10b981; }
+
+/* 5 Nút Lựa Chọn Chiến Đấu Pixel 3D */
+.combat-actions-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
+}
+
+.combat-actions-grid .pixel-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  gap: 6px;
+}
+
+.combat-key-badge {
+  background: #000000;
+  color: #facc15;
+  border: 1px solid #785a28;
+  border-radius: 2px;
+  padding: 1px 5px;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.1);
+}
+
+.combat-btn-attack {
+  border-color: #38bdf8;
+  border-bottom-color: #0284c7;
+}
+
+.combat-btn-skill {
+  background: linear-gradient(180deg, #3b1d60 0%, #1e1035 100%) !important;
+  border-color: #c084fc !important;
+  border-bottom-color: #7e22ce !important;
+  color: #f3e8ff !important;
+}
+
+.combat-btn-artifact {
+  border-color: #fbbf24;
+  border-bottom-color: #d97706;
+  color: #fef3c7;
+}
+
+.combat-btn-pill {
+  border-color: #34d399;
+  border-bottom-color: #059669;
+  color: #d1fae5;
+}
+
+.combat-btn-flee {
+  border-color: #94a3b8;
+  border-bottom-color: #475569;
+  color: #cbd5e1;
+}
+
+/* ================= TÔNG MÔN & CỐNG HIẾN STYLES ================= */
+.sect-header-card {
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.6);
+}
+
+.sect-quest-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.sect-quest-card {
+  background: #0f1626;
+  border: 1px solid var(--border-inner);
+  border-left: 3px solid var(--border-gold);
+  padding: 10px 12px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.sect-quest-title {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text-gold);
+  margin-bottom: 2px;
+}
+
+.sect-quest-desc {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+.sect-quest-reward {
+  font-size: 11px;
+  color: #38bdf8;
+  margin-top: 4px;
+  display: flex;
+  gap: 8px;
+}
+
+.sect-quest-progress {
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.sect-manual-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.sect-manual-card {
+  background: #0f1626;
+  border: 1px solid var(--border-inner);
+  border-left: 3px solid #818cf8;
+  padding: 10px 12px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.sect-manual-title {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 13px;
+  color: #c7d2fe;
+}
+
+.sect-manual-desc {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.sect-manual-cost {
+  font-size: 11px;
+  color: #facc15;
+  font-weight: 700;
 }
 
 /* ================= NÚT BẤM PIXEL 3D & HỘP NỘI DUNG ================= */

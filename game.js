@@ -1241,10 +1241,10 @@
   ];
 
   const SECT_QUESTS = [
-    { id: 'quest_herb', name: 'Hái Thảo Dược Nộp Sơn Môn', desc: 'Tìm kiếm nộp 3 cành Linh Chi Thảo cho dược phòng.', reqItem: 'herb_linhchi', reqCount: 3, contrib: 40, stone: 30 },
-    { id: 'quest_ore', name: 'Đào Khoáng Rèn Khí', desc: 'Khai thác nộp 2 khối Huyền Thiết Tinh cho khí các.', reqItem: 'ore_huyenthiet', reqCount: 2, contrib: 45, stone: 35 },
-    { id: 'quest_patrol', name: 'Tuần Tra Sơn Cước Trừ Yêu', desc: 'Tiêu diệt 3 con yêu lang quấy nhiễu phàm nhân dưới chân núi.', contrib: 60, stone: 50 },
-    { id: 'quest_donate', name: 'Quyên Góp Linh Thạch Kiến Thiết Tông Môn', desc: 'Tự nguyện quyên góp 100 Linh Thạch mở rộng sơn môn.', costStone: 100, contrib: 120, stone: 0 }
+    { id: 'quest_herb', name: 'Hái Thảo Dược Nộp Sơn Môn', desc: 'Tìm kiếm nộp 3 cành Linh Chi Thảo cho dược phòng luyện đan.', reqItem: 'herb_linhchi', reqCount: 3, contrib: 40, stone: 30 },
+    { id: 'quest_ore', name: 'Đào Khoáng Rèn Khí', desc: 'Khai thác nộp 2 khối Huyền Thiết Tinh cho khí các đúc binh khí.', reqItem: 'ore_huyenthiet', reqCount: 2, contrib: 45, stone: 35 },
+    { id: 'quest_patrol', name: 'Tuần Tra Sơn Cước Trừ Yêu', desc: 'Tiêu diệt 3 con yêu lang quấy nhiễu phàm nhân dưới chân núi.', reqKills: 3, contrib: 60, stone: 50 },
+    { id: 'quest_donate', name: 'Quyên Góp Linh Thạch Kiến Thiết Tông Môn', desc: 'Tự nguyện quyên góp 100 Linh Thạch mở rộng đại điện sơn môn.', costStone: 100, contrib: 120, stone: 0 }
   ];
 
   // ==========================================================================
@@ -1321,6 +1321,11 @@
           statusText.textContent = '🧘 Đang đả tọa vận công, chu thiên hấp thu thiên địa linh khí...';
         }
       }
+    }
+
+    setStatusText(text) {
+      const statusText = document.getElementById('canvas-status-text');
+      if (statusText) statusText.textContent = text;
     }
 
     triggerShake(duration = 20, intensity = 6) {
@@ -1680,45 +1685,198 @@
 
     renderCombatScene() {
       const ctx = this.ctx;
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(0, 0, this.width, this.height);
+      const combat = this.systems && this.systems.combatEngine;
 
-      drawPixelSprite(ctx, SPRITES.sceneMountain, 100, 100, 3);
-      drawPixelSprite(ctx, SPRITES.sceneMountain, 360, 120, 3);
+      // 1. Bầu Trời Chiến Trường Tiên Ma (Atmospheric Dark Crimson / Purple Sky)
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, 240);
+      skyGrad.addColorStop(0, '#06020c');
+      skyGrad.addColorStop(0.5, '#17061f');
+      skyGrad.addColorStop(1, '#2c0c22');
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, this.width, 240);
 
-      ctx.fillStyle = '#1e293b';
-      ctx.fillRect(0, 260, this.width, 100);
-      ctx.fillStyle = '#38bdf8';
-      ctx.fillRect(0, 260, this.width, 2);
-
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.15)';
-      ctx.setLineDash([8, 8]);
+      // 2. Huyết Nguyệt / Quầng Sáng Đỏ Rực (Blood Moon)
+      ctx.save();
+      const moonX = 500;
+      const moonY = 65;
+      const moonHalo = ctx.createRadialGradient(moonX, moonY, 10, moonX, moonY, 55);
+      moonHalo.addColorStop(0, 'rgba(248, 113, 113, 0.45)');
+      moonHalo.addColorStop(0.5, 'rgba(239, 68, 68, 0.18)');
+      moonHalo.addColorStop(1, 'rgba(239, 68, 68, 0)');
+      ctx.fillStyle = moonHalo;
       ctx.beginPath();
-      ctx.moveTo(320, 60);
-      ctx.lineTo(320, 260);
+      ctx.arc(moonX, moonY, 55, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Mặt trăng đỏ
+      ctx.fillStyle = '#fca5a5';
+      ctx.beginPath();
+      ctx.arc(moonX, moonY, 22, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath();
+      ctx.arc(moonX - 5, moonY - 3, 16, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // 3. Mây mù chiến trận vần vũ (Battle Storm Clouds)
+      ctx.save();
+      ctx.fillStyle = 'rgba(20, 10, 30, 0.7)';
+      for (let i = 0; i < 5; i++) {
+        const cx = ((i * 150 + this.time * 12) % (this.width + 100)) - 50;
+        const cy = 40 + (i % 3) * 25;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 35, 0, Math.PI * 2);
+        ctx.arc(cx + 30, cy - 8, 25, 0, Math.PI * 2);
+        ctx.arc(cx + 60, cy + 5, 30, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+
+      // 4. Dãy Tiên Sơn Viễn Cảnh & Ma Khí Mờ Ảo
+      drawPixelSprite(ctx, SPRITES.sceneMountain, 60, 90, 3.2);
+      drawPixelSprite(ctx, SPRITES.sceneMountain, 340, 110, 3.0);
+
+      // Tia chớp ma đạo thi thoảng giật chân trời
+      if (Math.sin(this.time * 3) > 0.96) {
+        ctx.strokeStyle = 'rgba(192, 132, 252, 0.35)';
+        ctx.lineWidth = 2;
+        drawProceduralLightning(ctx, 220 + Math.sin(this.time * 5) * 50, 20, 260, 180, 3, 'rgba(216, 180, 254, 0.6)', 2);
+      }
+
+      // 5. Mặt Đất Chiến Trường Đá Nứt Nẻ (Cracked Arena Ground)
+      const groundGrad = ctx.createLinearGradient(0, 240, 0, this.height);
+      groundGrad.addColorStop(0, '#1c1429');
+      groundGrad.addColorStop(0.3, '#140d20');
+      groundGrad.addColorStop(1, '#09050f');
+      ctx.fillStyle = groundGrad;
+      ctx.fillRect(0, 240, this.width, this.height - 240);
+
+      // Đường viền chiến ý phân cách
+      ctx.fillStyle = '#c89b3c';
+      ctx.fillRect(0, 240, this.width, 2);
+
+      // Vạch cổ trận ngăn cách 2 bên
+      ctx.strokeStyle = 'rgba(239, 68, 68, 0.25)';
+      ctx.setLineDash([6, 6]);
+      ctx.beginPath();
+      ctx.moveTo(320, 120);
+      ctx.lineTo(320, 280);
       ctx.stroke();
       ctx.setLineDash([]);
 
-      const px = 140 + this.combatState.playerOffsetX;
-      const py = 165;
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-      ctx.beginPath();
-      ctx.ellipse(px + 48, py + 95, 36, 10, 0, 0, Math.PI * 2);
-      ctx.fill();
+      // Tinh hỏa / tia lửa chiến trận bay lên từ mặt đất
+      ctx.save();
+      for (let i = 0; i < 8; i++) {
+        const sparkX = (i * 85 + this.time * 20) % this.width;
+        const sparkY = 270 - ((this.time * 35 + i * 25) % 65);
+        ctx.fillStyle = i % 2 === 0 ? 'rgba(239, 68, 68, 0.6)' : 'rgba(250, 204, 21, 0.6)';
+        ctx.fillRect(sparkX, sparkY, 2, 2);
+      }
+      ctx.restore();
 
+      // 6. Trận Pháp Dưới Chân Đạo Hữu (Illuminated Cyan / Gold Battle Circle)
+      const px = 140 + this.combatState.playerOffsetX;
+      const pBob = Math.sin(this.time * 4) * 2;
+      const py = 160 + pBob;
+
+      ctx.save();
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.18)';
+      ctx.beginPath();
+      ctx.ellipse(px + 48, 258, 48, 14, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // 8 vòng sao / ấn ký bát quái nhỏ xoay quanh trận
+      for (let i = 0; i < 8; i++) {
+        const angle = this.time * 0.8 + (i * Math.PI / 4);
+        const rx = px + 48 + Math.cos(angle) * 42;
+        const ry = 258 + Math.sin(angle) * 11;
+        ctx.fillStyle = 'rgba(250, 204, 21, 0.65)';
+        ctx.fillRect(rx - 1, ry - 1, 3, 3);
+      }
+      ctx.restore();
+
+      // Vẽ Phi Kiếm Hộ Thân lơ lửng nếu là Kiếm Tu
+      if (this.systems && this.systems.player && this.systems.player.cultivationPath && this.systems.player.cultivationPath.id === 'kiem_tu') {
+        const swordX = px - 18 + Math.cos(this.time * 3) * 6;
+        const swordY = py - 10 + Math.sin(this.time * 4) * 8;
+        ctx.save();
+        ctx.translate(swordX + 8, swordY + 16);
+        ctx.rotate(0.35 + Math.sin(this.time * 2) * 0.1);
+        drawPixelSprite(ctx, SPRITES.flyingSword, -8, -16, 2.0);
+        ctx.restore();
+      }
+
+      // Vẽ Nhân Vật Đạo Hữu Chiến Đấu
       drawPixelSprite(ctx, SPRITES.playerBattle, px, py, 6, false, this.combatState.playerFlash);
 
+      // 7. Trận Pháp Ma Đạo Dưới Chân Yêu Quái (Demonic Red / Crimson Aura)
       const mx = 410 + this.combatState.monsterOffsetX;
-      const my = 150;
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-      ctx.beginPath();
-      ctx.ellipse(mx + 48, my + 110, 44, 12, 0, 0, Math.PI * 2);
-      ctx.fill();
+      const mBob = Math.cos(this.time * 3) * 3;
+      const my = 145 + mBob;
 
+      ctx.save();
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.2)';
+      ctx.beginPath();
+      ctx.ellipse(mx + 48, 258, 55, 16, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(239, 68, 68, 0.5)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Vòng hào quang hắc ám xoay ngược chiều
+      for (let i = 0; i < 6; i++) {
+        const angle = -this.time * 1.0 + (i * Math.PI / 3);
+        const rx = mx + 48 + Math.cos(angle) * 48;
+        const ry = 258 + Math.sin(angle) * 13;
+        ctx.fillStyle = 'rgba(239, 68, 68, 0.8)';
+        ctx.fillRect(rx - 1, ry - 1, 3, 3);
+      }
+      ctx.restore();
+
+      // Vẽ Yêu Thú / Quái Vật
       const monsterSprite = SPRITES[this.combatState.monsterSpriteKey] || SPRITES.monsterWolf;
       const monsterScale = monsterSprite.w === 24 ? 5 : 6;
       drawPixelSprite(ctx, monsterSprite, mx, my, monsterScale, true, this.combatState.monsterFlash);
 
+      // 8. Overhead Mini HUD Trên Canvas (Tên & Thanh Máu Nổi Trên Đầu)
+      if (combat && combat.playerCombat && combat.monsterCombat) {
+        ctx.save();
+        // Đạo Hữu Mini Bar
+        const pCur = combat.playerCombat.curHp;
+        const pMax = combat.playerCombat.maxHp;
+        const pRatio = Math.max(0, Math.min(1, pCur / pMax));
+        const pBarX = px + 10;
+        const pBarY = py - 18;
+
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(pBarX - 1, pBarY - 1, 78, 9);
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(pBarX, pBarY, 76, 7);
+        ctx.fillStyle = pRatio > 0.4 ? '#38bdf8' : '#ef4444';
+        ctx.fillRect(pBarX, pBarY, 76 * pRatio, 7);
+
+        // Quái Vật Mini Bar
+        const mCur = combat.monsterCombat.curHp;
+        const mMax = combat.monsterCombat.maxHp;
+        const mRatio = Math.max(0, Math.min(1, mCur / mMax));
+        const mBarX = mx + 10;
+        const mBarY = my - 18;
+
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(mBarX - 1, mBarY - 1, 82, 9);
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(mBarX, mBarY, 80, 7);
+        ctx.fillStyle = mRatio > 0.5 ? '#ef4444' : (mRatio > 0.2 ? '#f59e0b' : '#dc2626');
+        ctx.fillRect(mBarX, mBarY, 80 * mRatio, 7);
+
+        ctx.restore();
+      }
+
+      // 9. Hiệu Ứng Chém / Kỹ Năng (Slash Effects)
       if (this.combatState.slashEffect) {
         const slash = this.combatState.slashEffect;
         slash.frame++;
@@ -1728,20 +1886,20 @@
           ctx.strokeStyle = '#38bdf8';
           ctx.lineWidth = 5;
           ctx.shadowColor = '#bae6fd';
-          ctx.shadowBlur = 10;
+          ctx.shadowBlur = 12;
           ctx.beginPath();
           const startArc = -Math.PI * 0.4 + (slash.frame / slash.maxFrame) * Math.PI * 0.6;
-          ctx.arc(slash.x, slash.y, 45, startArc, startArc + Math.PI * 0.5);
+          ctx.arc(slash.x, slash.y, 50, startArc, startArc + Math.PI * 0.5);
           ctx.stroke();
         } else if (slash.type === 'fire') {
           ctx.fillStyle = slash.frame % 2 === 0 ? '#ef4444' : '#fbbf24';
-          for (let i = 0; i < 6; i++) {
-            const fx = slash.x + (Math.random() - 0.5) * 45;
-            const fy = slash.y + (Math.random() - 0.5) * 45;
+          for (let i = 0; i < 8; i++) {
+            const fx = slash.x + (Math.random() - 0.5) * 55;
+            const fy = slash.y + (Math.random() - 0.5) * 55;
             ctx.fillRect(fx, fy, 8, 8);
           }
         } else if (slash.type === 'lightning') {
-          drawProceduralLightning(ctx, slash.x - 20, slash.y - 60, slash.x, slash.y, 3, '#c084fc', 3);
+          drawProceduralLightning(ctx, slash.x - 20, slash.y - 70, slash.x, slash.y, 4, '#c084fc', 3);
         }
         ctx.restore();
 
@@ -1932,15 +2090,26 @@
         burnTurns: 0
       };
 
+      // Kích hoạt Trạng Thái Chiến Đấu (Combat Active Mode)
+      document.body.classList.add('combat-active-mode');
+      const headerEl = document.getElementById('combat-active-header');
+      if (headerEl) headerEl.classList.remove('hidden');
+      const bannerMon = document.getElementById('combat-banner-monster');
+      if (bannerMon) bannerMon.textContent = this.monster.name;
+      const bannerEnemy = document.getElementById('combat-banner-enemy');
+      if (bannerEnemy) bannerEnemy.textContent = this.monster.name;
+
       this.renderer.combatState.monsterSpriteKey = this.monster.spriteKey || 'monsterWolf';
       this.renderer.setScene(SCENES.COMBAT);
+      this.renderer.setStatusText(`⚔️ GIAO TRANH HUNG HIỂM: Đối đầu 【${this.monster.name}】!`);
 
-      const tabCombatBtn = document.querySelector('[data-tab="tab-combat"]');
-      if (tabCombatBtn) tabCombatBtn.click();
+      switchTab('tab-combat');
 
-      this.addLog(`⚔️ Đụng độ hung hiểm! Đạo hữu tao ngộ 【${this.monster.name}】! Chuẩn bị nghênh địch!`, 'battle');
+      this.addLog(`⚔️ Đụng độ hung hiểm! Đạo hữu tao ngộ 【${this.monster.name}】! Bước vào trạng thái chiến đấu sinh tử!`, 'battle');
       sound.playThunder();
 
+      this.updateCombatButtons(false);
+      this.updateCombatUI();
       this.runCombatLoop();
     }
 
@@ -2266,7 +2435,7 @@
     handleLifeSteal(dmg) {
       const lMod = (this.player.spiritualRoot && this.player.spiritualRoot.lifeStealMod) || 0;
       const pathMod = (this.player.cultivationPath && this.player.cultivationPath.id === 'ma_tu') ? 0.2 : 0;
-      const totalLs = lMod + pathMod;
+      const totalLs = lMod + pathMod + (this.player.bonusLifeSteal || 0);
       if (totalLs > 0) {
         const heal = Math.floor(dmg * totalLs);
         this.playerCombat.curHp = Math.min(this.playerCombat.maxHp, this.playerCombat.curHp + heal);
@@ -2350,30 +2519,125 @@
       this.player.curMp = this.playerCombat.curMp;
       this.updateCombatButtons(false);
 
+      if (won && this.player && this.player.sectId) {
+        this.player.sectPatrolKills = (this.player.sectPatrolKills || 0) + 1;
+        this.addLog(`[Tông Môn] Tích lũy chiến tích trừ yêu: ${Math.min(3, this.player.sectPatrolKills)}/3 yêu thú!`, 'system');
+      }
+
       setTimeout(() => {
+        document.body.classList.remove('combat-active-mode');
+        const headerEl = document.getElementById('combat-active-header');
+        if (headerEl) headerEl.classList.add('hidden');
+
         this.renderer.setScene(SCENES.MEDITATE);
+        this.renderer.setStatusText('Đang đả tọa hấp thu thiên địa linh khí...');
         if (this.onCombatEnd) this.onCombatEnd(won, fled);
       }, 1500);
     }
 
     updateCombatUI() {
+      if (!this.player || !this.monster) return;
+
+      const pCurHp = Math.max(0, this.playerCombat.curHp);
+      const pMaxHp = Math.max(1, this.playerCombat.maxHp);
+      const pCurMp = Math.max(0, this.playerCombat.curMp);
+      const pMaxMp = Math.max(1, this.playerCombat.maxMp);
+      const pGauge = Math.max(0, Math.min(100, this.playerCombat.actionGauge));
+
+      const mCurHp = Math.max(0, this.monsterCombat.curHp);
+      const mMaxHp = Math.max(1, this.monsterCombat.maxHp);
+      const mGauge = Math.max(0, Math.min(100, this.monsterCombat.actionGauge));
+
       const pNameEl = document.getElementById('combat-player-name');
       const pHpEl = document.getElementById('combat-player-hp');
+      const pHpTextEl = document.getElementById('combat-player-hp-text');
       const pMpEl = document.getElementById('combat-player-mp');
+      const pMpTextEl = document.getElementById('combat-player-mp-text');
       const pGaugeEl = document.getElementById('combat-player-gauge');
+      const pGaugeTextEl = document.getElementById('combat-player-gauge-text');
+      const pStatusesEl = document.getElementById('combat-player-statuses');
 
       const mNameEl = document.getElementById('combat-monster-name');
       const mHpEl = document.getElementById('combat-monster-hp');
+      const mHpTextEl = document.getElementById('combat-monster-hp-text');
       const mGaugeEl = document.getElementById('combat-monster-gauge');
+      const mGaugeTextEl = document.getElementById('combat-monster-gauge-text');
+      const mStatusesEl = document.getElementById('combat-monster-statuses');
 
-      if (pNameEl && this.player) pNameEl.textContent = this.player.name;
-      if (pHpEl) pHpEl.style.width = `${Math.max(0, Math.min(100, (this.playerCombat.curHp / this.playerCombat.maxHp) * 100))}%`;
-      if (pMpEl) pMpEl.style.width = `${Math.max(0, Math.min(100, (this.playerCombat.curMp / this.playerCombat.maxMp) * 100))}%`;
-      if (pGaugeEl) pGaugeEl.style.width = `${Math.max(0, Math.min(100, this.playerCombat.actionGauge))}%`;
+      const turnIndicator = document.getElementById('combat-turn-indicator');
+      const turnText = document.getElementById('combat-turn-text');
 
-      if (mNameEl && this.monster) mNameEl.textContent = this.monster.name;
-      if (mHpEl) mHpEl.style.width = `${Math.max(0, Math.min(100, (this.monsterCombat.curHp / this.monsterCombat.maxHp) * 100))}%`;
-      if (mGaugeEl) mGaugeEl.style.width = `${Math.max(0, Math.min(100, this.monsterCombat.actionGauge))}%`;
+      if (pNameEl) pNameEl.textContent = this.player.name;
+      if (pHpEl) pHpEl.style.width = `${Math.min(100, (pCurHp / pMaxHp) * 100)}%`;
+      if (pHpTextEl) pHpTextEl.textContent = `HP: ${pCurHp} / ${pMaxHp} (${Math.round((pCurHp / pMaxHp) * 100)}%)`;
+      if (pMpEl) pMpEl.style.width = `${Math.min(100, (pCurMp / pMaxMp) * 100)}%`;
+      if (pMpTextEl) pMpTextEl.textContent = `MP: ${pCurMp} / ${pMaxMp}`;
+      if (pGaugeEl) pGaugeEl.style.width = `${pGauge}%`;
+      if (pGaugeTextEl) pGaugeTextEl.textContent = `Tốc Độ: ${Math.round(pGauge)}%`;
+
+      if (mNameEl) mNameEl.textContent = this.monster.name;
+      if (mHpEl) mHpEl.style.width = `${Math.min(100, (mCurHp / mMaxHp) * 100)}%`;
+      if (mHpTextEl) mHpTextEl.textContent = `HP: ${mCurHp} / ${mMaxHp} (${Math.round((mCurHp / mMaxHp) * 100)}%)`;
+      if (mGaugeEl) mGaugeEl.style.width = `${mGauge}%`;
+      if (mGaugeTextEl) mGaugeTextEl.textContent = `Tốc Độ: ${Math.round(mGauge)}%`;
+
+      // Status badges
+      if (pStatusesEl) {
+        let tags = [];
+        if (this.playerCombat.poisonTurns > 0) tags.push(`<span class="combat-status-badge status-poison">Độc (${this.playerCombat.poisonTurns})</span>`);
+        if (this.playerCombat.isDefending) tags.push(`<span class="combat-status-badge status-defend">Thủ Thế</span>`);
+        if (this.playerCombat.immortalTriggered) tags.push(`<span class="combat-status-badge status-stun">Bất Tử</span>`);
+        pStatusesEl.innerHTML = tags.join('');
+      }
+
+      if (mStatusesEl) {
+        let tags = [];
+        if (this.monsterCombat.poisonTurns > 0) tags.push(`<span class="combat-status-badge status-poison">Độc (${this.monsterCombat.poisonTurns})</span>`);
+        if (this.monsterCombat.burnTurns > 0) tags.push(`<span class="combat-status-badge status-burn">Bỏng (${this.monsterCombat.burnTurns})</span>`);
+        if (this.monsterCombat.frozenTurns > 0) tags.push(`<span class="combat-status-badge status-freeze">Băng (${this.monsterCombat.frozenTurns})</span>`);
+        mStatusesEl.innerHTML = tags.join('');
+      }
+
+      // Turn indicator
+      if (turnIndicator && turnText) {
+        if (this.isPlayerTurn) {
+          turnIndicator.className = 'combat-turn-indicator player-turn';
+          turnText.innerHTML = '🔥 LƯỢT ĐẠO HỮU - HÃY RA CHIÊU! 🔥';
+        } else if (this.isProcessingTurn) {
+          turnIndicator.className = 'combat-turn-indicator processing-turn';
+          turnText.innerHTML = '⚡ ĐANG THI TRIỂN CHIÊU THỨC... ⚡';
+        } else {
+          turnIndicator.className = 'combat-turn-indicator waiting-turn';
+          turnText.innerHTML = '⏳ VẬN HÀNH KHÍ THẾ CHIẾN TRẬN...';
+        }
+      }
+
+      // Labels on buttons
+      const pillCount = (this.player.inventory && this.player.inventory.pill_hoixuan) || 0;
+      const pillLabel = document.getElementById('combat-pill-label');
+      if (pillLabel) pillLabel.textContent = `🧪 Hồi Xuân Đan (${pillCount > 0 ? `Còn x${pillCount}` : 'Hết'})`;
+
+      const skill = this.player.activeSkill;
+      const skillLabel = document.getElementById('combat-skill-label');
+      if (skillLabel) {
+        if (skill) {
+          const cd = this.playerCombat.skillCooldown > 0 ? ` [Hồi: ${this.playerCombat.skillCooldown}]` : '';
+          skillLabel.textContent = `⚡ ${skill.name} (${skill.mpCost} MP)${cd}`;
+        } else {
+          skillLabel.textContent = `⚡ Chưa Học Kỹ Năng`;
+        }
+      }
+
+      const art = this.player.equippedArtifact;
+      const artLabel = document.getElementById('combat-artifact-label');
+      if (artLabel) {
+        if (art) {
+          const cd = this.playerCombat.artifactCooldown > 0 ? ` [Hồi: ${this.playerCombat.artifactCooldown}]` : '';
+          artLabel.textContent = `🛡️ Tế ${art.name}${cd}`;
+        } else {
+          artLabel.textContent = `🛡️ Chưa Có Pháp Bảo`;
+        }
+      }
     }
 
     updateCombatButtons(enabled) {
@@ -2383,13 +2647,27 @@
       const btnPill = document.getElementById('btn-combat-pill');
       const btnFlee = document.getElementById('btn-combat-flee');
 
-      [btnAttack, btnSkill, btnArtifact, btnPill, btnFlee].forEach(btn => {
-        if (btn) btn.disabled = !enabled;
-      });
+      if (btnAttack) btnAttack.disabled = !enabled;
 
-      if (btnSkill && this.player && this.player.activeSkill) {
-        btnSkill.textContent = `2. Kỹ Năng: ${this.player.activeSkill.name} (${this.player.activeSkill.mpCost} MP)${this.playerCombat.skillCooldown > 0 ? ` [${this.playerCombat.skillCooldown}]` : ''}`;
+      if (btnSkill) {
+        const skill = this.player.activeSkill;
+        const canUseSkill = enabled && skill && this.playerCombat.skillCooldown === 0 && this.playerCombat.curMp >= skill.mpCost;
+        btnSkill.disabled = !canUseSkill;
       }
+
+      if (btnArtifact) {
+        const art = this.player.equippedArtifact;
+        const canUseArt = enabled && art && this.playerCombat.artifactCooldown === 0;
+        btnArtifact.disabled = !canUseArt;
+      }
+
+      if (btnPill) {
+        const pillCount = (this.player.inventory && this.player.inventory.pill_hoixuan) || 0;
+        const canUsePill = enabled && pillCount > 0 && this.playerCombat.curHp < this.playerCombat.maxHp;
+        btnPill.disabled = !canUsePill;
+      }
+
+      if (btnFlee) btnFlee.disabled = !enabled;
     }
   }
 
@@ -2454,7 +2732,12 @@
 
         sectId: null,
         sectContrib: 0,
+        sectContribTotal: 0,
         sectSalaryClaimedYear: -1,
+        sectPatrolKills: 0,
+        sectManualsBought: [],
+        bonusCrit: 0,
+        bonusLifeSteal: 0,
         isInjured: false
       };
 
@@ -2506,7 +2789,7 @@
       if (p.spiritualRoot && p.spiritualRoot.spdMod) spdMod += p.spiritualRoot.spdMod;
       p.totalSpd = Math.floor((base.spd + (p.bonusSpd || 0)) * spdMod);
 
-      p.totalCrit = 0.05 + ((pathBonus.crit || 0)) + ((p.spiritualRoot && p.spiritualRoot.critMod) || 0) + ((p.physique && p.physique.critBonus) || 0) + ((p.equippedWeapon && p.equippedWeapon.crit) || 0);
+      p.totalCrit = 0.05 + ((pathBonus.crit || 0)) + ((p.spiritualRoot && p.spiritualRoot.critMod) || 0) + ((p.physique && p.physique.critBonus) || 0) + ((p.equippedWeapon && p.equippedWeapon.crit) || 0) + (p.bonusCrit || 0);
       p.totalCritDmg = 0.5 + (pathBonus.critDmg || 0);
       p.maxLifespan = base.lifespan + (p.bonusLifespan || 0);
 
@@ -2971,9 +3254,12 @@
       if (!sect) return;
 
       p.sectId = sect.id;
-      p.sectContrib = 0;
+      p.sectContrib = p.sectContrib || 0;
+      p.sectContribTotal = p.sectContribTotal || p.sectContrib || 0;
+      p.sectPatrolKills = p.sectPatrolKills || 0;
+      p.sectManualsBought = p.sectManualsBought || [];
       sound.playBreakthrough();
-      this.addLog(`🏯 Đạo hữu chính thức bái nhập 【${sect.name}】! Trở thành đệ tử Tạp dịch sơn môn!`, 'golden');
+      this.addLog(`🏯 Đạo hữu chính thức bái nhập 【${sect.name}】! Trở thành môn nhân sơn môn!`, 'golden');
       this.updateUI();
     }
 
@@ -2982,7 +3268,7 @@
       if (!p || !p.sectId) return;
 
       if (p.sectSalaryClaimedYear === p.age) {
-        this.addLog(`Năm nay đạo hữu đã nhận bổng lộc tông môn rồi!`, 'warning');
+        this.addLog(`Năm ${p.age} đạo hữu đã nhận bổng lộc tông môn rồi!`, 'warning');
         return;
       }
 
@@ -2991,47 +3277,80 @@
       p.sectSalaryClaimedYear = p.age;
       p.spiritStones += salary;
       sound.playLoot();
+      this.renderer.addFloatingText(`+${salary} Linh Thạch`, 320, 160, '#38bdf8');
       this.addLog(`Nhận bổng lộc hàng năm của chức vị 【${curRank.rank}】: +${salary} Linh Thạch!`, 'loot');
       this.updateUI();
     }
 
     completeSectQuest(questId) {
       const p = this.player;
+      if (!p || !p.sectId) return;
       const quest = SECT_QUESTS.find(q => q.id === questId);
       if (!quest) return;
 
       if (quest.reqItem) {
         if ((p.inventory[quest.reqItem] || 0) < quest.reqCount) {
-          this.addLog(`Chưa đủ nguyên liệu giao nộp nhiệm vụ!`, 'warning');
+          const item = ITEMS[quest.reqItem];
+          this.addLog(`Chưa đủ nguyên liệu giao nộp nhiệm vụ (cần ${quest.reqCount} ${item ? item.name : quest.reqItem})!`, 'warning');
           return;
         }
         p.inventory[quest.reqItem] -= quest.reqCount;
       } else if (quest.costStone) {
         if (p.spiritStones < quest.costStone) {
-          this.addLog(`Không đủ linh thạch để quyên góp!`, 'warning');
+          this.addLog(`Không đủ Linh Thạch để quyên góp (cần ${quest.costStone} Linh Thạch)!`, 'warning');
           return;
         }
         p.spiritStones -= quest.costStone;
+      } else if (quest.reqKills) {
+        if ((p.sectPatrolKills || 0) < quest.reqKills) {
+          this.addLog(`Chưa hoàn thành tuần tra trừ yêu! (Đã diệt: ${p.sectPatrolKills || 0}/${quest.reqKills})`, 'warning');
+          return;
+        }
+        p.sectPatrolKills -= quest.reqKills;
       }
 
-      p.sectContrib += quest.contrib;
-      if (quest.stone) p.spiritStones += quest.stone;
+      p.sectContrib = (p.sectContrib || 0) + quest.contrib;
+      p.sectContribTotal = (p.sectContribTotal || 0) + quest.contrib;
+      if (quest.stone) p.spiritStones = (p.spiritStones || 0) + quest.stone;
 
       sound.playLoot();
+      this.renderer.addFloatingText(`+${quest.contrib} Cống Hiến`, 320, 160, '#38bdf8');
       this.addLog(`Hoàn thành nhiệm vụ 【${quest.name}】! Nhận +${quest.contrib} Điểm Cống Hiến${quest.stone ? `, +${quest.stone} Linh Thạch` : ''}!`, 'loot');
       this.checkSectPromotion();
       this.updateUI();
+    }
+
+    startSectPatrolFight() {
+      const wolfMon = MONSTERS['wolf_novice'];
+      if (wolfMon && this.combatEngine) {
+        this.addLog(`🌲 Tiến vào sơn cước tuần tra! Phát hiện bầy U Minh Yêu Lang! Chuẩn bị nghênh chiến!`, 'battle');
+        this.combatEngine.startCombat(this.player, wolfMon);
+      }
     }
 
     getCurrentSectRank() {
       const p = this.player;
       if (!p || !p.sectId) return null;
       const sect = SECTS.find(s => s.id === p.sectId);
+      if (!sect) return null;
       let rank = sect.ranks[0];
+      const total = p.sectContribTotal ?? p.sectContrib ?? 0;
       for (let r of sect.ranks) {
-        if (p.sectContrib >= r.minContrib) rank = r;
+        if (total >= r.minContrib) rank = r;
       }
       return rank;
+    }
+
+    getNextSectRank() {
+      const p = this.player;
+      if (!p || !p.sectId) return null;
+      const sect = SECTS.find(s => s.id === p.sectId);
+      if (!sect) return null;
+      const total = p.sectContribTotal ?? p.sectContrib ?? 0;
+      for (let r of sect.ranks) {
+        if (total < r.minContrib) return r;
+      }
+      return null;
     }
 
     checkSectPromotion() {
@@ -3039,6 +3358,7 @@
       if (curRank && curRank.rank !== this.player.lastSectRank) {
         this.player.lastSectRank = curRank.rank;
         sound.playBreakthrough();
+        this.renderer.addFloatingText(`THĂNG CHỨC: ${curRank.rank}!`, 320, 160, '#facc15', true);
         this.addLog(`🎉 Chúc mừng đạo hữu cống hiến vượt bậc, được thăng làm 【${curRank.rank}】 trong tông môn!`, 'golden');
       }
     }
@@ -3047,23 +3367,58 @@
       const p = this.player;
       if (!p || !p.sectId) return;
       const sect = SECTS.find(s => s.id === p.sectId);
+      if (!sect) return;
       const man = sect.manuals.find(m => m.id === manualId);
       if (!man) return;
 
-      if (p.sectContrib < man.cost) {
-        this.addLog(`Điểm Cống Hiến không đủ (cần ${man.cost} điểm)!`, 'warning');
+      p.sectManualsBought = p.sectManualsBought || [];
+      if (p.sectManualsBought.includes(manualId)) {
+        this.addLog(`Đạo hữu đã lĩnh ngộ bí tịch 【${man.name}】 rồi!`, 'warning');
+        return;
+      }
+
+      if ((p.sectContrib || 0) < man.cost) {
+        this.addLog(`Điểm Cống Hiến không đủ (cần ${man.cost} điểm, hiện có ${p.sectContrib || 0})!`, 'warning');
         return;
       }
 
       p.sectContrib -= man.cost;
-      if (man.atk) p.bonusAtk = (p.bonusAtk || 0) + man.atk;
-      if (man.def) p.bonusDef = (p.bonusDef || 0) + man.def;
-      if (man.hp) p.bonusHp = (p.bonusHp || 0) + man.hp;
-      if (man.mp) p.bonusMp = (p.bonusMp || 0) + man.mp;
+      p.sectManualsBought.push(manualId);
+
+      const effects = [];
+      if (man.atk) {
+        p.bonusAtk = (p.bonusAtk || 0) + man.atk;
+        effects.push(`+${man.atk} Công`);
+      }
+      if (man.def) {
+        p.bonusDef = (p.bonusDef || 0) + man.def;
+        effects.push(`+${man.def} Thủ`);
+      }
+      if (man.hp) {
+        p.bonusHp = (p.bonusHp || 0) + man.hp;
+        effects.push(`+${man.hp} HP`);
+      }
+      if (man.mp) {
+        p.bonusMp = (p.bonusMp || 0) + man.mp;
+        effects.push(`+${man.mp} MP`);
+      }
+      if (man.crit) {
+        p.bonusCrit = (p.bonusCrit || 0) + man.crit;
+        effects.push(`+${Math.floor(man.crit * 100)}% Bạo Kích`);
+      }
+      if (man.lifeSteal) {
+        p.bonusLifeSteal = (p.bonusLifeSteal || 0) + man.lifeSteal;
+        effects.push(`+${Math.floor(man.lifeSteal * 100)}% Hút Máu`);
+      }
+      if (man.lifespanGain) {
+        p.bonusLifespan = (p.bonusLifespan || 0) + man.lifespanGain;
+        effects.push(`+${man.lifespanGain} Năm Thọ Nguyên`);
+      }
 
       this.recalculatePlayerStats();
       sound.playBreakthrough();
-      this.addLog(`📖 Đổi được bí tịch 【${man.name}】 tại Tàng Kinh Các! Thuộc tính tăng vĩnh viễn!`, 'golden');
+      this.renderer.addFloatingText(`LĨNH NGỘ BÍ TỊCH!`, 320, 160, '#facc15', true);
+      this.addLog(`📖 Lĩnh ngộ thành công 【${man.name}】 tại Tàng Kinh Các! Thuộc tính tăng vĩnh viễn: ${effects.join(', ')}! (Chức vị tông môn không bị ảnh hưởng)`, 'golden');
       this.updateUI();
     }
 
@@ -3142,6 +3497,12 @@
         const dataStr = localStorage.getItem('tutien_savegame');
         if (dataStr) {
           this.player = JSON.parse(dataStr);
+          if (this.player.sectContribTotal === undefined) this.player.sectContribTotal = this.player.sectContrib || 0;
+          if (this.player.sectPatrolKills === undefined) this.player.sectPatrolKills = 0;
+          if (!this.player.sectManualsBought) this.player.sectManualsBought = [];
+          if (this.player.bonusCrit === undefined) this.player.bonusCrit = 0;
+          if (this.player.bonusLifeSteal === undefined) this.player.bonusLifeSteal = 0;
+
           this.recalculatePlayerStats();
           this.refreshMarket();
           this.startLoops();
@@ -3164,6 +3525,12 @@
         const parsed = JSON.parse(jsonStr);
         if (parsed && parsed.name && parsed.realmIndex !== undefined) {
           this.player = parsed;
+          if (this.player.sectContribTotal === undefined) this.player.sectContribTotal = this.player.sectContrib || 0;
+          if (this.player.sectPatrolKills === undefined) this.player.sectPatrolKills = 0;
+          if (!this.player.sectManualsBought) this.player.sectManualsBought = [];
+          if (this.player.bonusCrit === undefined) this.player.bonusCrit = 0;
+          if (this.player.bonusLifeSteal === undefined) this.player.bonusLifeSteal = 0;
+
           this.recalculatePlayerStats();
           this.saveToLocalStorage();
           this.updateUI();
@@ -3315,43 +3682,140 @@
       sectJoinedEl.classList.remove('hidden');
 
       const sect = SECTS.find(s => s.id === p.sectId);
+      if (!sect) return;
       const curRank = this.getCurrentSectRank();
+      const nextRank = this.getNextSectRank();
 
       const nameEl = document.getElementById('sect-name-display');
+      const typeEl = document.getElementById('sect-type-display');
       const rankEl = document.getElementById('sect-rank-display');
       const contribEl = document.getElementById('sect-contrib-display');
+      const rankTargetEl = document.getElementById('sect-rank-target');
+      const progressTextEl = document.getElementById('sect-progress-text');
+      const progressFillEl = document.getElementById('sect-rank-progress-fill');
+      const btnSalary = document.getElementById('btn-sect-salary');
 
       if (nameEl) nameEl.textContent = sect.name;
-      if (rankEl) rankEl.textContent = curRank.rank;
-      if (contribEl) contribEl.textContent = p.sectContrib;
+      if (typeEl) typeEl.textContent = `${sect.type} • ${sect.desc}`;
+      if (rankEl) rankEl.textContent = curRank ? curRank.rank : 'Đệ Tử';
+      if (contribEl) contribEl.textContent = p.sectContrib || 0;
 
+      const totalContrib = p.sectContribTotal ?? p.sectContrib ?? 0;
+      if (nextRank) {
+        if (rankTargetEl) rankTargetEl.textContent = nextRank.rank;
+        if (progressTextEl) progressTextEl.textContent = `${totalContrib} / ${nextRank.minContrib} Tổng Tích Lũy`;
+        if (progressFillEl) {
+          const curMin = (curRank && curRank.minContrib) || 0;
+          const range = Math.max(1, nextRank.minContrib - curMin);
+          const pct = Math.max(0, Math.min(100, ((totalContrib - curMin) / range) * 100));
+          progressFillEl.style.width = `${pct}%`;
+        }
+      } else {
+        if (rankTargetEl) rankTargetEl.textContent = 'Đỉnh Cao Môn Phái';
+        if (progressTextEl) progressTextEl.textContent = `${totalContrib} (Tối Đa)`;
+        if (progressFillEl) progressFillEl.style.width = '100%';
+      }
+
+      // Nút Lĩnh Bổng Lộc Hàng Năm
+      if (btnSalary) {
+        const salary = (curRank && curRank.salary) || 10;
+        if (p.sectSalaryClaimedYear === p.age) {
+          btnSalary.disabled = true;
+          btnSalary.textContent = `✅ Đã Nhận Bổng Lộc (Năm ${p.age})`;
+          btnSalary.classList.remove('primary-btn');
+        } else {
+          btnSalary.disabled = false;
+          btnSalary.textContent = `🎁 Nhận Bổng Lộc (+${salary} Linh Thạch)`;
+          btnSalary.classList.add('primary-btn');
+        }
+      }
+
+      // Danh Sách Nhiệm Vụ Tông Môn
       const questListEl = document.getElementById('sect-quest-list');
       if (questListEl) {
         questListEl.innerHTML = '';
         SECT_QUESTS.forEach(q => {
-          const row = document.createElement('div');
-          row.className = 'quest-row pixel-box';
-          row.innerHTML = `
-            <div><strong>${q.name}</strong>: ${q.desc}</div>
-            <button class="pixel-btn small-btn">Nộp (${q.contrib} Cống hiến)</button>
+          let isMet = false;
+          let progressInfo = '';
+
+          if (q.reqItem) {
+            const count = (p.inventory && p.inventory[q.reqItem]) || 0;
+            const itemObj = ITEMS[q.reqItem];
+            isMet = count >= q.reqCount;
+            progressInfo = `Cần: ${q.reqCount} ${itemObj ? itemObj.name : q.reqItem} (Hiện có: ${count})`;
+          } else if (q.costStone) {
+            const count = p.spiritStones || 0;
+            isMet = count >= q.costStone;
+            progressInfo = `Quyên góp: ${q.costStone} Linh Thạch (Hiện có: ${count})`;
+          } else if (q.reqKills) {
+            const kills = p.sectPatrolKills || 0;
+            isMet = kills >= q.reqKills;
+            progressInfo = `Chiến tích diệt yêu: ${Math.min(q.reqKills, kills)} / ${q.reqKills}`;
+          }
+
+          const card = document.createElement('div');
+          card.className = 'sect-quest-card';
+          card.innerHTML = `
+            <div style="flex: 1;">
+              <div class="sect-quest-title">📜 ${q.name}</div>
+              <div class="sect-quest-desc">${q.desc}</div>
+              <div class="sect-quest-reward">
+                <span>🎁 Thưởng: <strong>+${q.contrib} Cống Hiến</strong></span>
+                ${q.stone ? `<span>• <strong>+${q.stone} Linh Thạch</strong></span>` : ''}
+              </div>
+              <div style="font-size: 11px; margin-top: 4px; font-weight: bold; color: ${isMet ? '#34d399' : '#f87171'};">
+                ${progressInfo}
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 5px; align-items: flex-end;">
+              ${q.reqKills && !isMet ? `<button class="pixel-btn small-btn btn-patrol" style="border-color: #ef4444; color: #fca5a5;">⚔️ Đi Diệt Yêu</button>` : ''}
+              <button class="pixel-btn small-btn btn-submit ${isMet ? 'primary-btn' : ''}" ${isMet ? '' : 'disabled'}>
+                ${isMet ? `Giao Nộp (+${q.contrib})` : 'Chưa Đủ ĐK'}
+              </button>
+            </div>
           `;
-          row.querySelector('button').onclick = () => this.completeSectQuest(q.id);
-          questListEl.appendChild(row);
+
+          const btnSubmit = card.querySelector('.btn-submit');
+          if (btnSubmit) btnSubmit.onclick = () => this.completeSectQuest(q.id);
+
+          const btnPatrol = card.querySelector('.btn-patrol');
+          if (btnPatrol) btnPatrol.onclick = () => this.startSectPatrolFight();
+
+          questListEl.appendChild(card);
         });
       }
 
+      // Danh Sách Bí Tịch Tàng Kinh Các
       const manualListEl = document.getElementById('sect-manual-list');
       if (manualListEl) {
         manualListEl.innerHTML = '';
+        p.sectManualsBought = p.sectManualsBought || [];
+
         sect.manuals.forEach(m => {
-          const row = document.createElement('div');
-          row.className = 'quest-row pixel-box';
-          row.innerHTML = `
-            <div><strong>${m.name}</strong> - ${m.desc} (Giá: ${m.cost} Cống hiến)</div>
-            <button class="pixel-btn small-btn">Đổi</button>
+          const isBought = p.sectManualsBought.includes(m.id);
+          const canAfford = (p.sectContrib || 0) >= m.cost;
+
+          const card = document.createElement('div');
+          card.className = 'sect-manual-card';
+          card.innerHTML = `
+            <div>
+              <div class="sect-manual-title">📖 ${m.name}</div>
+              <div class="sect-manual-desc">${m.desc}</div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+              <div class="sect-manual-cost">🪙 ${m.cost} Cống Hiến</div>
+              <button class="pixel-btn small-btn btn-buy-manual ${isBought ? '' : (canAfford ? 'primary-btn' : '')}" ${isBought || !canAfford ? 'disabled' : ''}>
+                ${isBought ? '✅ Đã Lĩnh Ngộ' : (canAfford ? 'Lĩnh Ngộ' : `Thiếu (${p.sectContrib || 0}/${m.cost})`)}
+              </button>
+            </div>
           `;
-          row.querySelector('button').onclick = () => this.buySectManual(m.id);
-          manualListEl.appendChild(row);
+
+          const btnBuy = card.querySelector('.btn-buy-manual');
+          if (btnBuy && !isBought && canAfford) {
+            btnBuy.onclick = () => this.buySectManual(m.id);
+          }
+
+          manualListEl.appendChild(card);
         });
       }
     }
@@ -3441,6 +3905,7 @@
   // 7. APP CONTROLLER & LOGGING
   // ==========================================================================
   let activeGameSystems = null;
+  let activeCombatEngine = null;
 
   function addLog(text, type = 'normal') {
     const container = document.getElementById('log-messages');
@@ -3459,6 +3924,11 @@
   }
 
   function switchTab(tabId) {
+    if (activeCombatEngine && activeCombatEngine.inCombat && tabId !== 'tab-combat') {
+      if (activeGameSystems) activeGameSystems.addLog('⚠️ Đang trong sinh tử chiến! Thần thức tập trung, không thể rời trận!', 'warning');
+      sound.playHurt();
+      return;
+    }
     document.querySelectorAll('.tab-btn').forEach(b => {
       b.classList.toggle('active', b.getAttribute('data-tab') === tabId);
     });
@@ -3466,18 +3936,22 @@
       p.classList.toggle('active', p.id === tabId);
     });
   }
+  window.switchTab = switchTab;
 
   document.addEventListener('DOMContentLoaded', () => {
     const mainCanvas = document.getElementById('main-canvas');
     const renderer = new PixelRenderer(mainCanvas);
     const systems = new GameSystems(renderer, addLog);
     activeGameSystems = systems;
+    window.activeGameSystems = systems;
     renderer.setSystems(systems);
 
     const combatEngine = new CombatEngine(renderer, addLog, () => {
       systems.updateUI();
       switchTab('tab-world');
     });
+    activeCombatEngine = combatEngine;
+    window.activeCombatEngine = combatEngine;
     systems.setCombatEngine(combatEngine);
 
     const avatarCanvas = document.getElementById('avatar-canvas');
@@ -3577,6 +4051,23 @@
     if (btnArtifact) btnArtifact.addEventListener('click', () => combatEngine.playerUseArtifact());
     if (btnPill) btnPill.addEventListener('click', () => combatEngine.playerUsePill('pill_hoixuan'));
     if (btnFlee) btnFlee.addEventListener('click', () => combatEngine.playerFlee());
+
+    // Phím tắt chiến đấu [1..5]
+    window.addEventListener('keydown', (e) => {
+      if (!combatEngine || !combatEngine.inCombat) return;
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+
+      if (['1', '2', '3', '4', '5'].includes(e.key)) {
+        e.preventDefault();
+        if (!combatEngine.isPlayerTurn || combatEngine.isProcessingTurn) return;
+
+        if (e.key === '1') combatEngine.playerNormalAttack();
+        else if (e.key === '2') combatEngine.playerCastSkill();
+        else if (e.key === '3') combatEngine.playerUseArtifact();
+        else if (e.key === '4') combatEngine.playerUsePill('pill_hoixuan');
+        else if (e.key === '5') combatEngine.playerFlee();
+      }
+    });
 
     const btnSound = document.getElementById('btn-sound-toggle');
     if (btnSound) {
