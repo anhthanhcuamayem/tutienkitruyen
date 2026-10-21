@@ -5279,7 +5279,7 @@
     const rollCompEl = document.getElementById('roll-comp');
     const btnStart = document.getElementById('btn-start-game');
 
-    btnRoll.onclick = () => {
+    function performRoll() {
       sound.playCheatSystem();
       btnRoll.disabled = true;
       btnRoll.classList.remove('btn-pulse');
@@ -5287,7 +5287,7 @@
 
       const hint = document.getElementById('creation-guide-hint');
       if (hint) {
-        hint.innerHTML = '✨ Thiên mệnh đã an bài! Chọn Con Đường & Kim Thủ Chỉ rồi nhấn <strong>[Bước Vào Tiên Đồ]</strong>!';
+        hint.innerHTML = '✨ Thiên mệnh đã an bài! Nhấn <strong>[TẠO NHÂN VẬT & BƯỚC VÀO TIÊN ĐỒ]</strong> ở dưới để xuất thế!';
         hint.style.color = '#34d399';
       }
 
@@ -5320,7 +5320,9 @@
       rollCompEl.textContent = `${comp}% ${comp >= 100 ? '⭐ [Thiên tài ngàn năm]' : (comp < 70 ? '⚠️ [Tư chất ngu độn]' : '⚡ [Bình thường]')}`;
 
       checkReady();
-    };
+    }
+
+    btnRoll.onclick = performRoll;
 
     const pathsContainer = document.getElementById('paths-container');
     pathsContainer.innerHTML = '';
@@ -5382,13 +5384,19 @@
     });
 
     function checkReady() {
-      if (rolledDestiny && selectedPathId && selectedCoreId && selectedPerkId) {
+      if (btnStart) {
         btnStart.disabled = false;
         btnStart.classList.add('btn-pulse');
       }
     }
+    checkReady();
 
     btnStart.onclick = () => {
+      // Tự động quay thiên mệnh nếu người chơi chưa bấm quay
+      if (!rolledDestiny) {
+        performRoll();
+      }
+
       sound.playBreakthrough();
       const daoHieuInput = document.getElementById('input-dao-hieu').value.trim() || 'Hàn Lập';
       const cheatNameInput = document.getElementById('input-cheat-name').value.trim() || 'Hệ Thống Vô Địch';
@@ -5398,10 +5406,10 @@
         rolledDestiny.root,
         rolledDestiny.physique,
         rolledDestiny.comprehension,
-        selectedPathId,
+        selectedPathId || 'kiem_tu',
         cheatNameInput,
-        selectedCoreId,
-        selectedPerkId
+        selectedCoreId || 'signin',
+        selectedPerkId || 'breakthrough_guard'
       );
 
       modal.classList.add('hidden');

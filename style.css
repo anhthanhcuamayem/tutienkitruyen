@@ -1552,7 +1552,7 @@ body.combat-active-mode #tab-combat {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: 2000;
   backdrop-filter: blur(5px);
 }
 
@@ -1563,6 +1563,7 @@ body.combat-active-mode #tab-combat {
   width: 90%;
   max-width: 720px;
   max-height: 90vh;
+  max-height: 90dvh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1570,6 +1571,7 @@ body.combat-active-mode #tab-combat {
 }
 
 .modal-header {
+  flex-shrink: 0;
   padding: 12px 18px;
   background: linear-gradient(180deg, #1e1b4b 0%, #11142e 100%);
   border-bottom: 2px solid var(--border-gold);
@@ -1582,20 +1584,75 @@ body.combat-active-mode #tab-combat {
 }
 
 .modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
   padding: 18px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
 .modal-footer {
+  flex-shrink: 0;
   padding: 12px 18px;
   background: #0b101c;
-  border-top: 1px solid var(--border-dark);
+  border-top: 2px solid var(--border-gold);
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+}
+
+/* Kiểu dáng riêng cho Bảng Khởi Tạo Nhân Vật */
+.destiny-input-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-roll-destiny {
+  width: 100%;
+  min-height: 42px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.creation-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #090e1a;
+  border-top: 2px solid var(--border-gold);
+}
+
+.btn-start-game {
+  width: 100%;
+  max-width: 360px;
+  min-height: 48px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #b45309 0%, #78350f 100%) !important;
+  color: #fef08a !important;
+  border: 2px solid var(--border-gold-bright) !important;
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.6) !important;
+}
+
+.creation-guide-hint {
+  color: var(--text-gold);
+  font-size: 11px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1.4;
 }
 
 .creation-step {
@@ -2667,21 +2724,31 @@ body.combat-active-mode #tab-combat {
   .modal-window {
     width: 95vw;
     max-width: 420px;
-    max-height: 88vh;
+    max-height: 92vh;
+    max-height: 92dvh;
     border-width: 2px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
 
   .modal-header {
+    flex-shrink: 0;
     padding: 10px 14px;
     font-size: 14px;
   }
 
   .modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     padding: 12px 14px;
     gap: 10px;
   }
 
   .modal-footer {
+    flex-shrink: 0;
     padding: 10px 14px;
     flex-wrap: wrap;
     gap: 8px;
@@ -2691,6 +2758,44 @@ body.combat-active-mode #tab-combat {
   .modal-footer button {
     min-height: 42px;
     flex: 1;
+  }
+
+  .creation-footer {
+    padding: 10px 12px;
+    background: #090e1a;
+    border-top: 2px solid var(--border-gold);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .btn-start-game {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 48px !important;
+    font-size: 14px !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .destiny-input-box .input-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+
+  .destiny-input-box input {
+    width: 100%;
+    min-height: 38px;
+  }
+
+  .btn-roll-destiny {
+    width: 100%;
+    min-height: 44px;
+    font-size: 13px;
   }
 
   .cards-select-row {

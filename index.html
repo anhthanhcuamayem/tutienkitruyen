@@ -708,11 +708,15 @@
 
         <!-- BƯỚC 1: NHẬP ĐẠO HIỆU & QUAY THIÊN MỆNH (DUY NHẤT 1 LẦN) -->
         <div class="creation-step">
-          <div class="step-title">Bước 1: Nhập Đạo Hiệu & Quay Thiên Mệnh (Giới hạn đúng 1 lần quay duy nhất)</div>
-          <div class="input-row">
-            <label for="input-dao-hieu">Đạo Hiệu:</label>
-            <input id="input-dao-hieu" type="text" class="pixel-input" placeholder="Nhập đạo hiệu..." value="Hàn Lập">
-            <button id="btn-roll-destiny" class="pixel-btn primary-btn btn-pulse">🎲 Quay Thiên Mệnh (1 Lần Duy Nhất)</button>
+          <div class="step-title">Bước 1: Nhập Đạo Hiệu & Quay Thiên Mệnh</div>
+          <div class="destiny-input-box">
+            <div class="input-row">
+              <label for="input-dao-hieu">Đạo Hiệu Nhân Vật:</label>
+              <input id="input-dao-hieu" type="text" class="pixel-input" placeholder="Nhập đạo hiệu..." value="Hàn Lập">
+            </div>
+            <button id="btn-roll-destiny" class="pixel-btn primary-btn btn-pulse btn-roll-destiny">
+              🎲 Quay Thiên Mệnh (Linh Căn & Thể Chất)
+            </button>
           </div>
           <!-- Kết quả quay -->
           <div id="destiny-result-box" class="destiny-results hidden">
@@ -743,11 +747,13 @@
         </div>
 
       </div>
-      <div class="modal-footer" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-        <div id="creation-guide-hint" style="color: var(--text-gold); font-size: 12px; font-weight: bold; text-align: center;">
-          👉 Vui lòng bấm <strong>[Quay Thiên Mệnh (1 Lần Duy Nhất)]</strong> ở Bước 1 để bắt đầu!
+      <div class="modal-footer creation-footer">
+        <button id="btn-start-game" class="pixel-btn primary-btn btn-pulse btn-3d btn-start-game">
+          🚀 TẠO NHÂN VẬT & BƯỚC VÀO TIÊN ĐỒ
+        </button>
+        <div id="creation-guide-hint" class="creation-guide-hint">
+          ✨ Bạn có thể chọn con đường và bấm nút trên để bắt đầu tu tiên ngay!
         </div>
-        <button id="btn-start-game" class="pixel-btn primary-btn" style="min-width: 200px;" disabled>🚀 Bước Vào Tiên Đồ</button>
       </div>
     </div>
   </div>
