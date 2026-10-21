@@ -228,12 +228,23 @@
 
         <!-- TAB 3: CHIẾN ĐẤU THEO LƯỢT (COMBAT ARENA) -->
         <section id="tab-combat" class="tab-pane">
-          <!-- Combat State Banner -->
-          <div class="combat-state-header">
-            <div class="combat-state-tag">🔥 ĐẤU TRƯỜNG SINH TỬ 🔥</div>
-            <div class="combat-state-title">Đạo Hữu đối đầu sinh tử cùng <span id="combat-banner-enemy" style="color: #f87171; font-weight: bold;">Yêu Thú</span>!</div>
+          <!-- Combat Command Bar (Header + Controls: Speed + Auto) -->
+          <div class="combat-top-control-bar">
+            <div class="combat-enemy-title">
+              <span class="combat-flame">⚔️</span>
+              <span>Giao Chiến: <strong id="combat-banner-monster" style="color: #facc15;">Yêu Thú</strong></span>
+              <span id="combat-banner-enemy" style="display:none;"></span>
+            </div>
+            <div id="combat-turn-indicator" class="combat-turn-pill waiting-turn">
+              <span id="combat-turn-text">⏳ Vận hành khí thế...</span>
+            </div>
+            <div class="combat-controls-group">
+              <button id="btn-combat-speed" class="pixel-btn small-btn" title="Tăng tốc độ trận đấu (Phím S)">⚡ 1x</button>
+              <button id="btn-combat-auto" class="pixel-btn small-btn" title="Tự động chiến đấu (Phím A)">🤖 Tự Động: TẮT</button>
+            </div>
           </div>
 
+          <!-- Combat HUD: Sinh mệnh & Khí thế 2 bên -->
           <div class="combat-hud">
             <!-- Đạo hữu -->
             <div class="combat-unit player-combat-box">
@@ -247,24 +258,22 @@
                 <div id="combat-player-hp-text" class="combat-bar-overlay-text">HP: 100%</div>
               </div>
               <!-- Thanh Linh Lực (MP) -->
-              <div class="combat-bar-wrapper" style="margin-top: 6px;">
+              <div class="combat-bar-wrapper" style="margin-top: 4px;">
                 <div class="progress-bar-bg"><div id="combat-player-mp" class="progress-bar-fill mp-fill" style="width: 100%;"></div></div>
                 <div id="combat-player-mp-text" class="combat-bar-overlay-text">MP: 100%</div>
               </div>
               <!-- Thanh Tốc Độ / Nạp Lượt (ATB) -->
-              <div class="combat-bar-wrapper" style="margin-top: 6px;">
+              <div class="combat-bar-wrapper" style="margin-top: 4px;">
                 <div class="progress-bar-bg"><div id="combat-player-gauge" class="progress-bar-fill exp-fill" style="width: 0%;"></div></div>
                 <div id="combat-player-gauge-text" class="combat-bar-overlay-text">Tốc Độ: 0%</div>
               </div>
               <div id="combat-player-statuses" class="combat-status-row"></div>
             </div>
 
-            <!-- Cột Giữa: Chỉ Báo Lượt Đánh & VS -->
+            <!-- Cột Giữa: Chỉ Báo VS & Hiệp đấu -->
             <div class="combat-center-column">
               <div class="combat-vs-badge">VS</div>
-              <div id="combat-turn-indicator" class="combat-turn-indicator waiting-turn">
-                <span id="combat-turn-text">⏳ Đang nạp khí thế...</span>
-              </div>
+              <div id="combat-round-counter" class="combat-round-tag">Hiệp 1</div>
             </div>
 
             <!-- Yêu thú / Đối thủ -->
@@ -279,7 +288,7 @@
                 <div id="combat-monster-hp-text" class="combat-bar-overlay-text">HP: 100%</div>
               </div>
               <!-- Thanh Tốc Độ Quái -->
-              <div class="combat-bar-wrapper" style="margin-top: 6px;">
+              <div class="combat-bar-wrapper" style="margin-top: 4px;">
                 <div class="progress-bar-bg"><div id="combat-monster-gauge" class="progress-bar-fill exp-fill" style="width: 0%; margin-left: auto;"></div></div>
                 <div id="combat-monster-gauge-text" class="combat-bar-overlay-text">Tốc Độ: 0%</div>
               </div>
@@ -287,28 +296,37 @@
             </div>
           </div>
 
-          <!-- 5 Nút Lựa Chọn Chiến Đấu Pixel 3D Có Phím Tắt -->
-          <div class="action-buttons-grid combat-actions-grid">
+          <!-- 5 Nút Lựa Chọn Chiến Đấu Pixel 3D 1 Hàng Ngang Thoáng Đãng -->
+          <div class="combat-actions-grid">
             <button id="btn-combat-attack" class="pixel-btn btn-3d combat-btn-attack" disabled>
               <span class="combat-key-badge">1</span>
-              <span>🗡️ Công Kích Cơ Bản</span>
+              <span>🗡️ Đánh Thường</span>
             </button>
             <button id="btn-combat-skill" class="pixel-btn btn-3d primary-btn combat-btn-skill" disabled>
               <span class="combat-key-badge">2</span>
-              <span id="combat-skill-label">⚡ Tuyệt Kỹ Bản Mệnh</span>
+              <span id="combat-skill-label">⚡ Tuyệt Kỹ</span>
             </button>
             <button id="btn-combat-artifact" class="pixel-btn btn-3d combat-btn-artifact" disabled>
               <span class="combat-key-badge">3</span>
-              <span id="combat-artifact-label">🛡️ Tế Pháp Bảo</span>
+              <span id="combat-artifact-label">🛡️ Pháp Bảo</span>
             </button>
             <button id="btn-combat-pill" class="pixel-btn btn-3d combat-btn-pill" disabled>
               <span class="combat-key-badge">4</span>
-              <span id="combat-pill-label">🧪 Hồi Xuân Đan</span>
+              <span id="combat-pill-label">🧪 Hồi Xuân</span>
             </button>
-            <button id="btn-combat-flee" class="pixel-btn btn-3d combat-btn-flee" style="grid-column: span 2;" disabled>
+            <button id="btn-combat-flee" class="pixel-btn btn-3d combat-btn-flee" disabled>
               <span class="combat-key-badge">5</span>
-              <span>💨 Thân Pháp Đào Thoát (Bỏ Chạy)</span>
+              <span>💨 Đào Thoát</span>
             </button>
+          </div>
+
+          <!-- Popup Kết Quả Trận Đấu -->
+          <div id="combat-result-overlay" class="combat-result-overlay hidden">
+            <div class="combat-result-box">
+              <div id="combat-result-title" class="combat-result-title">🎉 ĐẠI THẮNG QUANG VINH!</div>
+              <div id="combat-result-body" class="combat-result-body"></div>
+              <button id="btn-combat-close-result" class="pixel-btn primary-btn btn-3d" style="margin-top: 12px; width: 100%;">Tiếp Tục Tiên Đồ ➔</button>
+            </div>
           </div>
         </section>
 

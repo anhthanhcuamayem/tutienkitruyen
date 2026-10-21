@@ -879,100 +879,135 @@ body {
   color: #fed7aa;
 }
 
-/* ================= TRẠNG THÁI CHIẾN ĐẤU (COMBAT MODE OVERHAUL) ================= */
+/* ================= TRẠNG THÁI CHIẾN ĐẤU (COMBAT ARENA OVERHAUL) ================= */
 
-/* Banner cảnh báo khi vào trận */
-.combat-active-banner {
-  background: linear-gradient(90deg, #38070b 0%, #1f0814 50%, #38070b 100%);
-  border: 2px solid #ef4444;
-  border-radius: 4px;
-  padding: 8px 14px;
-  margin-bottom: 10px;
-  text-align: center;
-  box-shadow: 0 0 16px rgba(239, 68, 68, 0.45);
-  animation: combatHeaderGlow 1.6s ease-in-out infinite alternate;
-}
-
-@keyframes combatHeaderGlow {
-  0% { box-shadow: 0 0 8px rgba(239, 68, 68, 0.35); border-color: #b91c1c; }
-  100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.75); border-color: #f87171; }
-}
-
-.combat-banner-title {
-  font-family: var(--font-title);
-  font-size: 14px;
-  font-weight: 800;
-  color: #fca5a5;
-  letter-spacing: 0.5px;
-  text-shadow: 0 1px 4px #000, 0 0 6px rgba(239, 68, 68, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.combat-banner-sub {
-  font-size: 11px;
-  color: #fed7aa;
-  opacity: 0.85;
-  margin-top: 3px;
-  font-family: var(--font-mono);
-}
-
-/* Khi đang trong combat-active-mode: Khung Canvas rực lửa chiến ý */
+/* Khi đang trong combat-active-mode: Thu gọn Canvas & Ẩn thanh Tab thừa */
 body.combat-active-mode .canvas-viewport {
+  height: 240px !important;
+  max-height: 240px !important;
   border-color: #ef4444 !important;
-  box-shadow: 0 0 22px rgba(239, 68, 68, 0.4), inset 0 0 16px rgba(239, 68, 68, 0.25) !important;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.45), inset 0 0 16px rgba(239, 68, 68, 0.25) !important;
 }
 
-/* Các tab khác bị khóa khi đang giao chiến */
-body.combat-active-mode .tab-nav-bar .tab-btn:not(#tab-nav-combat) {
-  opacity: 0.4;
-  filter: grayscale(80%);
-  cursor: not-allowed;
-  pointer-events: none;
+body.combat-active-mode .tab-nav-bar {
+  display: none !important;
 }
 
-/* Tab chiến đấu sáng rực */
-body.combat-active-mode #tab-nav-combat.active {
-  background: linear-gradient(180deg, #991b1b 0%, #450a0a 100%) !important;
-  border-color: #f87171 !important;
-  color: #fff !important;
-  box-shadow: 0 0 14px rgba(239, 68, 68, 0.8) !important;
-  animation: combatTabPulse 1s ease-in-out infinite alternate;
+body.combat-active-mode #combat-active-header {
+  display: none !important;
 }
 
-@keyframes combatTabPulse {
-  0% { box-shadow: 0 0 6px rgba(239, 68, 68, 0.5); }
-  100% { box-shadow: 0 0 16px rgba(239, 68, 68, 0.9); }
+body.combat-active-mode .tab-content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  padding: 0;
 }
 
-/* Header bên trong tab combat */
-.combat-state-header {
-  background: rgba(15, 23, 42, 0.6);
-  border-bottom: 1px dashed var(--border-inner);
-  padding: 6px 10px;
-  margin-bottom: 8px;
+body.combat-active-mode #tab-combat {
+  position: relative;
+  display: flex !important;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+}
+
+/* 1. Thanh Điều Khiển & Trạng Thái Chiến Đấu (Top Control Bar) */
+.combat-top-control-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: linear-gradient(90deg, #1f0814 0%, #170924 50%, #1f0814 100%);
+  border: 1px solid #785a28;
+  border-left: 3px solid #ef4444;
+  padding: 5px 10px;
   border-radius: 3px;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
-.combat-state-tag {
+.combat-enemy-title {
+  font-family: var(--font-title);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fca5a5;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.combat-turn-pill {
   font-family: var(--font-title);
   font-size: 11px;
   font-weight: 800;
-  color: #f87171;
+  padding: 3px 12px;
+  border-radius: 12px;
   letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
-.combat-state-title {
-  font-size: 12px;
+.combat-turn-pill.player-turn {
+  background: linear-gradient(90deg, #991b1b 0%, #d97706 50%, #991b1b 100%);
+  color: #fef08a;
+  border: 1px solid #facc15;
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.8);
+  animation: turnPulse 0.9s infinite alternate;
+}
+
+@keyframes turnPulse {
+  0% { transform: scale(0.97); box-shadow: 0 0 6px rgba(250, 204, 21, 0.5); }
+  100% { transform: scale(1.04); box-shadow: 0 0 14px rgba(250, 204, 21, 0.9); }
+}
+
+.combat-turn-pill.processing-turn {
+  background: linear-gradient(90deg, #581c87 0%, #7e22ce 50%, #581c87 100%);
+  color: #e9d5ff;
+  border: 1px solid #c084fc;
+}
+
+.combat-turn-pill.waiting-turn {
+  background: #1e293b;
   color: var(--text-dim);
+  border: 1px solid #334155;
 }
 
-/* ================= COMBAT OVERLAY HUD ================= */
+.combat-controls-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.combat-controls-group .pixel-btn {
+  padding: 4px 8px;
+  font-size: 11px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#btn-combat-auto.active {
+  background: linear-gradient(180deg, #065f46 0%, #047857 100%) !important;
+  color: #a7f3d0 !important;
+  border-color: #34d399 !important;
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.7) !important;
+  animation: autoPulse 1.2s infinite alternate;
+}
+
+@keyframes autoPulse {
+  0% { transform: scale(0.98); }
+  100% { transform: scale(1.02); }
+}
+
+#btn-combat-speed.active {
+  background: linear-gradient(180deg, #854d0e 0%, #a16207 100%) !important;
+  color: #fef08a !important;
+  border-color: #facc15 !important;
+}
+
+/* 2. Khung Chỉ Số Sinh Mệnh & ATB (Combat HUD) */
 .combat-hud {
   display: flex;
   justify-content: space-between;
@@ -980,10 +1015,9 @@ body.combat-active-mode #tab-nav-combat.active {
   background: linear-gradient(180deg, #151d30 0%, #0c1220 100%);
   border: 1px solid var(--border-gold);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
-  padding: 10px 12px;
+  padding: 8px 12px;
   border-radius: 4px;
-  margin-bottom: 10px;
-  gap: 8px;
+  gap: 12px;
 }
 
 .combat-unit {
@@ -994,20 +1028,20 @@ body.combat-active-mode #tab-nav-combat.active {
 }
 
 .player-combat-box {
-  border-right: 1px dashed rgba(200, 155, 60, 0.2);
-  padding-right: 8px;
+  border-right: 1px dashed rgba(200, 155, 60, 0.25);
+  padding-right: 10px;
 }
 
 .enemy-combat-box {
-  border-left: 1px dashed rgba(239, 68, 68, 0.2);
-  padding-left: 8px;
+  border-left: 1px dashed rgba(239, 68, 68, 0.25);
+  padding-left: 10px;
 }
 
 .combat-header-row {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .combat-unit-tag {
@@ -1056,14 +1090,14 @@ body.combat-active-mode #tab-nav-combat.active {
   pointer-events: none;
 }
 
-/* Cột giữa hiển thị VS & Trạng thái Lượt */
+/* Cột giữa hiển thị VS & Hiệp Đấu */
 .combat-center-column {
-  width: 90px;
+  width: 70px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0 4px;
+  padding: 0 2px;
 }
 
 .combat-vs-badge {
@@ -1072,44 +1106,18 @@ body.combat-active-mode #tab-nav-combat.active {
   font-size: 16px;
   color: #ef4444;
   text-shadow: 0 0 8px rgba(239, 68, 68, 0.8), 0 2px 4px #000;
-  margin-bottom: 4px;
 }
 
-.combat-turn-indicator {
-  font-family: var(--font-title);
+.combat-round-tag {
+  font-family: var(--font-mono);
   font-size: 10px;
-  font-weight: 800;
-  text-align: center;
-  padding: 4px 6px;
+  font-weight: 700;
+  color: #fed7aa;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 1px 6px;
   border-radius: 3px;
-  width: 100%;
-  letter-spacing: 0.3px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-}
-
-.combat-turn-indicator.player-turn {
-  background: linear-gradient(90deg, #78350f 0%, #b45309 50%, #78350f 100%);
-  color: #fef08a;
-  border: 1px solid #facc15;
-  box-shadow: 0 0 10px rgba(250, 204, 21, 0.7);
-  animation: playerTurnPulse 0.9s ease-in-out infinite alternate;
-}
-
-@keyframes playerTurnPulse {
-  0% { transform: scale(0.97); box-shadow: 0 0 6px rgba(250, 204, 21, 0.5); }
-  100% { transform: scale(1.03); box-shadow: 0 0 14px rgba(250, 204, 21, 0.9); }
-}
-
-.combat-turn-indicator.processing-turn {
-  background: linear-gradient(90deg, #581c87 0%, #7e22ce 50%, #581c87 100%);
-  color: #e9d5ff;
-  border: 1px solid #c084fc;
-}
-
-.combat-turn-indicator.waiting-turn {
-  background: #1e293b;
-  color: var(--text-dim);
-  border: 1px solid #334155;
+  border: 1px solid rgba(250, 204, 21, 0.3);
+  margin-top: 2px;
 }
 
 /* Badges trạng thái hiệu ứng */
@@ -1117,8 +1125,8 @@ body.combat-active-mode #tab-nav-combat.active {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  min-height: 18px;
-  margin-top: 5px;
+  min-height: 16px;
+  margin-top: 4px;
 }
 
 .combat-status-badge {
@@ -1136,32 +1144,52 @@ body.combat-active-mode #tab-nav-combat.active {
 .status-stun   { background: rgba(234, 179, 8, 0.25);   color: #fde047; border: 1px solid #eab308; }
 .status-defend { background: rgba(52, 211, 153, 0.25);  color: #6ee7b7; border: 1px solid #10b981; }
 
-/* 5 Nút Lựa Chọn Chiến Đấu Pixel 3D */
+/* 3. Bảng 5 Nút Hành Động Chiến Đấu (1 Hàng Ngang Thoáng Đãng) */
 .combat-actions-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 8px;
+  width: 100%;
 }
 
 .combat-actions-grid .pixel-btn {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  padding: 9px 12px;
-  font-size: 12px;
+  justify-content: center;
+  padding: 6px 4px;
+  min-height: 52px;
+  font-size: 11px;
   font-weight: 700;
-  gap: 6px;
+  gap: 4px;
+  text-align: center;
+  border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: transform 0.1s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.combat-key-badge {
+.combat-actions-grid .combat-key-badge {
   background: #000000;
   color: #facc15;
   border: 1px solid #785a28;
   border-radius: 2px;
-  padding: 1px 5px;
-  font-size: 10px;
+  padding: 0 5px;
+  font-size: 9px;
   font-family: var(--font-mono);
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.1);
+  font-weight: 800;
+}
+
+/* Khi đến lượt đạo hữu: Các nút sẵn sàng phát sáng kích thích bấm */
+.combat-actions-grid.turn-active .pixel-btn:not(:disabled) {
+  animation: combatBtnGlow 1.1s ease-in-out infinite alternate;
+  border-color: #facc15 !important;
+}
+
+@keyframes combatBtnGlow {
+  0% { box-shadow: 0 0 4px rgba(250, 204, 21, 0.4); }
+  100% { box-shadow: 0 0 12px rgba(250, 204, 21, 0.85); transform: translateY(-1px); }
 }
 
 .combat-btn-attack {
@@ -1189,9 +1217,61 @@ body.combat-active-mode #tab-nav-combat.active {
 }
 
 .combat-btn-flee {
-  border-color: #94a3b8;
-  border-bottom-color: #475569;
-  color: #cbd5e1;
+  border-color: #f87171;
+  border-bottom-color: #b91c1c;
+  color: #fca5a5;
+}
+
+/* 4. Popup Kết Quả Trận Đấu Nhanh Gọn (Combat Result Overlay) */
+.combat-result-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(3px);
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.combat-result-overlay.hidden {
+  display: none !important;
+}
+
+.combat-result-box {
+  background: #0f172a;
+  border: 2px solid var(--border-gold);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.95), inset 0 0 12px rgba(200, 155, 60, 0.25);
+  padding: 18px 24px;
+  border-radius: 4px;
+  max-width: 440px;
+  width: 90%;
+  text-align: center;
+  animation: resultPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes resultPop {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.combat-result-title {
+  font-family: var(--font-title);
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-gold-bright);
+  margin-bottom: 10px;
+  text-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
+}
+
+.combat-result-body {
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.7;
 }
 
 /* ================= TÔNG MÔN & CỐNG HIẾN STYLES ================= */

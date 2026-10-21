@@ -2028,7 +2028,7 @@
   }
 
   // ==========================================================================
-  // 5. TURN-BASED COMBAT ENGINE
+  // 5. TURN-BASED COMBAT ENGINE (NÂNG CẤP TOÀN DIỆN CƠ CHẾ CHIẾN ĐẤU & GIAO DIỆN)
   // ==========================================================================
   class CombatEngine {
     constructor(renderer, logCallback, onCombatEndCallback) {
@@ -2054,13 +2054,21 @@
       };
 
       this.isPlayerTurn = false;
+      this.isProcessingTurn = false;
       this.combatInterval = null;
+
+      // Tính năng mới: Tự động đánh, Tốc độ trận đấu, Hiệp đấu, Kết quả trận đấu
+      this.isAutoCombat = false;
+      this.combatSpeed = 1; // 1x hoặc 2x
+      this.roundCount = 1;
+      this.resultAutoTimer = null;
     }
 
     startCombat(player, monsterData) {
       this.inCombat = true;
       this.isPlayerTurn = false;
       this.isProcessingTurn = false;
+      this.roundCount = 1;
       this.player = player;
       this.monster = JSON.parse(JSON.stringify(monsterData));
 
@@ -2082,7 +2090,7 @@
       this.monsterCombat = {
         curHp: this.monster.hp,
         maxHp: this.monster.hp,
-        curMp: this.monster.mp,
+        curMp: this.monster.mp || 50,
         actionGauge: 0,
         frozenTurns: 0,
         stunnedTurns: 0,
@@ -2090,14 +2098,20 @@
         burnTurns: 0
       };
 
+      // Đóng modal kết quả nếu còn sót
+      const overlay = document.getElementById('combat-result-overlay');
+      if (overlay) overlay.classList.add('hidden');
+
       // Kích hoạt Trạng Thái Chiến Đấu (Combat Active Mode)
       document.body.classList.add('combat-active-mode');
-      const headerEl = document.getElementById('combat-active-header');
-      if (headerEl) headerEl.classList.remove('hidden');
+
       const bannerMon = document.getElementById('combat-banner-monster');
       if (bannerMon) bannerMon.textContent = this.monster.name;
       const bannerEnemy = document.getElementById('combat-banner-enemy');
       if (bannerEnemy) bannerEnemy.textContent = this.monster.name;
+
+      const roundEl = document.getElementById('combat-round-counter');
+      if (roundEl) roundEl.textContent = 'Hiệp 1';
 
       this.renderer.combatState.monsterSpriteKey = this.monster.spriteKey || 'monsterWolf';
       this.renderer.setScene(SCENES.COMBAT);
@@ -2115,14 +2129,16 @@
 
     runCombatLoop() {
       if (this.combatInterval) clearInterval(this.combatInterval);
+      const tickMs = 70;
       this.combatInterval = setInterval(() => {
         if (!this.inCombat || this.isPlayerTurn || this.isProcessingTurn) return;
 
-        const pSpeed = Math.max(10, this.player.totalSpd);
-        const mSpeed = Math.max(10, this.monster.spd);
+        const pSpeed = Math.max(12, this.player.totalSpd || 15);
+        const mSpeed = Math.max(10, this.monster.spd || 12);
+        const speedRate = (this.combatSpeed || 1) * 0.22;
 
-        this.playerCombat.actionGauge += pSpeed * 0.15;
-        this.monsterCombat.actionGauge += mSpeed * 0.15;
+        this.playerCombat.actionGauge += pSpeed * speedRate;
+        this.monsterCombat.actionGauge += mSpeed * speedRate;
 
         this.updateCombatUI();
 
@@ -2133,13 +2149,18 @@
           this.monsterCombat.actionGauge = 0;
           this.triggerMonsterTurn();
         }
-      }, 100);
+      }, tickMs);
     }
 
     triggerPlayerTurn() {
-      if (this.playerCombat.curHp <= 0) return;
+      if (this.playerCombat.curHp <= 0 || !this.inCombat) return;
+      this.roundCount = (this.roundCount || 1) + 1;
+      const roundEl = document.getElementById('combat-round-counter');
+      if (roundEl) roundEl.textContent = `Hiệp ${Math.floor(this.roundCount / 2)}`;
+
       this.isProcessingTurn = true;
 
+      // Xử lý hiệu ứng trạng thái đầu hiệp
       if (this.playerCombat.poisonTurns > 0) {
         const pDmg = Math.floor(this.playerCombat.maxHp * 0.05);
         this.playerCombat.curHp = Math.max(1, this.playerCombat.curHp - pDmg);
@@ -2158,20 +2179,89 @@
       }
 
       this.isPlayerTurn = true;
+      this.isProcessingTurn = false;
       this.updateCombatButtons(true);
       this.updateCombatUI();
+
+      const actionsGrid = document.querySelector('.combat-actions-grid');
+      if (actionsGrid) actionsGrid.classList.add('turn-active');
+
+      if (this.isAutoCombat) {
+        const delay = this.combatSpeed === 2 ? 150 : 280;
+        setTimeout(() => {
+          if (!this.inCombat || !this.isPlayerTurn || this.isProcessingTurn) return;
+          this.executeAutoTurn();
+        }, delay);
+      } else {
+        sound.playClick();
+      }
+    }
+
+    executeAutoTurn() {
+      if (!this.isPlayerTurn || this.isProcessingTurn) return;
+      const skill = this.player.activeSkill;
+      const art = this.player.equippedArtifact;
+      const pillCount = (this.player.inventory && this.player.inventory.pill_hoixuan) || 0;
+
+      // 1. Cứu nguy nếu máu thấp < 35%
+      if (this.playerCombat.curHp / this.playerCombat.maxHp < 0.35 && pillCount > 0) {
+        this.playerUsePill('pill_hoixuan');
+        return;
+      }
+
+      // 2. Tuyệt kỹ nếu sẵn sàng & đủ MP
+      if (skill && this.playerCombat.skillCooldown === 0 && this.playerCombat.curMp >= skill.mpCost) {
+        this.playerCastSkill();
+        return;
+      }
+
+      // 3. Tế Pháp bảo nếu sẵn sàng
+      if (art && this.playerCombat.artifactCooldown === 0) {
+        this.playerUseArtifact();
+        return;
+      }
+
+      // 4. Mặc định đánh thường
+      this.playerNormalAttack();
+    }
+
+    toggleAutoCombat() {
+      this.isAutoCombat = !this.isAutoCombat;
+      const btn = document.getElementById('btn-combat-auto');
+      if (btn) {
+        btn.textContent = this.isAutoCombat ? '🤖 Tự Động: BẬT' : '🤖 Tự Động: TẮT';
+        btn.classList.toggle('active', this.isAutoCombat);
+      }
+      sound.playClick();
+      if (this.isAutoCombat && this.isPlayerTurn && !this.isProcessingTurn) {
+        this.executeAutoTurn();
+      }
+    }
+
+    toggleCombatSpeed() {
+      this.combatSpeed = this.combatSpeed === 1 ? 2 : 1;
+      const btn = document.getElementById('btn-combat-speed');
+      if (btn) {
+        btn.textContent = `⚡ ${this.combatSpeed}x`;
+        btn.classList.toggle('active', this.combatSpeed === 2);
+      }
+      sound.playClick();
     }
 
     playerNormalAttack() {
-      if (!this.isPlayerTurn) return;
+      if (!this.isPlayerTurn || this.isProcessingTurn) return;
       this.isPlayerTurn = false;
       this.isProcessingTurn = true;
       this.updateCombatButtons(false);
+
+      const actionsGrid = document.querySelector('.combat-actions-grid');
+      if (actionsGrid) actionsGrid.classList.remove('turn-active');
 
       sound.playSwordSlash();
       this.renderer.combatState.playerOffsetX = 35;
       this.renderer.addSlashEffect(440, 200, 'sword');
 
+      const animDelay = this.combatSpeed === 2 ? 110 : 200;
       setTimeout(() => {
         const baseAtk = this.player.totalAtk;
         const monDef = this.monster.def;
@@ -2189,7 +2279,7 @@
 
         this.monsterCombat.curHp = Math.max(0, this.monsterCombat.curHp - dmg);
         this.renderer.combatState.monsterFlash = '#ffffff';
-        setTimeout(() => { this.renderer.combatState.monsterFlash = null; }, 120);
+        setTimeout(() => { this.renderer.combatState.monsterFlash = null; }, 100);
 
         this.renderer.addFloatingText(isCrit ? `BẠO! -${dmg}` : `-${dmg}`, 440, 160, isCrit ? '#fbbf24' : '#ef4444', isCrit);
         this.addLog(`Đạo hữu vung kiếm xuất kích, gây cho 【${this.monster.name}】 ${dmg} sát thương!${isCrit ? ' (Bạo Kích!!)' : ''}`, isCrit ? 'crit' : 'normal');
@@ -2198,11 +2288,11 @@
         this.updateCombatUI();
         if (this.checkCombatOver()) return;
         this.isProcessingTurn = false;
-      }, 200);
+      }, animDelay);
     }
 
     playerCastSkill() {
-      if (!this.isPlayerTurn) return;
+      if (!this.isPlayerTurn || this.isProcessingTurn) return;
       const skill = this.player.activeSkill;
       if (!skill) return;
 
@@ -2227,6 +2317,9 @@
       this.isProcessingTurn = true;
       this.updateCombatButtons(false);
 
+      const actionsGrid = document.querySelector('.combat-actions-grid');
+      if (actionsGrid) actionsGrid.classList.remove('turn-active');
+
       sound.playThunder();
       this.renderer.combatState.playerOffsetX = 40;
       this.renderer.triggerShake(14, 6);
@@ -2234,6 +2327,7 @@
       const effectType = skill.burnChance ? 'fire' : (skill.stunChance ? 'sword' : 'lightning');
       this.renderer.addSlashEffect(440, 190, effectType);
 
+      const animDelay = this.combatSpeed === 2 ? 140 : 250;
       setTimeout(() => {
         let dmg = Math.max(1, Math.floor(this.player.totalAtk * (skill.dmgMult || 1.8) - this.monster.def * 0.3));
         const isCrit = Math.random() < this.player.totalCrit;
@@ -2241,7 +2335,7 @@
 
         this.monsterCombat.curHp = Math.max(0, this.monsterCombat.curHp - dmg);
         this.renderer.combatState.monsterFlash = '#ffffff';
-        setTimeout(() => { this.renderer.combatState.monsterFlash = null; }, 150);
+        setTimeout(() => { this.renderer.combatState.monsterFlash = null; }, 120);
 
         this.renderer.addFloatingText(`TUYỆT KỸ! -${dmg}`, 440, 150, '#38bdf8', true);
         this.addLog(`Đạo hữu thi triển 【${skill.name}】, oanh kích 【${this.monster.name}】 nhận ${dmg} sát thương hủy diệt!`, 'skill');
@@ -2272,11 +2366,11 @@
         this.updateCombatUI();
         if (this.checkCombatOver()) return;
         this.isProcessingTurn = false;
-      }, 250);
+      }, animDelay);
     }
 
     playerUseArtifact() {
-      if (!this.isPlayerTurn) return;
+      if (!this.isPlayerTurn || this.isProcessingTurn) return;
       if (this.playerCombat.artifactCooldown > 0) {
         this.addLog(`Pháp bảo đang tích tụ linh uy (${this.playerCombat.artifactCooldown} lượt)!`, 'warning');
         return;
@@ -2293,10 +2387,14 @@
       this.isProcessingTurn = true;
       this.updateCombatButtons(false);
 
+      const actionsGrid = document.querySelector('.combat-actions-grid');
+      if (actionsGrid) actionsGrid.classList.remove('turn-active');
+
       sound.playCheatSystem();
       this.renderer.triggerShake(12, 6);
       this.renderer.addSlashEffect(440, 190, 'lightning');
 
+      const animDelay = this.combatSpeed === 2 ? 110 : 200;
       setTimeout(() => {
         const dmg = Math.floor(this.player.totalAtk * 1.5 + (art.atk || 50));
         this.monsterCombat.curHp = Math.max(0, this.monsterCombat.curHp - dmg);
@@ -2307,11 +2405,11 @@
         this.updateCombatUI();
         if (this.checkCombatOver()) return;
         this.isProcessingTurn = false;
-      }, 200);
+      }, animDelay);
     }
 
     playerUsePill(pillId) {
-      if (!this.isPlayerTurn) return;
+      if (!this.isPlayerTurn || this.isProcessingTurn) return;
       const count = this.player.inventory[pillId] || 0;
       if (count <= 0) {
         this.addLog(`Trong túi không có đan dược này!`, 'warning');
@@ -2322,6 +2420,9 @@
       this.isPlayerTurn = false;
       this.isProcessingTurn = true;
       this.updateCombatButtons(false);
+
+      const actionsGrid = document.querySelector('.combat-actions-grid');
+      if (actionsGrid) actionsGrid.classList.remove('turn-active');
 
       sound.playLoot();
       if (pillId === 'pill_hoixuan') {
@@ -2340,7 +2441,7 @@
     }
 
     playerFlee() {
-      if (!this.isPlayerTurn) return;
+      if (!this.isPlayerTurn || this.isProcessingTurn) return;
       const hasEscapePerk = this.player.cheatPerk && this.player.cheatPerk.id === 'escape_master';
       const fleeChance = hasEscapePerk ? 1.0 : (this.player.totalSpd / (this.player.totalSpd + this.monster.spd * 0.8));
 
@@ -2351,6 +2452,8 @@
       } else {
         this.isPlayerTurn = false;
         this.updateCombatButtons(false);
+        const actionsGrid = document.querySelector('.combat-actions-grid');
+        if (actionsGrid) actionsGrid.classList.remove('turn-active');
         this.addLog(`Bỏ chạy bất thành! Bị 【${this.monster.name}】 phong tỏa đường lui!`, 'danger');
         sound.playHurt();
         this.isProcessingTurn = false;
@@ -2378,6 +2481,7 @@
       this.renderer.addSlashEffect(190, 200, 'sword');
       sound.playHurt();
 
+      const animDelay = this.combatSpeed === 2 ? 110 : 200;
       setTimeout(() => {
         const useSkill = this.monster.skills && this.monster.skills.length > 0 && Math.random() < 0.4;
         let dmgMult = 1.0;
@@ -2403,7 +2507,7 @@
 
         this.playerCombat.curHp -= dmg;
         this.renderer.combatState.playerFlash = '#ef4444';
-        setTimeout(() => { this.renderer.combatState.playerFlash = null; }, 120);
+        setTimeout(() => { this.renderer.combatState.playerFlash = null; }, 100);
 
         this.renderer.addFloatingText(`-${dmg}`, 190, 160, '#ef4444');
         this.addLog(`【${this.monster.name}】 ${skillName ? 'tung sát chiêu ' + skillName : 'tấn công cuồng bạo'}, đánh trúng đạo hữu ${dmg} sát thương!`, 'danger');
@@ -2429,7 +2533,7 @@
         this.updateCombatUI();
         if (this.checkCombatOver()) return;
         this.isProcessingTurn = false;
-      }, 200);
+      }, animDelay);
     }
 
     handleLifeSteal(dmg) {
@@ -2471,6 +2575,7 @@
       this.player.spiritStones = (this.player.spiritStones || 0) + stoneGain;
       this.addLog(`Thu hoạch: +${expGain} Tu Vi, +${stoneGain} Linh Thạch.`, 'loot');
 
+      let droppedItems = [];
       if (this.monster.drops) {
         this.monster.drops.forEach(drop => {
           let chance = drop.chance || 0.5;
@@ -2479,6 +2584,7 @@
             this.player.inventory[drop.item] = (this.player.inventory[drop.item] || 0) + 1;
             const dropItem = ITEMS[drop.item];
             const dropName = dropItem ? dropItem.name : drop.item;
+            droppedItems.push(dropName);
             this.addLog(`Nhặt được chiến lợi phẩm: 【${dropName}】 x1!`, 'loot');
           }
         });
@@ -2494,10 +2600,15 @@
         this.player.exp += bonusExp;
 
         sound.playCheatSystem();
-        this.addLog(`🌀 [Kim Thủ Chỉ] 【Thần Cấp Cắn Nuốt】 phát động! Cắn nuốt thi hài ma thú: +${bonusAtk} Công kích vĩnh viễn, +${bonusHp} HP vĩnh viễn, +${bonusExp} Tu Vi!`, 'system');
+        this.addLog(`🌀 [Kim Thủ Chỉ] 【Thần Cấp Cắn Nuốt】 phát động! +${bonusAtk} Công kích vĩnh viễn, +${bonusHp} HP vĩnh viễn, +${bonusExp} Tu Vi!`, 'system');
       }
 
-      this.endCombat(true, false);
+      this.showResultModal(true, {
+        monsterName: this.monster.name,
+        exp: expGain,
+        stone: stoneGain,
+        drops: droppedItems
+      });
     }
 
     handleDefeat() {
@@ -2506,7 +2617,60 @@
 
       this.player.spiritStones = Math.floor(this.player.spiritStones * 0.9);
       this.player.curHp = Math.floor(this.player.maxHp * 0.2);
-      this.endCombat(false, false);
+
+      this.showResultModal(false, {
+        monsterName: this.monster.name
+      });
+    }
+
+    showResultModal(isWin, data) {
+      if (this.combatInterval) clearInterval(this.combatInterval);
+      this.updateCombatButtons(false);
+
+      const overlay = document.getElementById('combat-result-overlay');
+      const titleEl = document.getElementById('combat-result-title');
+      const bodyEl = document.getElementById('combat-result-body');
+
+      if (titleEl) {
+        titleEl.textContent = isWin ? '🎉 ĐẠI THẮNG QUANG VINH!' : '💀 TRỌNG THƯƠNG THẤT BẠI!';
+        titleEl.style.color = isWin ? '#facc15' : '#ef4444';
+      }
+
+      if (bodyEl) {
+        if (isWin) {
+          const dropTxt = data.drops && data.drops.length > 0 ? `<div style="margin-top: 4px;">🎁 Chiến lợi phẩm: <strong style="color: #6ee7b7;">${data.drops.join(', ')}</strong></div>` : '';
+          bodyEl.innerHTML = `
+            <div style="margin-bottom: 6px;">Đạo hữu đã chém gục 【${data.monsterName}】 dưới chân!</div>
+            <div style="color: #38bdf8; font-weight: 700; font-size: 14px;">+${data.exp} Tu Vi &nbsp;•&nbsp; +${data.stone} Linh Thạch</div>
+            ${dropTxt}
+          `;
+        } else {
+          bodyEl.innerHTML = `
+            <div style="margin-bottom: 6px;">Đạo hữu trọng thương trước hung uy của 【${data.monsterName}】!</div>
+            <div style="color: #f87171;">Tổn thất 10% Linh Thạch, bảo tồn 20% Khí Huyết tạm lui!</div>
+          `;
+        }
+      }
+
+      if (overlay) overlay.classList.remove('hidden');
+
+      if (this.resultAutoTimer) clearTimeout(this.resultAutoTimer);
+      const autoCloseDelay = this.combatSpeed === 2 ? 1500 : 2500;
+      this.resultAutoTimer = setTimeout(() => {
+        this.closeResultAndEnd(isWin);
+      }, autoCloseDelay);
+    }
+
+    closeResultAndEnd(won = null) {
+      if (this.resultAutoTimer) {
+        clearTimeout(this.resultAutoTimer);
+        this.resultAutoTimer = null;
+      }
+      const overlay = document.getElementById('combat-result-overlay');
+      if (overlay) overlay.classList.add('hidden');
+
+      const isVictory = won !== null ? won : (this.monsterCombat.curHp <= 0);
+      this.endCombat(isVictory, false);
     }
 
     endCombat(won, fled) {
@@ -2514,25 +2678,28 @@
       this.isPlayerTurn = false;
       this.isProcessingTurn = false;
       if (this.combatInterval) clearInterval(this.combatInterval);
+      if (this.resultAutoTimer) clearTimeout(this.resultAutoTimer);
 
       this.player.curHp = this.playerCombat.curHp;
       this.player.curMp = this.playerCombat.curMp;
       this.updateCombatButtons(false);
+
+      const overlay = document.getElementById('combat-result-overlay');
+      if (overlay) overlay.classList.add('hidden');
+
+      const actionsGrid = document.querySelector('.combat-actions-grid');
+      if (actionsGrid) actionsGrid.classList.remove('turn-active');
 
       if (won && this.player && this.player.sectId) {
         this.player.sectPatrolKills = (this.player.sectPatrolKills || 0) + 1;
         this.addLog(`[Tông Môn] Tích lũy chiến tích trừ yêu: ${Math.min(3, this.player.sectPatrolKills)}/3 yêu thú!`, 'system');
       }
 
-      setTimeout(() => {
-        document.body.classList.remove('combat-active-mode');
-        const headerEl = document.getElementById('combat-active-header');
-        if (headerEl) headerEl.classList.add('hidden');
+      document.body.classList.remove('combat-active-mode');
 
-        this.renderer.setScene(SCENES.MEDITATE);
-        this.renderer.setStatusText('Đang đả tọa hấp thu thiên địa linh khí...');
-        if (this.onCombatEnd) this.onCombatEnd(won, fled);
-      }, 1500);
+      this.renderer.setScene(SCENES.MEDITATE);
+      this.renderer.setStatusText('Đang đả tọa hấp thu thiên địa linh khí...');
+      if (this.onCombatEnd) this.onCombatEnd(won, fled);
     }
 
     updateCombatUI() {
@@ -2569,15 +2736,15 @@
 
       if (pNameEl) pNameEl.textContent = this.player.name;
       if (pHpEl) pHpEl.style.width = `${Math.min(100, (pCurHp / pMaxHp) * 100)}%`;
-      if (pHpTextEl) pHpTextEl.textContent = `HP: ${pCurHp} / ${pMaxHp} (${Math.round((pCurHp / pMaxHp) * 100)}%)`;
+      if (pHpTextEl) pHpTextEl.textContent = `HP: ${pCurHp}/${pMaxHp} (${Math.round((pCurHp / pMaxHp) * 100)}%)`;
       if (pMpEl) pMpEl.style.width = `${Math.min(100, (pCurMp / pMaxMp) * 100)}%`;
-      if (pMpTextEl) pMpTextEl.textContent = `MP: ${pCurMp} / ${pMaxMp}`;
+      if (pMpTextEl) pMpTextEl.textContent = `MP: ${pCurMp}/${pMaxMp}`;
       if (pGaugeEl) pGaugeEl.style.width = `${pGauge}%`;
       if (pGaugeTextEl) pGaugeTextEl.textContent = `Tốc Độ: ${Math.round(pGauge)}%`;
 
       if (mNameEl) mNameEl.textContent = this.monster.name;
       if (mHpEl) mHpEl.style.width = `${Math.min(100, (mCurHp / mMaxHp) * 100)}%`;
-      if (mHpTextEl) mHpTextEl.textContent = `HP: ${mCurHp} / ${mMaxHp} (${Math.round((mCurHp / mMaxHp) * 100)}%)`;
+      if (mHpTextEl) mHpTextEl.textContent = `HP: ${mCurHp}/${mMaxHp} (${Math.round((mCurHp / mMaxHp) * 100)}%)`;
       if (mGaugeEl) mGaugeEl.style.width = `${mGauge}%`;
       if (mGaugeTextEl) mGaugeTextEl.textContent = `Tốc Độ: ${Math.round(mGauge)}%`;
 
@@ -2601,30 +2768,30 @@
       // Turn indicator
       if (turnIndicator && turnText) {
         if (this.isPlayerTurn) {
-          turnIndicator.className = 'combat-turn-indicator player-turn';
-          turnText.innerHTML = '🔥 LƯỢT ĐẠO HỮU - HÃY RA CHIÊU! 🔥';
+          turnIndicator.className = 'combat-turn-pill player-turn';
+          turnText.innerHTML = '🔥 LƯỢT ĐẠO HỮU! 🔥';
         } else if (this.isProcessingTurn) {
-          turnIndicator.className = 'combat-turn-indicator processing-turn';
-          turnText.innerHTML = '⚡ ĐANG THI TRIỂN CHIÊU THỨC... ⚡';
+          turnIndicator.className = 'combat-turn-pill processing-turn';
+          turnText.innerHTML = '⚡ ĐANG XUẤT CHIÊU...';
         } else {
-          turnIndicator.className = 'combat-turn-indicator waiting-turn';
-          turnText.innerHTML = '⏳ VẬN HÀNH KHÍ THẾ CHIẾN TRẬN...';
+          turnIndicator.className = 'combat-turn-pill waiting-turn';
+          turnText.innerHTML = '⏳ VẬN HÀNH KHÍ THẾ...';
         }
       }
 
       // Labels on buttons
       const pillCount = (this.player.inventory && this.player.inventory.pill_hoixuan) || 0;
       const pillLabel = document.getElementById('combat-pill-label');
-      if (pillLabel) pillLabel.textContent = `🧪 Hồi Xuân Đan (${pillCount > 0 ? `Còn x${pillCount}` : 'Hết'})`;
+      if (pillLabel) pillLabel.textContent = `🧪 Hồi Xuân (${pillCount > 0 ? `x${pillCount}` : 'Hết'})`;
 
       const skill = this.player.activeSkill;
       const skillLabel = document.getElementById('combat-skill-label');
       if (skillLabel) {
         if (skill) {
-          const cd = this.playerCombat.skillCooldown > 0 ? ` [Hồi: ${this.playerCombat.skillCooldown}]` : '';
-          skillLabel.textContent = `⚡ ${skill.name} (${skill.mpCost} MP)${cd}`;
+          const cd = this.playerCombat.skillCooldown > 0 ? ` [${this.playerCombat.skillCooldown}]` : '';
+          skillLabel.textContent = `⚡ ${skill.name}${cd}`;
         } else {
-          skillLabel.textContent = `⚡ Chưa Học Kỹ Năng`;
+          skillLabel.textContent = `⚡ Chưa Có`;
         }
       }
 
@@ -2632,10 +2799,10 @@
       const artLabel = document.getElementById('combat-artifact-label');
       if (artLabel) {
         if (art) {
-          const cd = this.playerCombat.artifactCooldown > 0 ? ` [Hồi: ${this.playerCombat.artifactCooldown}]` : '';
-          artLabel.textContent = `🛡️ Tế ${art.name}${cd}`;
+          const cd = this.playerCombat.artifactCooldown > 0 ? ` [${this.playerCombat.artifactCooldown}]` : '';
+          artLabel.textContent = `🛡️ ${art.name}${cd}`;
         } else {
-          artLabel.textContent = `🛡️ Chưa Có Pháp Bảo`;
+          artLabel.textContent = `🛡️ Chưa Có`;
         }
       }
     }
@@ -4106,6 +4273,9 @@
     const btnArtifact = document.getElementById('btn-combat-artifact');
     const btnPill = document.getElementById('btn-combat-pill');
     const btnFlee = document.getElementById('btn-combat-flee');
+    const btnAutoCombat = document.getElementById('btn-combat-auto');
+    const btnCombatSpeed = document.getElementById('btn-combat-speed');
+    const btnCloseResult = document.getElementById('btn-combat-close-result');
 
     if (btnAttack) btnAttack.addEventListener('click', () => combatEngine.playerNormalAttack());
     if (btnSkill) btnSkill.addEventListener('click', () => combatEngine.playerCastSkill());
@@ -4113,7 +4283,11 @@
     if (btnPill) btnPill.addEventListener('click', () => combatEngine.playerUsePill('pill_hoixuan'));
     if (btnFlee) btnFlee.addEventListener('click', () => combatEngine.playerFlee());
 
-    // Phím tắt chiến đấu [1..5]
+    if (btnAutoCombat) btnAutoCombat.addEventListener('click', () => combatEngine.toggleAutoCombat());
+    if (btnCombatSpeed) btnCombatSpeed.addEventListener('click', () => combatEngine.toggleCombatSpeed());
+    if (btnCloseResult) btnCloseResult.addEventListener('click', () => combatEngine.closeResultAndEnd());
+
+    // Phím tắt chiến đấu: [1..5], [A] Tự Động, [S] Tốc Độ, [Space/Enter] Tiếp Tục
     window.addEventListener('keydown', (e) => {
       if (!combatEngine || !combatEngine.inCombat) return;
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
@@ -4127,6 +4301,18 @@
         else if (e.key === '3') combatEngine.playerUseArtifact();
         else if (e.key === '4') combatEngine.playerUsePill('pill_hoixuan');
         else if (e.key === '5') combatEngine.playerFlee();
+      } else if (e.key === 'a' || e.key === 'A') {
+        e.preventDefault();
+        combatEngine.toggleAutoCombat();
+      } else if (e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        combatEngine.toggleCombatSpeed();
+      } else if (e.key === ' ' || e.key === 'Enter') {
+        const overlay = document.getElementById('combat-result-overlay');
+        if (overlay && !overlay.classList.contains('hidden')) {
+          e.preventDefault();
+          combatEngine.closeResultAndEnd();
+        }
       }
     });
 
