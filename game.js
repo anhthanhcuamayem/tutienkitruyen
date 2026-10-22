@@ -3929,6 +3929,7 @@
         worldAlliances: [],
         worldRelations: {},
         worldMetTravelers: [],
+        worldEncounterRewardClaimed: false,
         skillMastery: 1,
 
         bonusHp: 0, bonusMp: 0, bonusAtk: 0, bonusDef: 0, bonusSpd: 0,
@@ -4586,6 +4587,7 @@
       if (!p.worldAlliances) p.worldAlliances = [];
       if (!p.worldRelations) p.worldRelations = {};
       if (!p.worldMetTravelers) p.worldMetTravelers = [];
+      if (p.worldEncounterRewardClaimed === undefined) p.worldEncounterRewardClaimed = false;
       if (p.worldFaction === undefined) p.worldFaction = null;
       if (p.worldResidence === undefined) p.worldResidence = null;
       if (!this.currentRegion || !WORLD_REGIONS.some(r => r.id === this.currentRegion.id)) {
@@ -4665,6 +4667,7 @@
 
       const traveler = travelers[Math.floor(Math.random() * travelers.length)];
       this.worldEncounter = traveler;
+      p.worldEncounterRewardClaimed = false;
       if (!p.worldMetTravelers.includes(traveler.id)) p.worldMetTravelers.push(traveler.id);
       const realm = REALMS[Math.min(traveler.realmIndex, REALMS.length - 1)];
       this.addLog(`🤝 Gặp 【${traveler.name}】 — ${traveler.title}, cảnh giới 【${realm.name}】 tại 【${this.currentRegion.name}】.`, 'golden');
@@ -4674,15 +4677,24 @@
     }
 
     socializeWorldTraveler() {
-      const p = this.player;
+      const player = this.player;
       const traveler = this.worldEncounter;
-      if (!p || !traveler) return;
-      p.worldRelations[traveler.id] = (p.worldRelations[traveler.id] || 0) + 1;
+      if (!player || !traveler) return;
+      this.ensureWorldState();
+      if (player.worldEncounterRewardClaimed) {
+        this.addLog(`【${traveler.name}】 đã nhận lời giao du trong lần gặp này. Hãy khám phá tiếp để gặp lại đạo hữu.`, 'warning');
+        this.renderOpenWorldUI();
+        return;
+      }
+
+      player.worldEncounterRewardClaimed = true;
+      player.worldRelations[traveler.id] = (player.worldRelations[traveler.id] || 0) + 1;
       const gift = 40 + traveler.realmIndex * 10;
-      p.spiritStones += gift;
+      player.spiritStones += gift;
       this.addLog(`🍵 Đạo hữu cùng 【${traveler.name}】 luận đạo giao du. Tình hữu nghị tăng lên, nhận ${gift} Linh Thạch!`, 'loot');
       sound.playLoot();
       this.updateUI();
+      this.saveToLocalStorage();
     }
 
     recruitWorldTraveler() {
@@ -6431,47 +6443,92 @@
       const btnBuild = document.getElementById('btn-world-build-residence');
       const btnFactionUpgrade = document.getElementById('btn-world-faction-upgrade');
 
-      const gridSize = 11;
-      const gridCenter = Math.floor(gridSize / 2);
       const position = p.worldGridPosition || { x: location.gridX, y: location.gridY };
-      let gridHtml = '';
-      for (let row = 0; row < gridSize; row++) {
-        for (let column = 0; column < gridSize; column++) {
-          const worldX = position.x + column - gridCenter;
-          const worldY = position.y + row - gridCenter;
-          const region = WORLD_REGIONS.find(item => item.gridX === worldX && item.gridY === worldY);
-          const isCurrent = worldX === position.x && worldY === position.y;
-          const isLocked = region && p.realmIndex < region.reqRealmIndex;
-          const tile = region ? { icon: isLocked ? '🔒' : '🏯', name: region.name, className: 'region' } : this.getWorldTileVisual(worldX, worldY);
-          gridHtml += `
-            <button type="button" class="world-grid-cell ${tile.className} ${isCurrent ? 'current' : ''} ${isLocked ? 'locked' : ''}" data-grid-x="${worldX}" data-grid-y="${worldY}" data-region-id="${region ? region.id : ''}" title="Chuột phải để thao tác: ${tile.name}">
-              <span class="world-grid-icon">${isCurrent ? '📍' : tile.icon}</span>
-              <span class="world-grid-label">${isCurrent ? 'Đang ở đây' : (region ? region.name : '')}</span>
-            </button>
-          `;
-        }
-      }
-      mapEl.innerHTML = gridHtml;
+      const mapBounds = { minX: -1, maxX: 6, minY: -5, maxY: 1 };
+      const getMapPoint = (x, y) => ({
+        left: 10 + ((x - mapBounds.minX) / (mapBounds.maxX - mapBounds.minX)) * 80,
+        top: 10 + ((y - mapBounds.minY) / (mapBounds.maxY - mapBounds.minY)) * 80
+      });
+      const regionIcons = {
+        'Sơn lâm': '🌲',
+        'Sơn mạch': '⛰️',
+        'Kiếm vực': '⚔️',
+        'Ma vực': '☠️',
+        'Hư không': '🌌'
+      };
+      const regionPoints = new Map(WORLD_REGIONS.map(region => [region.id, getMapPoint(region.gridX, region.gridY)]));
+      const routeHtml = WORLD_REGIONS.slice(1).map((region, index) => {
+        const from = regionPoints.get(WORLD_REGIONS[index].id);
+        const to = regionPoints.get(region.id);
+        const deltaX = to.left - from.left;
+        const deltaY = to.top - from.top;
+        const length = Math.hypot(deltaX, deltaY);
+        const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+        return `<span class="world-map-route ${p.realmIndex >= region.reqRealmIndex ? 'unlocked' : ''}" style="left:${from.left}%;top:${from.top}%;width:${length}%;transform:rotate(${angle}deg)"></span>`;
+      }).join('');
+      const regionHtml = WORLD_REGIONS.map(region => {
+        const point = regionPoints.get(region.id);
+        const isCurrent = region.id === p.worldLocation;
+        const isLocked = p.realmIndex < region.reqRealmIndex;
+        const icon = isLocked ? '🔒' : (regionIcons[region.terrain] || '🗺️');
+        const requiredRealm = REALMS[Math.min(region.reqRealmIndex, REALMS.length - 1)];
+        return `
+          <button type="button" class="world-map-node world-map-interactive ${isCurrent ? 'current' : ''} ${isLocked ? 'locked' : ''}" style="left:${point.left}%;top:${point.top}%" data-grid-x="${region.gridX}" data-grid-y="${region.gridY}" data-region-id="${region.id}" title="Mở bảng thao tác ${region.name}">
+            <span class="world-map-node-icon">${isCurrent ? '📍' : icon}</span>
+            <span class="world-map-node-label">${region.name}</span>
+            <span class="world-map-node-meta">${isLocked ? `Cần ${requiredRealm.name}` : region.dangerLevel.split(' (')[0]}</span>
+          </button>
+        `;
+      }).join('');
+      const currentPoint = getMapPoint(position.x, position.y);
+      const isAtRegion = position.x === location.gridX && position.y === location.gridY;
+      const playerPinHtml = isAtRegion ? '' : `
+        <button type="button" class="world-map-player world-map-interactive" style="left:${currentPoint.left}%;top:${currentPoint.top}%" data-grid-x="${position.x}" data-grid-y="${position.y}" data-region-id="" title="Vị trí hiện tại">
+          <span>📍</span><small>Đạo hữu</small>
+        </button>
+      `;
+      mapEl.innerHTML = `
+        <div class="world-map-titlebar"><span>ATLAS VẠN GIỚI</span><span>Ô [${position.x}, ${position.y}]</span></div>
+        <div class="world-map-compass">N</div>
+        <div class="world-map-landmark landmark-forest">🌲</div>
+        <div class="world-map-landmark landmark-river">〰️</div>
+        <div class="world-map-landmark landmark-ruins">✦</div>
+        <div class="world-map-routes">${routeHtml}</div>
+        ${regionHtml}
+        ${playerPinHtml}
+        <div class="world-map-legend"><span><i class="legend-dot unlocked"></i> Có thể đến</span><span><i class="legend-dot locked"></i> Chưa đủ cảnh giới</span></div>
+      `;
+      const getMapCellFromEvent = event => {
+        const bounds = mapEl.getBoundingClientRect();
+        const normalizedX = Math.max(0, Math.min(1, (event.clientX - bounds.left) / bounds.width));
+        const normalizedY = Math.max(0, Math.min(1, (event.clientY - bounds.top) / bounds.height));
+        return {
+          x: Math.round(mapBounds.minX + ((normalizedX - 0.1) / 0.8) * (mapBounds.maxX - mapBounds.minX)),
+          y: Math.round(mapBounds.minY + ((normalizedY - 0.1) / 0.8) * (mapBounds.maxY - mapBounds.minY))
+        };
+      };
       if (!mapEl._delegated) {
         mapEl.addEventListener('contextmenu', event => {
-          const cell = event.target.closest('.world-grid-cell');
-          if (!cell) return;
+          const cell = event.target.closest('.world-map-interactive');
+          if (!cell && event.target !== mapEl) return;
           event.preventDefault();
+          const mapCell = cell ? null : getMapCellFromEvent(event);
           this.openWorldCellMenu(
-            Number(cell.dataset.gridX),
-            Number(cell.dataset.gridY),
-            cell.dataset.regionId || null,
+            cell ? Number(cell.dataset.gridX) : mapCell.x,
+            cell ? Number(cell.dataset.gridY) : mapCell.y,
+            cell ? (cell.dataset.regionId || null) : null,
             event.clientX,
             event.clientY
           );
         });
         mapEl.addEventListener('click', event => {
-          const cell = event.target.closest('.world-grid-cell');
-          if (!cell) return;
+          const cell = event.target.closest('.world-map-interactive');
+          if (!cell && event.target !== mapEl) return;
+          const mapCell = cell ? null : getMapCellFromEvent(event);
           this.openWorldCellMenu(
-            Number(cell.dataset.gridX),
-            Number(cell.dataset.gridY),
-            cell.dataset.regionId || null,
+            cell ? Number(cell.dataset.gridX) : mapCell.x,
+            cell ? Number(cell.dataset.gridY) : mapCell.y,
+            cell ? (cell.dataset.regionId || null) : null,
             event.clientX,
             event.clientY
           );
@@ -6545,13 +6602,15 @@
           const travelerRealm = REALMS[Math.min(traveler.realmIndex, REALMS.length - 1)];
           const relation = p.worldRelations[traveler.id] || 0;
           const recruited = !!(p.worldFaction && p.worldFaction.members && p.worldFaction.members.includes(traveler.name));
+          const rewardClaimed = !!p.worldEncounterRewardClaimed;
           encounterEl.innerHTML = `
             <div class="world-encounter-title">🤝 ${traveler.name} <span class="world-location-meta">— ${traveler.title}</span></div>
             <div class="world-location-meta">${traveler.faction} • ${travelerRealm.name} • Tâm trạng: ${traveler.mood} • Hảo cảm: ${relation}</div>
             <div class="world-encounter-actions">
-              <button type="button" id="btn-world-socialize" class="pixel-btn small-btn primary-btn">🍵 Giao Du Luận Đạo</button>
+              <button type="button" id="btn-world-socialize" class="pixel-btn small-btn primary-btn" ${rewardClaimed ? 'disabled' : ''}>${rewardClaimed ? '✅ Đã Giao Du Lần Này' : '🍵 Giao Du Luận Đạo (+Linh Thạch)'}</button>
               <button type="button" id="btn-world-recruit" class="pixel-btn small-btn" ${!p.worldFaction || recruited ? 'disabled' : ''}>🏳️ ${recruited ? 'Đã Chiêu Mộ' : 'Mời Vào Thế Lực'}</button>
             </div>
+            <div class="world-encounter-note">${rewardClaimed ? 'Phần thưởng đã nhận. Một lần gặp chỉ đổi thưởng một lần.' : 'Mỗi lần gặp chỉ có một phần thưởng giao du.'}</div>
           `;
           const socializeButton = document.getElementById('btn-world-socialize');
           const recruitButton = document.getElementById('btn-world-recruit');

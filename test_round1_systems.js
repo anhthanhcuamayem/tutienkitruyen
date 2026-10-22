@@ -329,8 +329,34 @@ assert.strictEqual(f2_2.status, 'available', 'Child node f2_n2 unlocked');
 assert.strictEqual(f2_3.status, 'available', 'Child node f2_n3 unlocked');
 console.log('✓ Dungeon traversal & node advancement verified');
 
-// 4.3 Sect Progression: Rank Quests, Yearly Stipend, Manuals
-console.log('4.3 Testing Sect hierarchy, rank-locked quests & stipend...');
+// 4.3 World traveler reward claim guard
+console.log('4.3 Testing single-claim reward for world traveler encounters...');
+const originalUpdateUI = systems.updateUI;
+const originalSaveToLocalStorage = systems.saveToLocalStorage;
+const originalRenderOpenWorldUI = systems.renderOpenWorldUI;
+systems.updateUI = () => {};
+systems.saveToLocalStorage = () => {};
+systems.renderOpenWorldUI = () => {};
+systems.player.worldLocation = 'region_1';
+systems.player.worldGridPosition = { x: 0, y: 0 };
+systems.player.worldRelations = {};
+systems.player.worldEncounterRewardClaimed = false;
+systems.player.spiritStones = 1000;
+systems.worldEncounter = { id: 'traveler_linh_nhi', name: 'Linh Nhi', realmIndex: 2 };
+const stonesBeforeSocialize = systems.player.spiritStones;
+systems.socializeWorldTraveler();
+const stonesAfterFirstSocialize = systems.player.spiritStones;
+systems.socializeWorldTraveler();
+assert.strictEqual(stonesAfterFirstSocialize - stonesBeforeSocialize, 60, 'Linh Nhi reward should be granted once per encounter');
+assert.strictEqual(systems.player.spiritStones, stonesAfterFirstSocialize, 'Repeated socialize action must not grant more spirit stones');
+assert.strictEqual(systems.player.worldRelations.traveler_linh_nhi, 1, 'Repeated socialize action must not inflate relation');
+systems.updateUI = originalUpdateUI;
+systems.saveToLocalStorage = originalSaveToLocalStorage;
+systems.renderOpenWorldUI = originalRenderOpenWorldUI;
+console.log('✓ World traveler reward cannot be claimed repeatedly');
+
+// 4.4 Sect Progression: Rank Quests, Yearly Stipend, Manuals
+console.log('4.4 Testing Sect hierarchy, rank-locked quests & stipend...');
 systems.joinSect('sect_van_kiem');
 systems.player.sectContribTotal = 0;
 const rank0 = systems.getCurrentSectRank();
