@@ -722,6 +722,7 @@
     { name: 'Dị Linh Căn - Băng Linh Căn', type: 'Dị Linh Căn', speedMod: 2.0, dmgMod: 1.45, freezeMod: 0.2, desc: 'Hàn khí thấu xương, có 20% khả năng đóng băng khiến địch mất lượt.' },
     { name: 'Dị Linh Căn - Ám Linh Căn', type: 'Dị Linh Căn', speedMod: 2.1, dmgMod: 1.5, lifeStealMod: 0.2, desc: 'Bóng tối thôn phệ, hút 20% sát thương gây ra thành khí huyết.' },
     { name: 'Dị Linh Căn - Kiếm Linh Căn', type: 'Dị Linh Căn', speedMod: 2.2, dmgMod: 1.7, critMod: 0.3, desc: 'Trời sinh Kiếm Phôi, sát thương công pháp kiếm thuật tăng 40%.' }
+    
   ];
 
   const PHYSIQUES = [
@@ -747,7 +748,36 @@
         mpCost: 25,
         cd: 2,
         dmgMult: 2.2,
-        desc: 'Ngưng tụ kiếm khí chém ra một kiếm kinh thiên, có 35% bỏ qua giáp mục tiêu.'
+        armorPen: 0.35,
+        critBonus: 0.2,
+        desc: 'Ngưng tụ kiếm khí chém ra một kiếm kinh thiên, bỏ qua 35% phòng ngự và +20% tỷ lệ bạo kích.'
+      },
+      skills: [
+        {
+          id: 'skill_kiem_1',
+          name: 'Nhất Kiếm Tây Lai',
+          mpCost: 25,
+          cd: 2,
+          dmgMult: 2.2,
+          armorPen: 0.35,
+          critBonus: 0.2,
+          desc: 'Ngưng tụ kiếm khí chém ra một kiếm kinh thiên, bỏ qua 35% giáp và +20% Bạo Kích.'
+        },
+        {
+          id: 'skill_kiem_2',
+          name: 'Vạn Kiếm Quy Tông',
+          mpCost: 40,
+          cd: 3,
+          dmgMult: 2.6,
+          bleedChance: 0.85,
+          bleedStacks: 2,
+          desc: 'Ngưng kết vạn đạo phi kiếm phong tỏa hư không, 85% gây Xuất Huyết 2 tầng trong 3 hiệp.'
+        }
+      ],
+      passive: {
+        id: 'passive_kiem_1',
+        name: 'Kiếm Khí Thông Thiên',
+        desc: 'Mỗi đòn đánh trúng tích lũy 1 tầng Kiếm Khí (tối đa 5 tầng), mỗi tầng tăng 6% Sát Thương Bạo Kích.'
       },
       startArtifact: {
         id: 'art_kiem_1',
@@ -774,8 +804,35 @@
         mpCost: 35,
         cd: 2,
         dmgMult: 2.0,
-        burnChance: 0.5,
-        desc: 'Giáng xuống cột lửa ngút trời, 50% thiêu đốt đối thủ gây sát thương liên tục.'
+        burnChance: 0.75,
+        burnTurns: 3,
+        desc: 'Dẫn giáng cột lửa ngút trời, 75% thiêu đốt đối thủ gây sát thương liên tục 3 hiệp.'
+      },
+      skills: [
+        {
+          id: 'skill_phap_1',
+          name: 'Cửu Thiên Huyền Hỏa',
+          mpCost: 35,
+          cd: 2,
+          dmgMult: 2.0,
+          burnChance: 0.75,
+          burnTurns: 3,
+          desc: 'Dẫn Cửu Thiên Chân Hỏa thiêu rụi mục tiêu, 75% gây Thiêu Đốt 3 hiệp.'
+        },
+        {
+          id: 'skill_phap_2',
+          name: 'Ngũ Hành Kim Giáp',
+          mpCost: 40,
+          cd: 3,
+          dmgMult: 1.0,
+          shieldPercentMp: 0.8,
+          desc: 'Tụ linh khí ngũ hành tạo Kim Thân hộ thuẫn hấp thụ sát thương bằng 80% Linh Lực tối đa.'
+        }
+      ],
+      passive: {
+        id: 'passive_phap_1',
+        name: 'Ngũ Hành Linh Thể',
+        desc: 'Linh lực vô cùng vô tận, mỗi đòn đánh có 30% cơ hội phóng thích lôi quang làm Tê Liệt địch 1 hiệp.'
       },
       startArtifact: {
         id: 'art_phap_1',
@@ -800,10 +857,36 @@
         id: 'skill_the_1',
         name: 'Bá Vương Khí Kình',
         mpCost: 20,
-        cd: 3,
-        dmgMult: 1.8,
-        stunChance: 0.4,
-        desc: 'Quyền kình bá đạo làm rung chuyển hư không, có 40% làm choáng địch 1 lượt.'
+        cd: 2,
+        dmgMult: 1.9,
+        stunChance: 0.5,
+        desc: 'Quyền kình bá đạo làm rung chuyển hư không, có 50% làm Tê Liệt / Choáng địch 1 hiệp.'
+      },
+      skills: [
+        {
+          id: 'skill_the_1',
+          name: 'Bá Vương Khí Kình',
+          mpCost: 20,
+          cd: 2,
+          dmgMult: 1.9,
+          stunChance: 0.5,
+          desc: 'Quyền kình bá đạo làm rung chuyển hư không, có 50% làm Tê Liệt địch 1 hiệp.'
+        },
+        {
+          id: 'skill_the_2',
+          name: 'Bất Diệt Kim Thân',
+          mpCost: 30,
+          cd: 3,
+          dmgMult: 1.2,
+          shieldPercentHp: 0.4,
+          reflectBonus: 0.4,
+          desc: 'Hóa thành Kim Thân chiến thần, nhận khiên bằng 40% HP tối đa và phản chấn 40% sát thương.'
+        }
+      ],
+      passive: {
+        id: 'passive_the_1',
+        name: 'Cửu Chuyển Kim Cốt',
+        desc: 'Đầu mỗi hiệp tự động hồi phục 4% HP tối đa, đồng thời phản chấn 15% sát thương cận chiến.'
       },
       startArtifact: {
         id: 'art_the_1',
@@ -831,7 +914,36 @@
         cd: 2,
         dmgMult: 1.2,
         healPercent: 0.35,
-        desc: 'Vừa đánh thương tổn đối thủ, vừa dẫn dắt thảo mộc tinh hoa hồi 35% HP.'
+        cleanse: true,
+        desc: 'Hồi phục 35% HP và thanh tẩy mọi hiệu ứng bất lợi (Choáng, Đốt, Chảy Máu, Độc).'
+      },
+      skills: [
+        {
+          id: 'skill_dan_1',
+          name: 'Bách Thảo Hồi Xuân',
+          mpCost: 30,
+          cd: 2,
+          dmgMult: 1.2,
+          healPercent: 0.35,
+          cleanse: true,
+          desc: 'Dẫn dắt mộc linh sinh cơ hồi 35% HP và thanh tẩy toàn bộ hiệu ứng xấu.'
+        },
+        {
+          id: 'skill_dan_2',
+          name: 'Vạn Độc Xuyên Tâm',
+          mpCost: 35,
+          cd: 3,
+          dmgMult: 1.8,
+          poisonChance: 0.85,
+          poisonTurns: 3,
+          defDebuff: 0.25,
+          desc: 'Bắn ra độc châm cổ truyền, 85% gây Trúng Độc 3 hiệp và giảm 25% Phòng Ngự kẻ địch.'
+        }
+      ],
+      passive: {
+        id: 'passive_dan_1',
+        name: 'Dược Thần Hộ Thể',
+        desc: 'Kháng 100% Trúng Độc; hiệu quả đan dược hồi phục tăng 35%.'
       },
       startArtifact: {
         id: 'art_dan_1',
@@ -859,8 +971,37 @@
         hpCostPercent: 0.1,
         cd: 2,
         dmgMult: 2.8,
-        lifeStealPercent: 0.3,
-        desc: 'Hiến tế 10% HP hiện tại, giáng đòn sát thương hủy diệt và hút lại 30% sát thương đó.'
+        lifeStealPercent: 0.35,
+        desc: 'Hiến tế 10% HP hiện tại, giáng đòn sát thương hủy diệt và hút lại 35% sát thương đó.'
+      },
+      skills: [
+        {
+          id: 'skill_ma_1',
+          name: 'Huyết Ảnh Thao Thiên',
+          mpCost: 20,
+          hpCostPercent: 0.1,
+          cd: 2,
+          dmgMult: 2.8,
+          lifeStealPercent: 0.35,
+          desc: 'Hiến tế 10% HP hiện tại, giáng đòn hủy diệt và hút 35% sát thương thành sinh mệnh.'
+        },
+        {
+          id: 'skill_ma_2',
+          name: 'Ma Thần Cuồng Nộ',
+          mpCost: 25,
+          hpCostPercent: 0.12,
+          cd: 3,
+          dmgMult: 2.2,
+          bleedChance: 0.8,
+          bleedStacks: 2,
+          lifeStealPercent: 0.4,
+          desc: 'Kích phát cuồng nộ ma thần: gây sát thương nặng, 80% gây Xuất Huyết và hút 40% máu.'
+        }
+      ],
+      passive: {
+        id: 'passive_ma_1',
+        name: 'Huyết Sát Nghịch Chuyển',
+        desc: 'Khi Khí Huyết tụt xuống dưới 40%, bùng phát Cuồng Bạo: Tăng 35% Công Kích và 20% Bạo Kích.'
       },
       startArtifact: {
         id: 'art_ma_1',
@@ -1150,17 +1291,93 @@
     art_dinh: { id: 'art_dinh', name: 'Sơn Hà Xã Tắc Đỉnh', type: 'artifact', hp: 8000, atk: 1500, def: 600, desc: 'Thu nhỏ cảnh giới núi sông trấn áp càn khôn.', price: 12000 }
   };
 
+  const HERB_ENCYCLOPEDIA = {
+    herb_linhchi: {
+      id: 'herb_linhchi',
+      name: 'Linh Chi Thảo',
+      grade: 'Nhất Giai Hạ Phẩm',
+      nature: 'Ôn tính, ích khí kiện tỳ',
+      reqRealm: 'Luyện Khí Tầng 1',
+      regions: ['Linh Sơn Ngoại Vi (Khu vực 1)'],
+      recipes: ['Hồi Xuân Đan', 'Tụ Khí Đan'],
+      lore: 'Linh thảo sơ cấp hấp thu linh khí sương mai nơi khe núi, tính ôn hòa, là dược liệu nền tảng cho người mới tu tiên.'
+    },
+    herb_thanh_u: {
+      id: 'herb_thanh_u',
+      name: 'Thanh U Thảo',
+      grade: 'Nhất Giai Trung Phẩm',
+      nature: 'Lương tính, thanh tâm an thần',
+      reqRealm: 'Luyện Khí Tầng 2',
+      regions: ['Linh Sơn Ngoại Vi', 'Vạn Yêu Sơn Mạch'],
+      recipes: ['Tụ Linh Đan', 'Trúc Cơ Đan'],
+      lore: 'Mọc nơi bóng râm mát mẻ, lá tỏa hương thơm thoang thoảng giúp ngưng tụ linh lực đan điền.'
+    },
+    herb_hoaviem: {
+      id: 'herb_hoaviem',
+      name: 'Hỏa Viêm Thảo',
+      grade: 'Nhị Giai Trung Phẩm',
+      nature: 'Đại nhiệt, thuần dương chân hỏa',
+      reqRealm: 'Trúc Cơ Kỳ',
+      regions: ['Vạn Yêu Sơn Mạch (Khu vực 2)'],
+      recipes: ['Trúc Cơ Đan', 'Kim Đan Hóa Thần Hoàn'],
+      lore: 'Hấp thu địa hỏa dưới khe núi lửa mà lớn lên, thân cây đỏ rực như than hồng, chứa đựng hỏa linh khí dồi dào.'
+    },
+    herb_bachnien: {
+      id: 'herb_bachnien',
+      name: 'Bách Niên Linh Dược',
+      grade: 'Tam Giai Thượng Phẩm',
+      nature: 'Trung hòa, uẩn dưỡng kinh mạch',
+      reqRealm: 'Kim Đan Kỳ',
+      regions: ['Cổ Kiếm Bí Cảnh (Khu vực 3)'],
+      recipes: ['Kim Đan Hóa Thần Hoàn', 'Đạo Tâm Đan', 'Cửu Chuyển Thọ Nguyên Đan'],
+      lore: 'Cây thuốc sinh trưởng trăm năm giữa linh tuyền cấm địa, tích tụ tinh hoa đất trời, giúp đan điền kết tụ Kim Đan vững chắc.'
+    },
+    herb_longhuyet: {
+      id: 'herb_longhuyet',
+      name: 'Long Huyết Thảo',
+      grade: 'Tứ Giai Thượng Phẩm',
+      nature: 'Cương liệt, tôi luyện tiên cốt',
+      reqRealm: 'Nguyên Anh Kỳ',
+      regions: ['Huyết Sát Ma Vực (Khu vực 4)'],
+      recipes: ['Đạo Tâm Đan', 'Ngưng Anh Đan'],
+      lore: 'Tương truyền mọc trên mảnh đất từng có chân long nhỏ máu, cành lá đỏ tươi như ngọc bích, dược lực hung mãnh dị thường.'
+    },
+    herb_cuuchuyen: {
+      id: 'herb_cuuchuyen',
+      name: 'Cửu Chuyển Tiên Thảo',
+      grade: 'Ngũ Giai Cực Phẩm',
+      nature: 'Chí thuần, khai khiếu ngưng anh',
+      reqRealm: 'Hóa Thần Kỳ',
+      regions: ['Thượng Cổ Vực Thẳm (Khu vực 5)'],
+      recipes: ['Ngưng Anh Đan', 'Hóa Thần Đan', 'Cửu Chuyển Thọ Nguyên Đan'],
+      lore: 'Trải qua chín lần lột xác mới thành hình, tỏa ra hào quang cửu sắc, có thể giúp tu sĩ cảm ngộ thiên địa pháp tắc.'
+    },
+    herb_thienkiem: {
+      id: 'herb_thienkiem',
+      name: 'Thiên Kiếm Thảo',
+      grade: 'Lục Giai Thần Phẩm',
+      nature: 'Vô kiên bất tồi, sắc bén vô song',
+      reqRealm: 'Luyện Hư / Hợp Thể Kỳ',
+      regions: ['Thượng Cổ Vực Thẳm'],
+      recipes: ['Hóa Thần Đan'],
+      lore: 'Hình dáng như một thanh đoản kiếm cắm thẳng vào vách đá càn khôn, quanh thân kiếm khí sắc lạnh vù vù, trảm phá tâm ma.'
+    }
+  };
+
   const RECIPES = [
-    { id: 'rec_hoixuan', name: 'Hồi Xuân Đan', type: 'alchemy', resultId: 'pill_hoixuan', ingredients: { herb_linhchi: 2 }, successRate: 0.90, desc: 'Cần 2 Linh Chi Thảo.' },
-    { id: 'rec_tulinh', name: 'Tụ Linh Đan', type: 'alchemy', resultId: 'pill_tulinh', ingredients: { herb_thanh_u: 2 }, successRate: 0.88, desc: 'Cần 2 Thanh U Thảo.' },
-    { id: 'rec_tukhi', name: 'Tụ Khí Đan', type: 'alchemy', resultId: 'pill_tukhi', ingredients: { herb_linhchi: 2, herb_thanh_u: 1, ore_huyenthiet: 1 }, successRate: 0.85, desc: 'Cần 2 Linh Chi Thảo, 1 Thanh U Thảo, 1 Huyền Thiết Tinh.' },
-    { id: 'rec_trucco', name: 'Trúc Cơ Đan', type: 'alchemy', resultId: 'pill_trucco', ingredients: { herb_thanh_u: 4, herb_hoaviem: 2, ore_tutinh: 1 }, successRate: 0.70, desc: 'Cần 4 Thanh U Thảo, 2 Hỏa Viêm Thảo, 1 Tử Tinh Khoáng.' },
-    { id: 'rec_kimdan', name: 'Kim Đan Hóa Thần Hoàn', type: 'alchemy', resultId: 'pill_kimdan', ingredients: { herb_hoaviem: 3, herb_bachnien: 2, ore_tutinh: 2 }, successRate: 0.60, desc: 'Cần 3 Hỏa Viêm Thảo, 2 Bách Niên Linh Dược, 2 Tử Tinh Khoáng.' },
-    { id: 'rec_daotam', name: 'Đạo Tâm Đan', type: 'alchemy', resultId: 'pill_daotam', ingredients: { herb_bachnien: 3, herb_longhuyet: 1, ore_thienngoai: 1 }, successRate: 0.65, desc: 'Cần 3 Bách Niên Linh Dược, 1 Long Huyết Thảo, 1 Thiên Ngoại Vẫn Thiết.' },
-    { id: 'rec_thanhphong', name: 'Thanh Phong Kiếm', type: 'forge', resultId: 'wpn_thanhphong', ingredients: { ore_huyenthiet: 4, herb_thanh_u: 2 }, successRate: 0.85, desc: 'Cần 4 Huyền Thiết Tinh, 2 Thanh U Thảo.' },
-    { id: 'rec_xichtieu', name: 'Xích Tiêu Kiếm', type: 'forge', resultId: 'wpn_xichtieu', ingredients: { ore_tutinh: 4, herb_hoaviem: 3 }, successRate: 0.75, desc: 'Cần 4 Tử Tinh Khoáng, 3 Hỏa Viêm Thảo.' },
-    { id: 'rec_tinhvan', name: 'Tinh Vân Đạo Bào', type: 'forge', resultId: 'arm_tinhvan', ingredients: { ore_tutinh: 3, herb_bachnien: 3 }, successRate: 0.75, desc: 'Cần 3 Tử Tinh Khoáng, 3 Bách Niên Linh Dược.' },
-    { id: 'rec_longlan', name: 'Long Lân Bảo Giáp', type: 'forge', resultId: 'arm_longlan', ingredients: { ore_thienngoai: 4, herb_longhuyet: 3 }, successRate: 0.65, desc: 'Cần 4 Thiên Ngoại Vẫn Thiết, 3 Long Huyết Thảo.' }
+    { id: 'rec_hoixuan', name: 'Hồi Xuân Đan', type: 'alchemy', resultId: 'pill_hoixuan', reqRealmIndex: 0, ingredients: { herb_linhchi: 2 }, successRate: 0.90, desc: 'Cần 2 Linh Chi Thảo. Yêu cầu Luyện Khí Tầng 1.' },
+    { id: 'rec_tulinh', name: 'Tụ Linh Đan', type: 'alchemy', resultId: 'pill_tulinh', reqRealmIndex: 1, ingredients: { herb_thanh_u: 2 }, successRate: 0.88, desc: 'Cần 2 Thanh U Thảo. Yêu cầu Luyện Khí Tầng 2.' },
+    { id: 'rec_tukhi', name: 'Tụ Khí Đan', type: 'alchemy', resultId: 'pill_tukhi', reqRealmIndex: 2, ingredients: { herb_linhchi: 2, herb_thanh_u: 1, ore_huyenthiet: 1 }, successRate: 0.85, desc: 'Cần 2 Linh Chi Thảo, 1 Thanh U Thảo, 1 Huyền Thiết Tinh. Yêu cầu Luyện Khí Tầng 3.' },
+    { id: 'rec_trucco', name: 'Trúc Cơ Đan', type: 'alchemy', resultId: 'pill_trucco', reqRealmIndex: 9, ingredients: { herb_thanh_u: 4, herb_hoaviem: 2, ore_tutinh: 1 }, successRate: 0.70, desc: 'Cần 4 Thanh U Thảo, 2 Hỏa Viêm Thảo, 1 Tử Tinh Khoáng. Yêu cầu Luyện Khí Đỉnh Phong.' },
+    { id: 'rec_kimdan', name: 'Kim Đan Hóa Thần Hoàn', type: 'alchemy', resultId: 'pill_kimdan', reqRealmIndex: 13, ingredients: { herb_hoaviem: 3, herb_bachnien: 2, ore_tutinh: 2 }, successRate: 0.60, desc: 'Cần 3 Hỏa Viêm Thảo, 2 Bách Niên Linh Dược, 2 Tử Tinh Khoáng. Yêu cầu Trúc Cơ Đỉnh Phong.' },
+    { id: 'rec_daotam', name: 'Đạo Tâm Đan', type: 'alchemy', resultId: 'pill_daotam', reqRealmIndex: 14, ingredients: { herb_bachnien: 3, herb_longhuyet: 1, ore_thienngoai: 1 }, successRate: 0.65, desc: 'Cần 3 Bách Niên Linh Dược, 1 Long Huyết Thảo, 1 Thiên Ngoại Vẫn Thiết. Yêu cầu Kim Đan Kỳ.' },
+    { id: 'rec_ngungan', name: 'Ngưng Anh Đan', type: 'alchemy', resultId: 'pill_ngungan', reqRealmIndex: 17, ingredients: { herb_longhuyet: 3, herb_cuuchuyen: 1, ore_thienngoai: 2 }, successRate: 0.55, desc: 'Cần 3 Long Huyết Thảo, 1 Cửu Chuyển Tiên Thảo, 2 Thiên Ngoại Vẫn Thiết. Yêu cầu Kim Đan Đỉnh Phong.' },
+    { id: 'rec_hoathan', name: 'Hóa Thần Đan', type: 'alchemy', resultId: 'pill_hoathan', reqRealmIndex: 21, ingredients: { herb_cuuchuyen: 3, herb_thienkiem: 1, ore_hondon: 1 }, successRate: 0.50, desc: 'Cần 3 Cửu Chuyển Tiên Thảo, 1 Thiên Kiếm Thảo, 1 Hỗn Độn Thần Thiết. Yêu cầu Nguyên Anh Đỉnh Phong.' },
+    { id: 'rec_tho_nguyen', name: 'Cửu Chuyển Thọ Nguyên Đan', type: 'alchemy', resultId: 'pill_tho_nguyen', reqRealmIndex: 14, ingredients: { herb_bachnien: 2, herb_cuuchuyen: 1, ore_tutinh: 2 }, successRate: 0.60, desc: 'Cần 2 Bách Niên Linh Dược, 1 Cửu Chuyển Tiên Thảo, 2 Tử Tinh Khoáng. Yêu cầu Kim Đan Kỳ.' },
+    { id: 'rec_thanhphong', name: 'Thanh Phong Kiếm', type: 'forge', resultId: 'wpn_thanhphong', reqRealmIndex: 0, ingredients: { ore_huyenthiet: 4, herb_thanh_u: 2 }, successRate: 0.85, desc: 'Cần 4 Huyền Thiết Tinh, 2 Thanh U Thảo.' },
+    { id: 'rec_xichtieu', name: 'Xích Tiêu Kiếm', type: 'forge', resultId: 'wpn_xichtieu', reqRealmIndex: 10, ingredients: { ore_tutinh: 4, herb_hoaviem: 3 }, successRate: 0.75, desc: 'Cần 4 Tử Tinh Khoáng, 3 Hỏa Viêm Thảo.' },
+    { id: 'rec_tinhvan', name: 'Tinh Vân Đạo Bào', type: 'forge', resultId: 'arm_tinhvan', reqRealmIndex: 10, ingredients: { ore_tutinh: 3, herb_bachnien: 3 }, successRate: 0.75, desc: 'Cần 3 Tử Tinh Khoáng, 3 Bách Niên Linh Dược.' },
+    { id: 'rec_longlan', name: 'Long Lân Bảo Giáp', type: 'forge', resultId: 'arm_longlan', reqRealmIndex: 14, ingredients: { ore_thienngoai: 4, herb_longhuyet: 3 }, successRate: 0.65, desc: 'Cần 4 Thiên Ngoại Vẫn Thiết, 3 Long Huyết Thảo.' }
   ];
 
   const RANDOM_EVENTS = [
@@ -1223,7 +1440,23 @@
       manuals: [
         { id: 'man_thanhvan_1', name: 'Thanh Phong Tam Thức', cost: 150, atk: 40, desc: 'Tăng 40 điểm Công kích vĩnh viễn.' },
         { id: 'man_thanhvan_2', name: 'Vạn Kiếm Quy Nhất Quyết', cost: 800, crit: 0.1, atk: 150, desc: 'Tăng 10% Bạo kích và 150 Công kích.' },
-        { id: 'man_thanhvan_3', name: 'Thanh Vân Hộ Thể Thuẫn', cost: 2500, def: 350, hp: 1200, desc: 'Tăng 350 Phòng ngự và 1200 HP.' }
+        { id: 'man_thanhvan_3', name: 'Thanh Vân Hộ Thể Thuẫn', cost: 2500, def: 350, hp: 1200, desc: 'Tăng 350 Phòng ngự và 1200 HP.' },
+        {
+          id: 'man_thanhvan_active',
+          name: 'Kiếm Phổ: Vạn Kiếm Quy Tông',
+          cost: 1500,
+          activeSkill: {
+            id: 'sect_skill_van_kiem',
+            name: 'Vạn Kiếm Quy Tông',
+            mpCost: 45,
+            cd: 3,
+            dmgMult: 2.7,
+            bleedChance: 0.9,
+            bleedStacks: 2,
+            desc: 'Vạn kiếm tề phát, 90% gây Xuất Huyết 2 tầng trong 3 hiệp.'
+          },
+          desc: 'Tuyệt kỹ trấn phái: Lĩnh ngộ tuyệt kỹ kiếm pháp trác tuyệt.'
+        }
       ]
     },
     {
@@ -1242,7 +1475,23 @@
       manuals: [
         { id: 'man_dan_1', name: 'Dược Lý Tinh Yếu', cost: 150, hp: 200, desc: 'Tăng 200 HP vĩnh viễn.' },
         { id: 'man_dan_2', name: 'Tam Muội Chân Hỏa Quyết', cost: 800, atk: 120, mp: 300, desc: 'Tăng 120 Công kích và 300 Linh Lực.' },
-        { id: 'man_dan_3', name: 'Cửu Chuyển Hoàn Hồn Bí Lục', cost: 2500, hp: 2500, desc: 'Tăng 2500 HP và 30 năm thọ nguyên.' }
+        { id: 'man_dan_3', name: 'Cửu Chuyển Hoàn Hồn Bí Lục', cost: 2500, hp: 2500, desc: 'Tăng 2500 HP và 30 năm thọ nguyên.' },
+        {
+          id: 'man_dan_active',
+          name: 'Bí Kíp: Tam Muội Chân Hỏa',
+          cost: 1500,
+          activeSkill: {
+            id: 'sect_skill_tam_muoi',
+            name: 'Tam Muội Chân Hỏa',
+            mpCost: 45,
+            cd: 3,
+            dmgMult: 2.4,
+            burnChance: 1.0,
+            burnTurns: 3,
+            desc: 'Phóng Tam Muội Chân Hỏa thiêu rụi mục tiêu 3 hiệp liên tiếp.'
+          },
+          desc: 'Tuyệt kỹ đan môn: Lĩnh ngộ chân hỏa thần thông thượng thừa.'
+        }
       ]
     },
     {
@@ -1261,16 +1510,48 @@
       manuals: [
         { id: 'man_ma_1', name: 'Huyết Sát Nhập Thể', cost: 150, atk: 60, desc: 'Tăng 60 Công kích vĩnh viễn.' },
         { id: 'man_ma_2', name: 'Thiên Ma Cắn Nuốt Pháp', cost: 800, atk: 180, lifeSteal: 0.05, desc: 'Tăng 180 Công kích và 5% Hút Máu.' },
-        { id: 'man_ma_3', name: 'Cửu U Ma Thần Biến', cost: 2500, atk: 600, hp: 2000, desc: 'Tăng 600 Công kích và 2000 HP.' }
+        { id: 'man_ma_3', name: 'Cửu U Ma Thần Biến', cost: 2500, atk: 600, hp: 2000, desc: 'Tăng 600 Công kích và 2000 HP.' },
+        {
+          id: 'man_ma_active',
+          name: 'Bí Kíp: Thiên Ma Thôn Phệ',
+          cost: 1500,
+          activeSkill: {
+            id: 'sect_skill_thien_ma',
+            name: 'Thiên Ma Thôn Phệ',
+            mpCost: 40,
+            cd: 3,
+            dmgMult: 2.6,
+            lifeStealPercent: 0.45,
+            desc: 'Thôn phệ sinh cơ kẻ địch, hồi 45% sát thương gây ra.'
+          },
+          desc: 'Tuyệt kỹ ma môn: Lĩnh ngộ ma công cắn nuốt vạn linh.'
+        }
       ]
     }
   ];
 
   const SECT_QUESTS = [
-    { id: 'quest_herb', name: 'Hái Thảo Dược Nộp Sơn Môn', desc: 'Tìm kiếm nộp 3 cành Linh Chi Thảo cho dược phòng luyện đan.', reqItem: 'herb_linhchi', reqCount: 3, contrib: 40, stone: 30 },
-    { id: 'quest_ore', name: 'Đào Khoáng Rèn Khí', desc: 'Khai thác nộp 2 khối Huyền Thiết Tinh cho khí các đúc binh khí.', reqItem: 'ore_huyenthiet', reqCount: 2, contrib: 45, stone: 35 },
-    { id: 'quest_patrol', name: 'Tuần Tra Sơn Cước Trừ Yêu', desc: 'Tiêu diệt 3 con yêu lang quấy nhiễu phàm nhân dưới chân núi.', reqKills: 3, contrib: 60, stone: 50 },
-    { id: 'quest_donate', name: 'Quyên Góp Linh Thạch Kiến Thiết Tông Môn', desc: 'Tự nguyện quyên góp 100 Linh Thạch mở rộng đại điện sơn môn.', costStone: 100, contrib: 120, stone: 0 }
+    // Bậc 0: Tạp Dịch
+    { id: 'quest_herb', name: 'Hái Thảo Dược Nộp Sơn Môn', desc: 'Tìm kiếm nộp 3 cành Linh Chi Thảo cho dược phòng luyện đan.', reqItem: 'herb_linhchi', reqCount: 3, contrib: 40, stone: 30, minRankIndex: 0 },
+    { id: 'quest_ore', name: 'Đào Khoáng Rèn Khí', desc: 'Khai thác nộp 2 khối Huyền Thiết Tinh cho khí các đúc binh khí.', reqItem: 'ore_huyenthiet', reqCount: 2, contrib: 45, stone: 35, minRankIndex: 0 },
+    { id: 'quest_patrol', name: 'Tuần Tra Sơn Cước Trừ Yêu', desc: 'Tiêu diệt 3 con yêu lang quấy nhiễu phàm nhân dưới chân núi.', reqKills: 3, contrib: 60, stone: 50, minRankIndex: 0 },
+    { id: 'quest_donate', name: 'Quyên Góp Linh Thạch Kiến Thiết Tông Môn', desc: 'Tự nguyện quyên góp 100 Linh Thạch mở rộng đại điện sơn môn.', costStone: 100, contrib: 120, stone: 0, minRankIndex: 0 },
+
+    // Bậc 1: Ngoại Môn
+    { id: 'quest_mine_tutinh', name: 'Khai Thác Tử Tinh Khoáng', desc: 'Nộp 2 khối Tử Tinh Khoáng cho luyện khí đường.', reqItem: 'ore_tutinh', reqCount: 2, contrib: 80, stone: 65, minRankIndex: 1 },
+    { id: 'quest_patrol_snake', name: 'Tiễu Trừ Độc Xà Trùng Điệp', desc: 'Diệt 2 Lục Hoa Độc Xà trừ hại cho dược điền.', reqKills: 2, reqMonster: 'snake_novice', contrib: 90, stone: 75, minRankIndex: 1 },
+
+    // Bậc 2: Nội Môn
+    { id: 'quest_herb_hoaviem', name: 'Thu Thập Hỏa Viêm Thảo', desc: 'Nộp 2 cành Hỏa Viêm Thảo thu hái từ Vạn Yêu Sơn Mạch.', reqItem: 'herb_hoaviem', reqCount: 2, contrib: 150, stone: 130, minRankIndex: 2 },
+    { id: 'quest_hunt_tiger', name: 'Trảm Sát Xích Diễm Hổ', desc: 'Trảm sát 1 đầu Xích Diễm Hổ hung hãn bảo vệ sơn môn.', reqKills: 1, reqMonster: 'tiger_fire', contrib: 180, stone: 160, minRankIndex: 2 },
+
+    // Bậc 3: Chân Truyền
+    { id: 'quest_submit_trucco', name: 'Cống Nộp Trúc Cơ Đan', desc: 'Luyện chế nộp 1 viên Trúc Cơ Đan hỗ trợ sư đệ phá cảnh.', reqItem: 'pill_trucco', reqCount: 1, contrib: 350, stone: 300, minRankIndex: 3 },
+    { id: 'quest_clear_sword_ruins', name: 'Thanh Trừng Cổ Kiếm Khôi Lỗi', desc: 'Trảm sát 1 Cổ Kiếm Khôi Lỗi trong bí cảnh thu hồi kiếm phôi.', reqKills: 1, reqMonster: 'golem_sword', contrib: 400, stone: 360, minRankIndex: 3 },
+
+    // Bậc 4: Trưởng Lão
+    { id: 'quest_elder_guard', name: 'Tọa Trấn Hộ Sơn Đại Trận', desc: 'Vận chuyển linh lực đại đạo hộ trì sơn môn (yêu cầu Kim Đan+).', costMp: 300, contrib: 600, stone: 550, minRankIndex: 4 },
+    { id: 'quest_slay_elder_boss', name: 'Thảo Phạt Huyết Ma Trưởng Lão', desc: 'Trảm sát 1 Huyết Ma Trưởng Lão chấn hưng uy danh môn phái.', reqKills: 1, reqMonster: 'cultist_elder', contrib: 950, stone: 850, minRankIndex: 4 }
   ];
 
   // ==========================================================================
@@ -1283,6 +1564,93 @@
     ALCHEMY: 'ALCHEMY'
   };
 
+  class ParticlePool {
+    constructor(capacity = 250) {
+      this.capacity = capacity;
+      this.pool = new Array(capacity);
+      for (let i = 0; i < capacity; i++) {
+        this.pool[i] = {
+          active: false,
+          isSpiral: false,
+          isSpark: false,
+          isSmoke: false,
+          x: 0,
+          y: 0,
+          vx: 0,
+          vy: 0,
+          r: 0,
+          theta: 0,
+          vr: 0,
+          vTheta: 0,
+          targetX: 0,
+          targetY: 0,
+          size: 2,
+          color: '#ffffff',
+          alpha: 1,
+          life: 0,
+          maxLife: 60,
+          curling: 0,
+          speed: 1
+        };
+      }
+    }
+
+    acquire() {
+      for (let i = 0; i < this.capacity; i++) {
+        if (!this.pool[i].active) {
+          const p = this.pool[i];
+          p.active = true;
+          p.isSpiral = false;
+          p.isSpark = false;
+          p.isSmoke = false;
+          p.curling = 0;
+          p.speed = 1;
+          return p;
+        }
+      }
+      return null;
+    }
+
+    getActiveCount() {
+      let count = 0;
+      for (let i = 0; i < this.capacity; i++) {
+        if (this.pool[i].active) count++;
+      }
+      return count;
+    }
+  }
+
+  class FloatingTextPool {
+    constructor(capacity = 60) {
+      this.capacity = capacity;
+      this.pool = new Array(capacity);
+      for (let i = 0; i < capacity; i++) {
+        this.pool[i] = {
+          active: false,
+          text: '',
+          x: 0,
+          y: 0,
+          vy: -1.2,
+          alpha: 1.0,
+          color: '#f87171',
+          isCrit: false,
+          life: 0
+        };
+      }
+    }
+
+    acquire() {
+      for (let i = 0; i < this.capacity; i++) {
+        if (!this.pool[i].active) {
+          const ft = this.pool[i];
+          ft.active = true;
+          return ft;
+        }
+      }
+      return null;
+    }
+  }
+
   class PixelRenderer {
     constructor(canvas) {
       this.canvas = canvas;
@@ -1292,8 +1660,10 @@
       this.ctx.imageSmoothingEnabled = false;
 
       this.currentScene = SCENES.MEDITATE;
-      this.particles = [];
-      this.floatingTexts = [];
+      this.particlePool = new ParticlePool(250);
+      this.particles = this.particlePool.pool;
+      this.floatingTextPool = new FloatingTextPool(60);
+      this.floatingTexts = this.floatingTextPool.pool;
       this.stars = [];
       this.time = 0;
       this.shakeDuration = 0;
@@ -1310,8 +1680,39 @@
 
       this.initStars();
       this.systems = null;
+      this.isRunning = false;
+      this.rafId = null;
       this.loop = this.loop.bind(this);
-      requestAnimationFrame(this.loop);
+      this.startLoop();
+    }
+
+    startLoop() {
+      if (this.isRunning) return;
+      this.isRunning = true;
+      this.rafId = requestAnimationFrame(this.loop);
+    }
+
+    pauseLoop() {
+      if (!this.isRunning) return;
+      this.isRunning = false;
+      if (this.rafId) {
+        cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+      }
+    }
+
+    checkVisibilityAndResume() {
+      const isDocHidden = typeof document !== 'undefined' && document.hidden;
+      const viewportEl = typeof document !== 'undefined' ? document.querySelector('.canvas-viewport') : null;
+      const inCombat = typeof document !== 'undefined' && document.body.classList.contains('combat-active-mode');
+      const isCharTab = typeof document !== 'undefined' && document.body.classList.contains('tab-nhanvat-active');
+      const isVisible = inCombat || isCharTab || (viewportEl && window.getComputedStyle(viewportEl).display !== 'none');
+
+      if (isDocHidden || !isVisible) {
+        this.pauseLoop();
+      } else {
+        this.startLoop();
+      }
     }
 
     setSystems(systems) {
@@ -1360,16 +1761,16 @@
     }
 
     addFloatingText(text, x, y, color = '#f87171', isCrit = false) {
-      this.floatingTexts.push({
-        text,
-        x: x + (Math.random() - 0.5) * 20,
-        y,
-        vy: -1.2,
-        alpha: 1.0,
-        color,
-        isCrit,
-        life: 60
-      });
+      const ft = this.floatingTextPool.acquire();
+      if (!ft) return;
+      ft.text = text;
+      ft.x = x + (Math.random() - 0.5) * 20;
+      ft.y = y;
+      ft.vy = -1.2;
+      ft.alpha = 1.0;
+      ft.color = color;
+      ft.isCrit = isCrit;
+      ft.life = 60;
     }
 
     addSlashEffect(x, y, type = 'sword') {
@@ -1379,48 +1780,70 @@
     }
 
     spawnQiParticles() {
-      if (this.particles.length > 70) return;
+      if (this.particlePool.getActiveCount() > 70) return;
       const colors = ['#38bdf8', '#34d399', '#facc15', '#f87171', '#c084fc', '#67e8f9'];
       const angle = Math.random() * Math.PI * 2;
       const radius = 130 + Math.random() * 90;
       const targetX = 320;
       const targetY = 210;
 
-      this.particles.push({
-        isSpiral: true,
-        r: radius,
-        theta: angle,
-        vr: 1.1 + Math.random() * 1.2,
-        vTheta: (0.035 + Math.random() * 0.03) * (Math.random() < 0.5 ? 1 : -1),
-        targetX,
-        targetY,
-        x: targetX + Math.cos(angle) * radius,
-        y: targetY + Math.sin(angle) * (radius * 0.48),
-        size: Math.random() < 0.3 ? 3 : 2,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        alpha: 0.9,
-        life: 95
-      });
+      const p = this.particlePool.acquire();
+      if (!p) return;
+      p.isSpiral = true;
+      p.r = radius;
+      p.theta = angle;
+      p.vr = 1.1 + Math.random() * 1.2;
+      p.vTheta = (0.035 + Math.random() * 0.03) * (Math.random() < 0.5 ? 1 : -1);
+      p.targetX = targetX;
+      p.targetY = targetY;
+      p.x = targetX + Math.cos(angle) * radius;
+      p.y = targetY + Math.sin(angle) * (radius * 0.48);
+      p.size = Math.random() < 0.3 ? 3 : 2;
+      p.color = colors[Math.floor(Math.random() * colors.length)];
+      p.alpha = 0.9;
+      p.life = 95;
+      p.maxLife = 95;
     }
 
     spawnLightningSparks(x, y) {
       for (let i = 0; i < 15; i++) {
+        const p = this.particlePool.acquire();
+        if (!p) break;
         const angle = Math.random() * Math.PI * 2;
         const speed = 2 + Math.random() * 5;
-        this.particles.push({
-          x, y,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed,
-          size: 2,
-          color: Math.random() < 0.5 ? '#38bdf8' : '#ffffff',
-          alpha: 1,
-          life: 25,
-          isSpark: true
-        });
+        p.isSpark = true;
+        p.x = x;
+        p.y = y;
+        p.vx = Math.cos(angle) * speed;
+        p.vy = Math.sin(angle) * speed;
+        p.size = 2;
+        p.color = Math.random() < 0.5 ? '#38bdf8' : '#ffffff';
+        p.alpha = 1;
+        p.life = 25;
+        p.maxLife = 25;
+      }
+    }
+
+    spawnSmokeParticles(x, y, count = 30) {
+      for (let i = 0; i < count; i++) {
+        const p = this.particlePool.acquire();
+        if (!p) break;
+        p.isSmoke = true;
+        p.x = x + (Math.random() - 0.5) * 30;
+        p.y = y + (Math.random() - 0.5) * 20;
+        p.vx = (Math.random() - 0.5) * 2.2;
+        p.vy = -1.2 - Math.random() * 2.4;
+        p.size = 3 + Math.floor(Math.random() * 4);
+        p.color = Math.random() < 0.4 ? '#475569' : (Math.random() < 0.7 ? '#1e293b' : '#f97316');
+        p.alpha = 0.85;
+        p.curling = Math.random() * Math.PI * 2;
+        p.life = 45 + Math.floor(Math.random() * 35);
+        p.maxLife = p.life;
       }
     }
 
     loop() {
+      if (!this.isRunning) return;
       this.time++;
 
       this.ctx.save();
@@ -1455,7 +1878,7 @@
       this.updateAndDrawFloatingTexts();
 
       this.ctx.restore();
-      requestAnimationFrame(this.loop);
+      this.rafId = requestAnimationFrame(this.loop);
     }
 
     renderMeditateScene() {
@@ -1885,6 +2308,17 @@
         ctx.fillStyle = pRatio > 0.4 ? '#38bdf8' : '#ef4444';
         ctx.fillRect(pBarX, pBarY, 76 * pRatio, 7);
 
+        // Vẽ Hộ Thuẫn Kim Thân trên Đạo Hữu nếu có
+        if (combat.playerCombat.statusEffects && combat.playerCombat.statusEffects.shield > 0) {
+          ctx.save();
+          ctx.strokeStyle = 'rgba(56, 189, 248, 0.85)';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.ellipse(px + 48, py + 48, 38, 52, 0, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+        }
+
         // Quái Vật Mini Bar
         const mCur = combat.monsterCombat.curHp;
         const mMax = combat.monsterCombat.maxHp;
@@ -1892,12 +2326,46 @@
         const mBarX = mx + 10;
         const mBarY = my - 18;
 
+        // Ý Đồ Quái Vật (Telegraphed Intent)
+        if (combat.monsterCombat.nextIntent) {
+          ctx.save();
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+          ctx.fillRect(mBarX - 4, mBarY - 18, 90, 15);
+          const isUltimate = combat.monsterCombat.nextIntent.type === 'enrage' || combat.monsterCombat.nextIntent.type === 'ultimate';
+          ctx.strokeStyle = isUltimate ? '#ef4444' : '#f59e0b';
+          ctx.strokeRect(mBarX - 4, mBarY - 18, 90, 15);
+          ctx.fillStyle = isUltimate ? '#ef4444' : '#fef08a';
+          ctx.font = 'bold 10px "Courier New", monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(combat.monsterCombat.nextIntent.label, mBarX + 41, mBarY - 7);
+          ctx.restore();
+        }
+
+        // Mini HP Bar
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(mBarX - 1, mBarY - 1, 82, 9);
         ctx.fillStyle = '#334155';
         ctx.fillRect(mBarX, mBarY, 80, 7);
         ctx.fillStyle = mRatio > 0.5 ? '#ef4444' : (mRatio > 0.2 ? '#f59e0b' : '#dc2626');
         ctx.fillRect(mBarX, mBarY, 80 * mRatio, 7);
+
+        // Mini Rage Bar
+        const rage = combat.monsterCombat.rage || 0;
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(mBarX - 1, mBarY + 8, 82, 4);
+        ctx.fillStyle = '#f97316';
+        ctx.fillRect(mBarX, mBarY + 8, 80 * (rage / 100), 3);
+
+        // Hộ Thuẫn Kim Thân trên Quái nếu có
+        if (combat.monsterCombat.statusEffects && combat.monsterCombat.statusEffects.shield > 0) {
+          ctx.save();
+          ctx.strokeStyle = 'rgba(250, 204, 21, 0.85)';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.ellipse(mx + 48, my + 48, 44, 54, 0, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+        }
 
         ctx.restore();
       }
@@ -1945,44 +2413,94 @@
 
       drawPixelSprite(ctx, SPRITES.sceneFurnace, 240, 100, 10);
 
-      const fireHeight = 12 + Math.sin(this.time * 0.2) * 5;
-      ctx.fillStyle = '#ef4444';
+      const session = this.systems && this.systems.alchemySession;
+      const isSessionActive = session && session.active;
+      const fireMode = isSessionActive ? session.fireMode : 'gentle';
+      const isMartial = fireMode === 'martial';
+
+      const fireHeight = (isMartial ? 22 : 12) + Math.sin(this.time * 0.25) * 5;
+      ctx.fillStyle = isMartial ? '#ef4444' : '#0284c7';
       ctx.fillRect(270, 260 - fireHeight, 100, fireHeight);
-      ctx.fillStyle = '#fbbf24';
+      ctx.fillStyle = isMartial ? '#fbbf24' : '#38bdf8';
       ctx.fillRect(290, 260 - fireHeight * 0.8, 60, fireHeight * 0.8);
 
-      if (this.time % 6 === 0) {
-        const colors = ['#f43f5e', '#a855f7', '#3b82f6', '#10b981', '#f59e0b'];
-        this.particles.push({
-          x: 320 + (Math.random() - 0.5) * 30,
-          y: 110,
-          vx: (Math.random() - 0.5) * 0.6,
-          vy: -1.0 - Math.random() * 0.8,
-          size: 4,
-          color: colors[Math.floor(Math.random() * colors.length)],
-          alpha: 0.8,
-          life: 80,
-          isSmoke: true
-        });
+      if (this.time % 5 === 0) {
+        const colors = isMartial ? ['#f43f5e', '#ea580c', '#f59e0b'] : ['#38bdf8', '#06b6d4', '#10b981'];
+        const p = this.particlePool.acquire();
+        if (p) {
+          p.isSmoke = true;
+          p.x = 320 + (Math.random() - 0.5) * 30;
+          p.y = 110;
+          p.vx = (Math.random() - 0.5) * 0.6;
+          p.vy = -1.0 - Math.random() * 0.8;
+          p.size = 4;
+          p.color = colors[Math.floor(Math.random() * colors.length)];
+          p.alpha = 0.8;
+          p.life = 65;
+          p.maxLife = 65;
+        }
       }
 
-      ctx.font = '14px "Courier New", monospace';
-      ctx.fillStyle = '#cbd5e1';
-      ctx.textAlign = 'center';
-      ctx.fillText('Đan hỏa hừng hực, lò thần thai nghén tạo hóa...', 320, 310);
+      // Nếu đang trong mini-game tương tác, vẽ nhiệt kế & vạch tối ưu
+      if (isSessionActive) {
+        const gaugeX = 540;
+        const gaugeY = 70;
+        const gaugeW = 20;
+        const gaugeH = 180;
+
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(gaugeX, gaugeY, gaugeW, gaugeH);
+        ctx.strokeStyle = '#475569';
+        ctx.strokeRect(gaugeX, gaugeY, gaugeW, gaugeH);
+
+        // Vùng Hoàng Kim (Optimal range)
+        const optTop = gaugeY + gaugeH * (1 - session.targetMax / 100);
+        const optH = gaugeH * ((session.targetMax - session.targetMin) / 100);
+        ctx.fillStyle = 'rgba(34, 197, 94, 0.35)';
+        ctx.fillRect(gaugeX + 1, optTop, gaugeW - 2, optH);
+
+        // Mức nhiệt độ hiện tại
+        const tempClamped = Math.max(0, Math.min(100, session.temp));
+        const tempH = (gaugeH - 2) * (tempClamped / 100);
+        ctx.fillStyle = tempClamped > 90 ? '#ef4444' : (tempClamped >= session.targetMin && tempClamped <= session.targetMax ? '#22c55e' : '#f59e0b');
+        ctx.fillRect(gaugeX + 2, gaugeY + gaugeH - 2 - tempH, gaugeW - 4, tempH);
+
+        ctx.font = 'bold 11px monospace';
+        ctx.fillStyle = '#f8fafc';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${Math.round(tempClamped)}°C`, gaugeX + 10, gaugeY + gaugeH + 16);
+
+        ctx.font = '13px "Courier New", monospace';
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillText(`Lò Thần: ${session.recipe.name} • Hỏa Hầu: ${isMartial ? 'VŨ HỎA 🔥' : 'VĂN HỎA ❄️'} • Tinh Thuần: ${Math.round(session.purity)}`, 320, 310);
+      } else {
+        ctx.font = '14px "Courier New", monospace';
+        ctx.fillStyle = '#cbd5e1';
+        ctx.textAlign = 'center';
+        ctx.fillText('Đan hỏa hừng hực, lò thần thai nghén tạo hóa...', 320, 310);
+      }
     }
 
     updateAndDrawParticles() {
       const ctx = this.ctx;
-      for (let i = this.particles.length - 1; i >= 0; i--) {
-        const p = this.particles[i];
+      const pool = this.particlePool.pool;
+      const len = pool.length;
+
+      for (let i = 0; i < len; i++) {
+        const p = pool[i];
+        if (!p.active) continue;
+
         p.life--;
+        if (p.life <= 0) {
+          p.active = false;
+          continue;
+        }
 
         if (p.isSpark) {
           p.x += p.vx;
           p.y += p.vy;
           p.vy += 0.2;
-          p.alpha = Math.max(0, p.life / 25);
+          p.alpha = Math.max(0, p.life / (p.maxLife || 25));
         } else if (p.isSmoke) {
           if (p.curling !== undefined) {
             p.curling += 0.05;
@@ -1991,7 +2509,7 @@
             p.x += p.vx;
           }
           p.y += p.vy;
-          p.alpha = Math.max(0, p.life / 80);
+          p.alpha = Math.max(0, p.life / (p.maxLife || 80));
         } else if (p.isSpiral) {
           p.r = Math.max(2, p.r - p.vr);
           p.theta += p.vTheta;
@@ -2025,16 +2543,24 @@
         ctx.globalAlpha = p.alpha;
         ctx.fillRect(p.x, p.y, p.size, p.size);
         ctx.restore();
-
-        if (p.life <= 0) this.particles.splice(i, 1);
       }
     }
 
     updateAndDrawFloatingTexts() {
       const ctx = this.ctx;
-      for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
-        const ft = this.floatingTexts[i];
+      const pool = this.floatingTextPool.pool;
+      const len = pool.length;
+
+      for (let i = 0; i < len; i++) {
+        const ft = pool[i];
+        if (!ft.active) continue;
+
         ft.life--;
+        if (ft.life <= 0) {
+          ft.active = false;
+          continue;
+        }
+
         ft.y += ft.vy;
         ft.alpha = Math.max(0, ft.life / 50);
 
@@ -2047,15 +2573,110 @@
         ctx.textAlign = 'center';
         ctx.fillText(ft.text, ft.x, ft.y);
         ctx.restore();
-
-        if (ft.life <= 0) this.floatingTexts.splice(i, 1);
       }
     }
   }
 
   // ==========================================================================
-  // 5. TURN-BASED COMBAT ENGINE (NÂNG CẤP TOÀN DIỆN CƠ CHẾ CHIẾN ĐẤU & GIAO DIỆN)
+  // 5. TURN-BASED COMBAT ENGINE & COMBAT STATUS MANAGER (R1)
   // ==========================================================================
+  class CombatStatusManager {
+    static initStatuses() {
+      return {
+        stun: 0,
+        burn: 0,
+        bleed: 0,
+        poison: 0,
+        shield: 0
+      };
+    }
+
+    static applyStatus(targetCombat, type, durationOrValue = 1) {
+      if (!targetCombat.statusEffects) targetCombat.statusEffects = this.initStatuses();
+      const s = targetCombat.statusEffects;
+      if (type === 'stun') {
+        s.stun = Math.max(s.stun, durationOrValue);
+      } else if (type === 'burn') {
+        s.burn = Math.max(s.burn, durationOrValue);
+      } else if (type === 'bleed') {
+        s.bleed = Math.min(5, (s.bleed || 0) + durationOrValue);
+      } else if (type === 'poison') {
+        s.poison = Math.max(s.poison, durationOrValue);
+      } else if (type === 'shield') {
+        s.shield = (s.shield || 0) + durationOrValue;
+      }
+    }
+
+    static cleanse(targetCombat) {
+      if (!targetCombat.statusEffects) return;
+      const s = targetCombat.statusEffects;
+      s.stun = 0;
+      s.burn = 0;
+      s.bleed = 0;
+      s.poison = 0;
+    }
+
+    static absorbDamage(targetCombat, incomingDmg, renderer, x, y) {
+      if (!targetCombat.statusEffects || targetCombat.statusEffects.shield <= 0) {
+        return { absorbed: 0, remainingDmg: incomingDmg };
+      }
+      const shield = targetCombat.statusEffects.shield;
+      if (shield >= incomingDmg) {
+        targetCombat.statusEffects.shield -= incomingDmg;
+        if (renderer) renderer.addFloatingText(`🛡️ Chặn -${incomingDmg}`, x, y, '#38bdf8');
+        return { absorbed: incomingDmg, remainingDmg: 0 };
+      } else {
+        const absorbed = shield;
+        targetCombat.statusEffects.shield = 0;
+        if (renderer) renderer.addFloatingText(`🛡️ Vỡ Khiên -${absorbed}`, x, y, '#38bdf8');
+        return { absorbed, remainingDmg: incomingDmg - absorbed };
+      }
+    }
+
+    static tickTurn(targetCombat, isPlayer, renderer, addLog, targetName) {
+      if (!targetCombat.statusEffects) targetCombat.statusEffects = this.initStatuses();
+      const s = targetCombat.statusEffects;
+      const floatX = isPlayer ? 170 : 440;
+      const maxHp = targetCombat.maxHp || 100;
+
+      // 1. Kịch Độc (Poison DoT)
+      if (s.poison > 0) {
+        const pDmg = Math.max(1, Math.floor(maxHp * 0.05));
+        targetCombat.curHp = Math.max(1, targetCombat.curHp - pDmg);
+        if (renderer) renderer.addFloatingText(`-${pDmg} Độc`, floatX, 175, '#a855f7');
+        if (addLog) addLog(`☠️ 【${targetName}】 trúng kịch độc công tâm, khí huyết hao tổn ${pDmg}!`, 'danger');
+        s.poison--;
+      }
+
+      // 2. Thiêu Đốt (Burn DoT)
+      if (s.burn > 0) {
+        const bDmg = Math.max(1, Math.floor(maxHp * 0.06));
+        targetCombat.curHp = Math.max(1, targetCombat.curHp - bDmg);
+        if (renderer) renderer.addFloatingText(`-${bDmg} Thiêu Đốt`, floatX, 155, '#f97316');
+        if (addLog) addLog(`🔥 【${targetName}】 bị linh hỏa thiêu đốt, mất ${bDmg} Khí Huyết!`, 'danger');
+        s.burn--;
+      }
+
+      // 3. Xuất Huyết (Bleed DoT stackable)
+      if (s.bleed > 0) {
+        const blDmg = Math.max(1, Math.floor(maxHp * 0.035 * s.bleed));
+        targetCombat.curHp = Math.max(1, targetCombat.curHp - blDmg);
+        if (renderer) renderer.addFloatingText(`-${blDmg} Xuất Huyết (${s.bleed}T)`, floatX, 135, '#dc2626');
+        if (addLog) addLog(`🩸 【${targetName}】 vết thương xuất huyết dữ dội (${s.bleed} tầng), mất ${blDmg} Khí Huyết!`, 'danger');
+        s.bleed = Math.max(0, s.bleed - 1);
+      }
+
+      // 4. Choáng / Tê Liệt (Stun check)
+      if (s.stun > 0) {
+        s.stun--;
+        if (renderer) renderer.addFloatingText('TÊ LIỆT! MẤT LƯỢT', floatX, 120, '#38bdf8', true);
+        if (addLog) addLog(`⚡ 【${targetName}】 bị tê liệt kinh mạch, choáng váng mất lượt hành động!`, 'skill');
+        return true;
+      }
+      return false;
+    }
+  }
+
   class CombatEngine {
     constructor(renderer, logCallback, onCombatEndCallback) {
       this.renderer = renderer;
@@ -2068,35 +2689,93 @@
 
       this.playerCombat = {
         curHp: 0, maxHp: 0, curMp: 0, maxMp: 0,
-        actionGauge: 0, skillCooldown: 0, artifactCooldown: 0,
+        actionGauge: 0, skillCooldown: 0, skill2Cooldown: 0, artifactCooldown: 0,
         immortalTriggered: false, isDefending: false,
-        poisonTurns: 0, burnTurns: 0, frozenTurns: 0
+        statusEffects: CombatStatusManager.initStatuses(),
+        swordQi: 0, berserkTurns: 0
       };
 
       this.monsterCombat = {
-        curHp: 0, maxHp: 0, curMp: 0,
-        actionGauge: 0, frozenTurns: 0, stunnedTurns: 0,
-        poisonTurns: 0, burnTurns: 0
+        curHp: 0, maxHp: 0, curMp: 0, maxMp: 0,
+        actionGauge: 0,
+        statusEffects: CombatStatusManager.initStatuses(),
+        rage: 0,
+        nextIntent: null
       };
 
       this.isPlayerTurn = false;
       this.isProcessingTurn = false;
       this.combatInterval = null;
 
-      // Tính năng mới: Tự động đánh, Tốc độ trận đấu, Hiệp đấu, Kết quả trận đấu
       this.isAutoCombat = false;
       this.combatSpeed = 1; // 1x hoặc 2x
       this.roundCount = 1;
       this.resultAutoTimer = null;
     }
 
-    startCombat(player, monsterData) {
+    calculateEvasion(attackerSpd, defenderSpd, defenderDodgeMod = 0, deltaRealm = 0) {
+      const spdDiff = defenderSpd - attackerSpd;
+      let evasion = 0.04 + (spdDiff / (defenderSpd + attackerSpd * 1.5)) * 0.35 + (defenderDodgeMod || 0) + deltaRealm * 0.03;
+      return Math.min(0.40, Math.max(0.02, evasion));
+    }
+
+    calculateDamage(attackerAtk, defenderDef, deltaRealm = 0, isSkill = false, skillMult = 1.0, isCrit = false, critMult = 1.5, defenderPoisoned = false) {
+      const effectiveDef = defenderDef * (defenderPoisoned ? 0.8 : 1.0);
+      const mitigation = effectiveDef / (effectiveDef + 150 + Math.max(0, -deltaRealm) * 30);
+      let baseDmg = (attackerAtk * (isSkill ? skillMult : 1.0)) * (1 + (Math.random() - 0.5) * 0.16);
+      let dmg = Math.max(1, Math.floor(baseDmg * (1 - mitigation)));
+
+      // Áp Chế Cảnh Giới (Realm Gap Suppression)
+      if (deltaRealm > 0) {
+        dmg = Math.floor(dmg * (1 + deltaRealm * 0.12));
+      } else if (deltaRealm < 0) {
+        dmg = Math.floor(dmg * Math.max(0.20, 1 + deltaRealm * 0.12));
+      }
+
+      if (isCrit) {
+        dmg = Math.floor(dmg * critMult);
+      }
+      return Math.max(1, dmg);
+    }
+
+    updateMonsterIntent() {
+      if (!this.monster || !this.inCombat) return;
+      if (this.monsterCombat.rage >= 90) {
+        this.monsterCombat.nextIntent = {
+          type: 'ultimate',
+          label: '💥 TUYỆT SÁT CUỒNG NỘ',
+          desc: 'Nộ khí ngập trời! Chuẩn bị phóng sát chiêu kinh thiên động địa!'
+        };
+      } else if (this.monsterCombat.curHp / this.monsterCombat.maxHp < 0.28 && Math.random() < 0.5) {
+        this.monsterCombat.nextIntent = {
+          type: 'defend',
+          label: '🛡️ Kim Thân Phòng Ngự',
+          desc: 'Ngưng tụ hộ thuẫn khí tráo giảm sát thương!'
+        };
+      } else if (this.monster.skills && this.monster.skills.length > 0 && Math.random() < 0.45) {
+        const monSkill = this.monster.skills[0];
+        this.monsterCombat.nextIntent = {
+          type: 'skill',
+          label: `⚡ ${monSkill.name}`,
+          desc: `Chuẩn bị thi triển yêu thuật sát chiêu!`
+        };
+      } else {
+        this.monsterCombat.nextIntent = {
+          type: 'attack',
+          label: '⚔️ Công Kích Cuồng Bạo',
+          desc: 'Đòn tấn công cận chiến mãnh liệt.'
+        };
+      }
+    }
+
+    startCombat(player, monsterData, onCombatEnd = null) {
       this.inCombat = true;
       this.isPlayerTurn = false;
       this.isProcessingTurn = false;
       this.roundCount = 1;
       this.player = player;
       this.monster = JSON.parse(JSON.stringify(monsterData));
+      this.onCombatEnd = onCombatEnd;
 
       this.playerCombat = {
         curHp: this.player.curHp,
@@ -2105,31 +2784,32 @@
         maxMp: this.player.maxMp,
         actionGauge: 0,
         skillCooldown: 0,
+        skill2Cooldown: 0,
         artifactCooldown: 0,
         immortalTriggered: false,
         isDefending: false,
-        poisonTurns: 0,
-        burnTurns: 0,
-        frozenTurns: 0
+        statusEffects: CombatStatusManager.initStatuses(),
+        swordQi: 0,
+        berserkTurns: 0
       };
 
       this.monsterCombat = {
         curHp: this.monster.hp,
         maxHp: this.monster.hp,
         curMp: this.monster.mp || 50,
+        maxMp: this.monster.mp || 50,
         actionGauge: 0,
-        frozenTurns: 0,
-        stunnedTurns: 0,
-        poisonTurns: 0,
-        burnTurns: 0
+        statusEffects: CombatStatusManager.initStatuses(),
+        rage: 0,
+        nextIntent: null
       };
 
-      // Đóng modal kết quả nếu còn sót
       const overlay = document.getElementById('combat-result-overlay');
       if (overlay) overlay.classList.add('hidden');
 
-      // Kích hoạt Trạng Thái Chiến Đấu (Combat Active Mode)
       document.body.classList.add('combat-active-mode');
+      const headerEl = document.getElementById('combat-active-header');
+      if (headerEl) headerEl.classList.remove('hidden');
 
       const bannerMon = document.getElementById('combat-banner-monster');
       if (bannerMon) bannerMon.textContent = this.monster.name;
@@ -2143,14 +2823,16 @@
       this.renderer.setScene(SCENES.COMBAT);
       this.renderer.setStatusText(`⚔️ GIAO TRANH HUNG HIỂM: Đối đầu 【${this.monster.name}】!`);
 
+      this.updateMonsterIntent();
       switchTab('tab-combat');
 
-      this.addLog(`⚔️ Đụng độ hung hiểm! Đạo hữu tao ngộ 【${this.monster.name}】! Bước vào trạng thái chiến đấu sinh tử!`, 'battle');
+      this.addLog(`⚔️ Đụng độ hung hiểm! Đạo hữu tao ngộ 【${this.monster.name}】! Bước vào trận chiến sinh tử!`, 'battle');
       sound.playThunder();
 
       this.updateCombatButtons(false);
       this.updateCombatUI();
       this.runCombatLoop();
+      this.renderer.checkVisibilityAndResume();
     }
 
     runCombatLoop() {
@@ -2186,22 +2868,37 @@
 
       this.isProcessingTurn = true;
 
-      // Xử lý hiệu ứng trạng thái đầu hiệp
-      if (this.playerCombat.poisonTurns > 0) {
-        const pDmg = Math.floor(this.playerCombat.maxHp * 0.05);
-        this.playerCombat.curHp = Math.max(1, this.playerCombat.curHp - pDmg);
-        this.renderer.addFloatingText(`-${pDmg} Độc`, 170, 180, '#a855f7');
-        this.addLog(`Độc khí công tâm! Đạo hữu mất ${pDmg} Khí Huyết!`, 'danger');
-        this.playerCombat.poisonTurns--;
-      }
+      // Xử lý hiệu ứng trạng thái đầu lượt Đạo Hữu
+      const isStunned = CombatStatusManager.tickTurn(this.playerCombat, true, this.renderer, this.addLog, 'Đạo Hữu');
 
       if (this.playerCombat.skillCooldown > 0) this.playerCombat.skillCooldown--;
+      if (this.playerCombat.skill2Cooldown > 0) this.playerCombat.skill2Cooldown--;
       if (this.playerCombat.artifactCooldown > 0) this.playerCombat.artifactCooldown--;
+      if (this.playerCombat.berserkTurns > 0) this.playerCombat.berserkTurns--;
+
+      // Đặc tính bị động Thể Tu (Cửu Chuyển Kim Cốt) hồi 4% HP mỗi lượt
+      if (this.player.cultivationPath && this.player.cultivationPath.id === 'the_tu') {
+        const regenHp = Math.floor(this.playerCombat.maxHp * 0.04);
+        this.playerCombat.curHp = Math.min(this.playerCombat.maxHp, this.playerCombat.curHp + regenHp);
+        this.renderer.addFloatingText(`+${regenHp} Khí Huyết`, 170, 150, '#34d399');
+      }
 
       if (this.player.spiritualRoot && this.player.spiritualRoot.name === 'Thiên Mộc Linh Căn') {
         const heal = Math.floor(this.playerCombat.maxHp * 0.05);
         this.playerCombat.curHp = Math.min(this.playerCombat.maxHp, this.playerCombat.curHp + heal);
         this.renderer.addFloatingText(`+${heal} Sinh Cơ`, 170, 160, '#34d399');
+      }
+
+      if (this.checkCombatOver()) return;
+
+      if (isStunned) {
+        this.isProcessingTurn = false;
+        this.updateCombatUI();
+        const animDelay = this.combatSpeed === 2 ? 250 : 500;
+        setTimeout(() => {
+          if (this.inCombat) this.triggerMonsterTurn();
+        }, animDelay);
+        return;
       }
 
       this.isPlayerTurn = true;
@@ -2225,7 +2922,8 @@
 
     executeAutoTurn() {
       if (!this.isPlayerTurn || this.isProcessingTurn) return;
-      const skill = this.player.activeSkill;
+      const skill = (this.player.skills && this.player.skills[0]) || this.player.activeSkill;
+      const skill2 = this.player.skills && this.player.skills[1];
       const art = this.player.equippedArtifact;
       const pillCount = (this.player.inventory && this.player.inventory.pill_hoixuan) || 0;
 
@@ -2235,19 +2933,25 @@
         return;
       }
 
-      // 2. Tuyệt kỹ nếu sẵn sàng & đủ MP
-      if (skill && this.playerCombat.skillCooldown === 0 && this.playerCombat.curMp >= skill.mpCost) {
-        this.playerCastSkill();
+      // 2. Tuyệt kỹ 2 nếu sẵn sàng
+      if (skill2 && this.playerCombat.skill2Cooldown === 0 && this.playerCombat.curMp >= skill2.mpCost) {
+        this.playerCastSkill(1);
         return;
       }
 
-      // 3. Tế Pháp bảo nếu sẵn sàng
+      // 3. Tuyệt kỹ 1 nếu sẵn sàng & đủ MP
+      if (skill && this.playerCombat.skillCooldown === 0 && this.playerCombat.curMp >= skill.mpCost) {
+        this.playerCastSkill(0);
+        return;
+      }
+
+      // 4. Tế Pháp bảo nếu sẵn sàng
       if (art && this.playerCombat.artifactCooldown === 0) {
         this.playerUseArtifact();
         return;
       }
 
-      // 4. Mặc định đánh thường
+      // 5. Mặc định đánh thường
       this.playerNormalAttack();
     }
 
@@ -2289,41 +2993,83 @@
 
       const animDelay = this.combatSpeed === 2 ? 110 : 200;
       setTimeout(() => {
-        const baseAtk = this.player.totalAtk;
-        const monDef = this.monster.def;
-        let dmg = Math.max(1, Math.floor(baseAtk * (1 + (Math.random() - 0.5) * 0.2) - monDef * 0.4));
+        // Kiểm tra Né Đòn (Evasion của Quái)
+        const monSpd = this.monster.spd || 15;
+        const pSpd = this.player.totalSpd || 15;
+        const playerRealm = this.player.realmIndex || 0;
+        const monRealm = Math.floor(monSpd / 35);
+        const deltaRealm = playerRealm - monRealm;
+        const monEvasion = this.calculateEvasion(pSpd, monSpd, 0, -deltaRealm);
 
-        const isCrit = Math.random() < this.player.totalCrit;
-        if (isCrit) {
-          dmg = Math.floor(dmg * (1.5 + (this.player.totalCritDmg || 0.5)));
-          this.renderer.triggerShake(10, 5);
+        if (Math.random() < monEvasion) {
+          this.renderer.addFloatingText('NÉ ĐÒN!', 440, 160, '#38bdf8');
+          this.addLog(`【${this.monster.name}】 thân hình thoăn thoắt né tránh đòn đánh thường của đạo hữu!`, 'battle');
+          this.updateCombatUI();
+          this.isProcessingTurn = false;
+          return;
         }
+
+        // Tích tầng Kiếm Khí cho Kiếm Tu
+        if (this.player.cultivationPath && this.player.cultivationPath.id === 'kiem_tu') {
+          this.playerCombat.swordQi = Math.min(5, (this.playerCombat.swordQi || 0) + 1);
+        }
+
+        // Bạo Kích
+        let critRate = this.player.totalCrit || 0.05;
+        let critDmgBonus = this.player.totalCritDmg || 0.5;
+        if (this.playerCombat.swordQi > 0) {
+          critRate += this.playerCombat.swordQi * 0.04;
+          critDmgBonus += this.playerCombat.swordQi * 0.06;
+        }
+        if (this.playerCombat.berserkTurns > 0) {
+          critRate += 0.25;
+        }
+
+        const isCrit = Math.random() < critRate;
+        const isPoisoned = this.monsterCombat.statusEffects.poison > 0;
+        let dmg = this.calculateDamage(this.player.totalAtk, this.monster.def, deltaRealm, false, 1.0, isCrit, 1.5 + critDmgBonus, isPoisoned);
 
         if (this.player.physique && this.player.physique.armorPen) {
-          dmg += Math.floor(monDef * 0.3);
+          dmg += Math.floor(this.monster.def * 0.3);
         }
 
-        this.monsterCombat.curHp = Math.max(0, this.monsterCombat.curHp - dmg);
+        // Trừ vào Kim Thân / Khiên trước
+        const shieldRes = CombatStatusManager.absorbDamage(this.monsterCombat, dmg, this.renderer, 440, 140);
+        const actualDmg = shieldRes.remainingDmg;
+
+        this.monsterCombat.curHp = Math.max(0, this.monsterCombat.curHp - actualDmg);
+        this.monsterCombat.rage = Math.min(100, (this.monsterCombat.rage || 0) + (isCrit ? 25 : 15));
+
         this.renderer.combatState.monsterFlash = '#ffffff';
         setTimeout(() => { this.renderer.combatState.monsterFlash = null; }, 100);
 
-        this.renderer.addFloatingText(isCrit ? `BẠO! -${dmg}` : `-${dmg}`, 440, 160, isCrit ? '#fbbf24' : '#ef4444', isCrit);
-        this.addLog(`Đạo hữu vung kiếm xuất kích, gây cho 【${this.monster.name}】 ${dmg} sát thương!${isCrit ? ' (Bạo Kích!!)' : ''}`, isCrit ? 'crit' : 'normal');
+        if (actualDmg > 0) {
+          this.renderer.addFloatingText(isCrit ? `BẠO! -${actualDmg}` : `-${actualDmg}`, 440, 160, isCrit ? '#fbbf24' : '#ef4444', isCrit);
+          this.addLog(`Đạo hữu vung kiếm xuất kích, gây cho 【${this.monster.name}】 ${actualDmg} sát thương!${isCrit ? ' (Bạo Kích!!)' : ''}`, isCrit ? 'crit' : 'normal');
+          this.handleLifeSteal(actualDmg);
+        }
 
-        this.handleLifeSteal(dmg);
+        // Pháp Tu nội tại: 30% gây Tê Liệt
+        if (this.player.cultivationPath && this.player.cultivationPath.id === 'phap_tu' && Math.random() < 0.30) {
+          CombatStatusManager.applyStatus(this.monsterCombat, 'stun', 1);
+          this.addLog(`Ngũ hành lôi quang kích phát! Khiến 【${this.monster.name}】 bị tê liệt 1 hiệp!`, 'skill');
+        }
+
         this.updateCombatUI();
         if (this.checkCombatOver()) return;
         this.isProcessingTurn = false;
       }, animDelay);
     }
 
-    playerCastSkill() {
+    playerCastSkill(skillIndex = 0) {
       if (!this.isPlayerTurn || this.isProcessingTurn) return;
-      const skill = this.player.activeSkill;
+      const skills = this.player.skills || (this.player.activeSkill ? [this.player.activeSkill] : []);
+      const skill = skills[skillIndex] || this.player.activeSkill;
       if (!skill) return;
 
-      if (this.playerCombat.skillCooldown > 0) {
-        this.addLog(`Kỹ năng 【${skill.name}】 chưa hồi chiêu (${this.playerCombat.skillCooldown} lượt)!`, 'warning');
+      const cdField = skillIndex === 1 ? 'skill2Cooldown' : 'skillCooldown';
+      if (this.playerCombat[cdField] > 0) {
+        this.addLog(`Kỹ năng 【${skill.name}】 chưa hồi chiêu (${this.playerCombat[cdField]} lượt)!`, 'warning');
         return;
       }
       if (this.playerCombat.curMp < skill.mpCost) {
@@ -2338,7 +3084,7 @@
         this.renderer.addFloatingText(`-${hpLoss} Huyết`, 170, 180, '#ef4444');
       }
 
-      this.playerCombat.skillCooldown = skill.cd || 2;
+      this.playerCombat[cdField] = skill.cd || 2;
       this.isPlayerTurn = false;
       this.isProcessingTurn = true;
       this.updateCombatButtons(false);
@@ -2355,20 +3101,78 @@
 
       const animDelay = this.combatSpeed === 2 ? 140 : 250;
       setTimeout(() => {
-        let dmg = Math.max(1, Math.floor(this.player.totalAtk * (skill.dmgMult || 1.8) - this.monster.def * 0.3));
-        const isCrit = Math.random() < this.player.totalCrit;
-        if (isCrit) dmg = Math.floor(dmg * 1.8);
+        // Đan Tu: Bách Thảo Hồi Xuân giải trừ toàn bộ debuffs
+        if (skill.cleanse) {
+          CombatStatusManager.cleanse(this.playerCombat);
+          this.renderer.addFloatingText('THANH TẨY!', 170, 140, '#38bdf8', true);
+          this.addLog(`Đạo hữu thanh tẩy toàn bộ ác chú và trạng thái bất lợi!`, 'system');
+        }
 
-        this.monsterCombat.curHp = Math.max(0, this.monsterCombat.curHp - dmg);
+        // Hộ thuẫn từ kỹ năng (Pháp Tu / Thể Tu)
+        if (skill.shieldPercentMp) {
+          const sHp = Math.floor(this.playerCombat.maxMp * skill.shieldPercentMp);
+          CombatStatusManager.applyStatus(this.playerCombat, 'shield', sHp);
+          this.renderer.addFloatingText(`+${sHp} Khiên`, 170, 140, '#38bdf8');
+          this.addLog(`Đạo hữu tạo Kim Thân Hộ Thuẫn hấp thụ ${sHp} sát thương!`, 'skill');
+        }
+        if (skill.shieldPercentHp) {
+          const sHp = Math.floor(this.playerCombat.maxHp * skill.shieldPercentHp);
+          CombatStatusManager.applyStatus(this.playerCombat, 'shield', sHp);
+          this.renderer.addFloatingText(`+${sHp} Kim Thân`, 170, 140, '#facc15');
+          this.addLog(`Bất Diệt Kim Thân giáng lâm! Nhận hộ thuẫn ${sHp} Khí Huyết!`, 'skill');
+        }
+
+        // Ma Tu Berserk Buff
+        if (skill.berserkTurns) {
+          this.playerCombat.berserkTurns = skill.berserkTurns;
+          this.renderer.addFloatingText('CUỒNG BẠO!', 170, 130, '#ef4444', true);
+          this.addLog(`Đạo hữu bùng nổ Ma Thần Cuồng Nộ! Công kích và hút máu tăng vọt!`, 'danger');
+        }
+
+        const playerRealm = this.player.realmIndex || 0;
+        const monSpd = this.monster.spd || 15;
+        const monRealm = Math.floor(monSpd / 35);
+        const deltaRealm = playerRealm - monRealm;
+
+        const isCrit = Math.random() < (this.player.totalCrit + (skill.critBonus || 0));
+        let critMult = 1.8 + (this.player.totalCritDmg || 0.5);
+        const isPoisoned = this.monsterCombat.statusEffects.poison > 0;
+        let dmg = this.calculateDamage(this.player.totalAtk, this.monster.def, deltaRealm, true, skill.dmgMult || 1.8, isCrit, critMult, isPoisoned);
+
+        if (skill.armorPen) {
+          dmg += Math.floor(this.monster.def * skill.armorPen);
+        }
+
+        const shieldRes = CombatStatusManager.absorbDamage(this.monsterCombat, dmg, this.renderer, 440, 140);
+        const actualDmg = shieldRes.remainingDmg;
+
+        this.monsterCombat.curHp = Math.max(0, this.monsterCombat.curHp - actualDmg);
+        this.monsterCombat.rage = Math.min(100, (this.monsterCombat.rage || 0) + (isCrit ? 28 : 20));
+
         this.renderer.combatState.monsterFlash = '#ffffff';
         setTimeout(() => { this.renderer.combatState.monsterFlash = null; }, 120);
 
-        this.renderer.addFloatingText(`TUYỆT KỸ! -${dmg}`, 440, 150, '#38bdf8', true);
-        this.addLog(`Đạo hữu thi triển 【${skill.name}】, oanh kích 【${this.monster.name}】 nhận ${dmg} sát thương hủy diệt!`, 'skill');
+        if (actualDmg > 0) {
+          this.renderer.addFloatingText(`TUYỆT KỸ! -${actualDmg}`, 440, 150, '#38bdf8', true);
+          this.addLog(`Đạo hữu thi triển 【${skill.name}】, oanh kích 【${this.monster.name}】 nhận ${actualDmg} sát thương!`, 'skill');
+        }
 
-        if (this.player.cheatCore && this.player.cheatCore.id === 'proficiency') {
-          this.player.skillMastery = (this.player.skillMastery || 0) + 1;
-          this.addLog(`[Kim Thủ Chỉ] Độ thông thạo kỹ năng tăng thêm (+1)!`, 'system');
+        // Gán hiệu ứng trạng thái từ kỹ năng lên quái
+        if (skill.burnChance && Math.random() < skill.burnChance) {
+          CombatStatusManager.applyStatus(this.monsterCombat, 'burn', skill.burnTurns || 3);
+          this.addLog(`Thiêu đốt bùng cháy trên người 【${this.monster.name}】!`, 'danger');
+        }
+        if (skill.stunChance && Math.random() < skill.stunChance) {
+          CombatStatusManager.applyStatus(this.monsterCombat, 'stun', 1);
+          this.addLog(`【${this.monster.name}】 bị quyền kình đánh choáng váng tê liệt!`, 'skill');
+        }
+        if (skill.bleedChance && Math.random() < skill.bleedChance) {
+          CombatStatusManager.applyStatus(this.monsterCombat, 'bleed', skill.bleedStacks || 2);
+          this.addLog(`Kiếm khí xé toạc hộ giáp! Gây Xuất Huyết lên 【${this.monster.name}】!`, 'danger');
+        }
+        if (skill.poisonChance && Math.random() < skill.poisonChance) {
+          CombatStatusManager.applyStatus(this.monsterCombat, 'poison', skill.poisonTurns || 3);
+          this.addLog(`Kịch độc ngấm vào tâm can 【${this.monster.name}】!`, 'danger');
         }
 
         if (skill.healPercent) {
@@ -2378,15 +3182,10 @@
           this.addLog(`Đạo hữu hồi phục ${heal} Khí Huyết!`, 'heal');
         }
 
-        if (skill.lifeStealPercent) {
-          const sHeal = Math.floor(dmg * skill.lifeStealPercent);
+        if (skill.lifeStealPercent && actualDmg > 0) {
+          const sHeal = Math.floor(actualDmg * skill.lifeStealPercent);
           this.playerCombat.curHp = Math.min(this.playerCombat.maxHp, this.playerCombat.curHp + sHeal);
           this.renderer.addFloatingText(`+${sHeal} Hút`, 170, 160, '#f43f5e');
-        }
-
-        if (skill.stunChance && Math.random() < skill.stunChance) {
-          this.monsterCombat.stunnedTurns = 1;
-          this.addLog(`【${this.monster.name}】 bị quyền kình đánh choáng váng mất lượt!`, 'skill');
         }
 
         this.updateCombatUI();
@@ -2423,11 +3222,16 @@
       const animDelay = this.combatSpeed === 2 ? 110 : 200;
       setTimeout(() => {
         const dmg = Math.floor(this.player.totalAtk * 1.5 + (art.atk || 50));
-        this.monsterCombat.curHp = Math.max(0, this.monsterCombat.curHp - dmg);
-        this.renderer.addFloatingText(`PHÁP BẢO! -${dmg}`, 440, 160, '#c084fc', true);
-        this.addLog(`Đạo hữu tế xuất 【${art.name}】, thần quang đại phóng giáng xuống ${dmg} sát thương!`, 'artifact');
+        const shieldRes = CombatStatusManager.absorbDamage(this.monsterCombat, dmg, this.renderer, 440, 140);
+        const actualDmg = shieldRes.remainingDmg;
 
-        this.playerCombat.isDefending = true;
+        this.monsterCombat.curHp = Math.max(0, this.monsterCombat.curHp - actualDmg);
+        this.renderer.addFloatingText(`PHÁP BẢO! -${actualDmg}`, 440, 160, '#c084fc', true);
+        this.addLog(`Đạo hữu tế xuất 【${art.name}】, thần quang đại phóng giáng xuống ${actualDmg} sát thương!`, 'artifact');
+
+        // Bật Kim Thân hộ thuẫn nhỏ khi tế pháp bảo
+        CombatStatusManager.applyStatus(this.playerCombat, 'shield', Math.floor(this.playerCombat.maxHp * 0.15));
+
         this.updateCombatUI();
         if (this.checkCombatOver()) return;
         this.isProcessingTurn = false;
@@ -2451,13 +3255,16 @@
       if (actionsGrid) actionsGrid.classList.remove('turn-active');
 
       sound.playLoot();
+      let healMult = 1.0;
+      if (this.player.cultivationPath && this.player.cultivationPath.id === 'dan_y_tu') healMult = 1.35;
+
       if (pillId === 'pill_hoixuan') {
-        const heal = Math.floor(this.playerCombat.maxHp * 0.5);
+        const heal = Math.floor(this.playerCombat.maxHp * 0.5 * healMult);
         this.playerCombat.curHp = Math.min(this.playerCombat.maxHp, this.playerCombat.curHp + heal);
         this.renderer.addFloatingText(`+${heal} HP`, 170, 160, '#34d399');
         this.addLog(`Đạo hữu nuốt vào Hồi Xuân Đan, sinh cơ tràn trề hồi phục ${heal} Khí Huyết!`, 'heal');
       } else if (pillId === 'pill_tulinh') {
-        const mana = Math.floor(this.playerCombat.maxMp * 0.6);
+        const mana = Math.floor(this.playerCombat.maxMp * 0.6 * healMult);
         this.playerCombat.curMp = Math.min(this.playerCombat.maxMp, this.playerCombat.curMp + mana);
         this.renderer.addFloatingText(`+${mana} MP`, 170, 160, '#38bdf8');
         this.addLog(`Đạo hữu nuốt vào Tụ Linh Đan, linh đan tan ra hồi phục ${mana} Linh Lực!`, 'heal');
@@ -2489,62 +3296,132 @@
     triggerMonsterTurn() {
       if (this.monsterCombat.curHp <= 0 || !this.inCombat) return;
 
-      if (this.monsterCombat.stunnedTurns > 0) {
-        this.monsterCombat.stunnedTurns--;
-        this.addLog(`【${this.monster.name}】 bị choáng váng không thể hành động!`, 'skill');
+      this.isProcessingTurn = true;
+
+      // Xử lý hiệu ứng trạng thái đầu lượt Quái Vật
+      const isStunned = CombatStatusManager.tickTurn(this.monsterCombat, false, this.renderer, this.addLog, this.monster.name);
+
+      if (this.checkCombatOver()) return;
+
+      if (isStunned) {
         this.isProcessingTurn = false;
-        return;
-      }
-      if (this.monsterCombat.frozenTurns > 0) {
-        this.monsterCombat.frozenTurns--;
-        this.addLog(`【${this.monster.name}】 bị hàn băng đóng băng không thể nhúc nhích!`, 'skill');
-        this.isProcessingTurn = false;
+        this.updateMonsterIntent();
+        this.updateCombatUI();
         return;
       }
 
-      this.isProcessingTurn = true;
       this.renderer.combatState.monsterOffsetX = -35;
       this.renderer.addSlashEffect(190, 200, 'sword');
       sound.playHurt();
 
       const animDelay = this.combatSpeed === 2 ? 110 : 200;
       setTimeout(() => {
-        const useSkill = this.monster.skills && this.monster.skills.length > 0 && Math.random() < 0.4;
+        const intent = this.monsterCombat.nextIntent || { type: 'attack' };
+
+        // 1. Quái vật chọn hành vi Phòng Ngự
+        if (intent.type === 'defend') {
+          const shieldHp = Math.floor(this.monsterCombat.maxHp * 0.25);
+          CombatStatusManager.applyStatus(this.monsterCombat, 'shield', shieldHp);
+          this.renderer.addFloatingText(`+${shieldHp} Khiên`, 440, 140, '#facc15');
+          this.addLog(`【${this.monster.name}】 co cụm phòng ngự, ngưng tụ ${shieldHp} Giáp Hộ Thể!`, 'skill');
+          this.updateMonsterIntent();
+          this.updateCombatUI();
+          this.isProcessingTurn = false;
+          return;
+        }
+
+        // 2. Tính tỷ lệ Né Đòn của Đạo Hữu
+        const pSpd = this.player.totalSpd || 15;
+        const monSpd = this.monster.spd || 15;
+        const playerRealm = this.player.realmIndex || 0;
+        const monRealm = Math.floor(monSpd / 35);
+        const deltaRealm = monRealm - playerRealm;
+        const pDodgeMod = (this.player.spiritualRoot && this.player.spiritualRoot.dodgeMod) || 0;
+        const pEvasion = this.calculateEvasion(monSpd, pSpd, pDodgeMod, -deltaRealm);
+
+        if (Math.random() < pEvasion) {
+          this.renderer.addFloatingText('NÉ ĐÒN!', 190, 160, '#38bdf8');
+          this.addLog(`Đạo hữu thi triển phiêu miểu thân pháp, né tránh hoàn toàn đòn đánh của 【${this.monster.name}】!`, 'battle');
+          this.updateMonsterIntent();
+          this.updateCombatUI();
+          this.isProcessingTurn = false;
+          return;
+        }
+
+        // 3. Sát thương Quái: thường, skill, hay Cuồng Nộ
         let dmgMult = 1.0;
+        let isEnraged = intent.type === 'enrage' || intent.type === 'ultimate';
+        let isSkill = intent.type === 'skill';
         let skillName = '';
-        if (useSkill) {
-          const monSkill = this.monster.skills[0];
-          dmgMult = monSkill.dmgMult || 1.3;
+
+        if (isEnraged) {
+          dmgMult = 2.2;
+          this.monsterCombat.rage = 0;
+          this.renderer.triggerShake(20, 8);
+          this.addLog(`💥 【${this.monster.name}】 bùng nổ nộ khí cực hạn, phóng thích Sát Chiêu Cuồng Nộ!`, 'danger');
+        } else if (isSkill) {
+          const monSkill = (this.monster.skills && this.monster.skills[0]) || { name: 'Yêu Kỹ', dmgMult: 1.4 };
+          dmgMult = monSkill.dmgMult || 1.4;
           skillName = `【${monSkill.name}】`;
         }
 
-        const monAtk = this.monster.atk * dmgMult;
-        let playerDef = this.player.totalDef;
-        if (this.playerCombat.isDefending) {
-          playerDef *= 1.4;
-          this.playerCombat.isDefending = false;
-        }
-
-        let dmg = Math.max(1, Math.floor(monAtk * (1 + (Math.random() - 0.5) * 0.15) - playerDef * 0.35));
+        const isCrit = Math.random() < (this.monster.crit || 0.08);
+        const isPoisoned = this.playerCombat.statusEffects.poison > 0;
+        let dmg = this.calculateDamage(this.monster.atk, this.player.totalDef, deltaRealm, isSkill || isEnraged, dmgMult, isCrit, 1.5, isPoisoned);
 
         if (this.player.physique && this.player.physique.tier === 'Bá Thể') {
           dmg = Math.floor(dmg * 0.8);
         }
 
-        this.playerCombat.curHp -= dmg;
+        // Hấp thụ qua Kim Thân của người chơi
+        const shieldRes = CombatStatusManager.absorbDamage(this.playerCombat, dmg, this.renderer, 190, 140);
+        const actualDmg = shieldRes.remainingDmg;
+
+        this.playerCombat.curHp -= actualDmg;
         this.renderer.combatState.playerFlash = '#ef4444';
         setTimeout(() => { this.renderer.combatState.playerFlash = null; }, 100);
 
-        this.renderer.addFloatingText(`-${dmg}`, 190, 160, '#ef4444');
-        this.addLog(`【${this.monster.name}】 ${skillName ? 'tung sát chiêu ' + skillName : 'tấn công cuồng bạo'}, đánh trúng đạo hữu ${dmg} sát thương!`, 'danger');
+        if (actualDmg > 0) {
+          this.renderer.addFloatingText(`-${actualDmg}`, 190, 160, '#ef4444');
+          this.addLog(`【${this.monster.name}】 ${skillName ? 'tung sát chiêu ' + skillName : (isEnraged ? 'oanh kích cuồng nộ' : 'tấn công hung hãn')}, đánh trúng đạo hữu ${actualDmg} sát thương!${isCrit ? ' (Bạo Kích!!)' : ''}`, 'danger');
+        }
 
-        if (this.player.physique && this.player.physique.reflectBonus) {
-          const reflectDmg = Math.floor(dmg * this.player.physique.reflectBonus);
+        // Gán hiệu ứng từ quái lên người chơi
+        if (this.monster.skills && this.monster.skills[0]) {
+          const msk = this.monster.skills[0];
+          if (msk.burn && Math.random() < 0.6) {
+            CombatStatusManager.applyStatus(this.playerCombat, 'burn', 2);
+            this.addLog(`Ngọn lửa ma quái thiêu đốt kinh mạch đạo hữu!`, 'danger');
+          }
+          if (msk.poison && Math.random() < 0.6) {
+            // Đan Tu miễn nhiễm độc
+            if (!this.player.cultivationPath || this.player.cultivationPath.id !== 'dan_y_tu') {
+              CombatStatusManager.applyStatus(this.playerCombat, 'poison', 2);
+              this.addLog(`Độc tố hủ cốt xâm nhập khí huyết!`, 'danger');
+            }
+          }
+          if (msk.freeze && Math.random() < 0.4) {
+            CombatStatusManager.applyStatus(this.playerCombat, 'stun', 1);
+            this.addLog(`Hàn khí đóng băng thân hình đạo hữu!`, 'danger');
+          }
+        }
+        if (isEnraged) {
+          CombatStatusManager.applyStatus(this.playerCombat, 'bleed', 2);
+        }
+
+        // Phản đòn thể chất
+        let totalReflect = (this.player.physique && this.player.physique.reflectBonus) || 0;
+        if (this.player.cultivationPath && this.player.cultivationPath.id === 'the_tu') {
+          totalReflect += 0.15;
+        }
+        if (totalReflect > 0 && actualDmg > 0) {
+          const reflectDmg = Math.max(1, Math.floor(actualDmg * totalReflect));
           this.monsterCombat.curHp = Math.max(0, this.monsterCombat.curHp - reflectDmg);
           this.renderer.addFloatingText(`PHẢN! -${reflectDmg}`, 440, 170, '#f97316');
           this.addLog(`Thể phách cứng như sắt thép! Đạo hữu phản chấn lại ${reflectDmg} sát thương!`, 'normal');
         }
 
+        // Kim Thủ Chỉ: Bất Tử Chi Khu
         if (this.playerCombat.curHp <= 0 && !this.playerCombat.immortalTriggered) {
           if (this.player.cheatPerk && this.player.cheatPerk.id === 'immortal_body') {
             this.playerCombat.immortalTriggered = true;
@@ -2556,6 +3433,7 @@
           }
         }
 
+        this.updateMonsterIntent();
         this.updateCombatUI();
         if (this.checkCombatOver()) return;
         this.isProcessingTurn = false;
@@ -2565,7 +3443,8 @@
     handleLifeSteal(dmg) {
       const lMod = (this.player.spiritualRoot && this.player.spiritualRoot.lifeStealMod) || 0;
       const pathMod = (this.player.cultivationPath && this.player.cultivationPath.id === 'ma_tu') ? 0.2 : 0;
-      const totalLs = lMod + pathMod + (this.player.bonusLifeSteal || 0);
+      const berserkMod = this.playerCombat.berserkTurns > 0 ? 0.25 : 0;
+      const totalLs = lMod + pathMod + berserkMod + (this.player.bonusLifeSteal || 0);
       if (totalLs > 0) {
         const heal = Math.floor(dmg * totalLs);
         this.playerCombat.curHp = Math.min(this.playerCombat.maxHp, this.playerCombat.curHp + heal);
@@ -2612,6 +3491,11 @@
             const dropName = dropItem ? dropItem.name : drop.item;
             droppedItems.push(dropName);
             this.addLog(`Nhặt được chiến lợi phẩm: 【${dropName}】 x1!`, 'loot');
+
+            // Khai mở Dược Điển nếu là linh thảo
+            if (drop.item.startsWith('herb_') && this.player.discoveredHerbs) {
+              this.player.discoveredHerbs[drop.item] = true;
+            }
           }
         });
       }
@@ -2722,10 +3606,13 @@
       }
 
       document.body.classList.remove('combat-active-mode');
+      const headerEl = document.getElementById('combat-active-header');
+      if (headerEl) headerEl.classList.add('hidden');
 
       this.renderer.setScene(SCENES.MEDITATE);
       this.renderer.setStatusText('Đang đả tọa hấp thu thiên địa linh khí...');
       if (this.onCombatEnd) this.onCombatEnd(won, fled);
+      this.renderer.checkVisibilityAndResume();
     }
 
     updateCombatUI() {
@@ -2774,20 +3661,40 @@
       if (mGaugeEl) mGaugeEl.style.width = `${mGauge}%`;
       if (mGaugeTextEl) mGaugeTextEl.textContent = `Tốc Độ: ${Math.round(mGauge)}%`;
 
+      // Cập nhật thanh Nộ Quái & Ý Đồ trên DOM
+      const mRageEl = document.getElementById('combat-monster-rage');
+      const mRageTextEl = document.getElementById('combat-monster-rage-text');
+      const mIntentEl = document.getElementById('combat-monster-intent');
+      const rage = this.monsterCombat.rage || 0;
+      if (mRageEl) mRageEl.style.width = `${rage}%`;
+      if (mRageTextEl) mRageTextEl.textContent = `Nộ Khí: ${rage}%`;
+      if (mIntentEl && this.monsterCombat.nextIntent) {
+        mIntentEl.innerHTML = `<span class="intent-icon">${this.monsterCombat.nextIntent.label.slice(0, 2)}</span> <span class="intent-text">${this.monsterCombat.nextIntent.label}</span>`;
+      }
+
       // Status badges
       if (pStatusesEl) {
         let tags = [];
-        if (this.playerCombat.poisonTurns > 0) tags.push(`<span class="combat-status-badge status-poison">Độc (${this.playerCombat.poisonTurns})</span>`);
-        if (this.playerCombat.isDefending) tags.push(`<span class="combat-status-badge status-defend">Thủ Thế</span>`);
-        if (this.playerCombat.immortalTriggered) tags.push(`<span class="combat-status-badge status-stun">Bất Tử</span>`);
+        const ps = this.playerCombat.statusEffects;
+        if (ps.stun > 0) tags.push(`<span class="combat-status-badge status-stun">⚡ Tê Liệt (${ps.stun})</span>`);
+        if (ps.burn > 0) tags.push(`<span class="combat-status-badge status-burn">🔥 Thiêu Đốt (${ps.burn})</span>`);
+        if (ps.bleed > 0) tags.push(`<span class="combat-status-badge status-bleed">🩸 Xuất Huyết (${ps.bleed}T)</span>`);
+        if (ps.poison > 0) tags.push(`<span class="combat-status-badge status-poison">☠️ Trúng Độc (${ps.poison})</span>`);
+        if (ps.shield > 0) tags.push(`<span class="combat-status-badge status-shield">🛡️ Kim Thân (${ps.shield})</span>`);
+        if (this.playerCombat.swordQi > 0) tags.push(`<span class="combat-status-badge status-swordqi">🗡️ Kiếm Khí x${this.playerCombat.swordQi}</span>`);
+        if (this.playerCombat.berserkTurns > 0) tags.push(`<span class="combat-status-badge status-berserk">👿 Cuồng Bạo (${this.playerCombat.berserkTurns})</span>`);
+        if (this.playerCombat.immortalTriggered) tags.push(`<span class="combat-status-badge status-immortal">🌟 Bất Tử</span>`);
         pStatusesEl.innerHTML = tags.join('');
       }
 
       if (mStatusesEl) {
         let tags = [];
-        if (this.monsterCombat.poisonTurns > 0) tags.push(`<span class="combat-status-badge status-poison">Độc (${this.monsterCombat.poisonTurns})</span>`);
-        if (this.monsterCombat.burnTurns > 0) tags.push(`<span class="combat-status-badge status-burn">Bỏng (${this.monsterCombat.burnTurns})</span>`);
-        if (this.monsterCombat.frozenTurns > 0) tags.push(`<span class="combat-status-badge status-freeze">Băng (${this.monsterCombat.frozenTurns})</span>`);
+        const ms = this.monsterCombat.statusEffects;
+        if (ms.stun > 0) tags.push(`<span class="combat-status-badge status-stun">⚡ Tê Liệt (${ms.stun})</span>`);
+        if (ms.burn > 0) tags.push(`<span class="combat-status-badge status-burn">🔥 Thiêu Đốt (${ms.burn})</span>`);
+        if (ms.bleed > 0) tags.push(`<span class="combat-status-badge status-bleed">🩸 Xuất Huyết (${ms.bleed}T)</span>`);
+        if (ms.poison > 0) tags.push(`<span class="combat-status-badge status-poison">☠️ Trúng Độc (${ms.poison})</span>`);
+        if (ms.shield > 0) tags.push(`<span class="combat-status-badge status-shield">🛡️ Hộ Thuẫn (${ms.shield})</span>`);
         mStatusesEl.innerHTML = tags.join('');
       }
 
@@ -2810,7 +3717,7 @@
       const pillLabel = document.getElementById('combat-pill-label');
       if (pillLabel) pillLabel.textContent = `🧪 Hồi Xuân (${pillCount > 0 ? `x${pillCount}` : 'Hết'})`;
 
-      const skill = this.player.activeSkill;
+      const skill = (this.player.skills && this.player.skills[0]) || this.player.activeSkill;
       const skillLabel = document.getElementById('combat-skill-label');
       if (skillLabel) {
         if (skill) {
@@ -2818,6 +3725,17 @@
           skillLabel.textContent = `⚡ ${skill.name}${cd}`;
         } else {
           skillLabel.textContent = `⚡ Chưa Có`;
+        }
+      }
+
+      const skill2 = this.player.skills && this.player.skills[1];
+      const skill2Label = document.getElementById('combat-skill2-label');
+      if (skill2Label) {
+        if (skill2) {
+          const cd2 = this.playerCombat.skill2Cooldown > 0 ? ` [${this.playerCombat.skill2Cooldown}]` : '';
+          skill2Label.textContent = `🔥 ${skill2.name}${cd2}`;
+        } else {
+          skill2Label.textContent = `🔥 Tuyệt Kỹ 2`;
         }
       }
 
@@ -2836,6 +3754,7 @@
     updateCombatButtons(enabled) {
       const btnAttack = document.getElementById('btn-combat-attack');
       const btnSkill = document.getElementById('btn-combat-skill');
+      const btnSkill2 = document.getElementById('btn-combat-skill2');
       const btnArtifact = document.getElementById('btn-combat-artifact');
       const btnPill = document.getElementById('btn-combat-pill');
       const btnFlee = document.getElementById('btn-combat-flee');
@@ -2843,9 +3762,15 @@
       if (btnAttack) btnAttack.disabled = !enabled;
 
       if (btnSkill) {
-        const skill = this.player.activeSkill;
+        const skill = (this.player.skills && this.player.skills[0]) || this.player.activeSkill;
         const canUseSkill = enabled && skill && this.playerCombat.skillCooldown === 0 && this.playerCombat.curMp >= skill.mpCost;
         btnSkill.disabled = !canUseSkill;
+      }
+
+      if (btnSkill2) {
+        const skill2 = this.player.skills && this.player.skills[1];
+        const canUseSkill2 = enabled && skill2 && this.playerCombat.skill2Cooldown === 0 && this.playerCombat.curMp >= skill2.mpCost;
+        btnSkill2.disabled = !canUseSkill2;
       }
 
       if (btnArtifact) {
@@ -2881,6 +3806,94 @@
       this.worldSelectedCell = null;
       // Ngăn người chơi khởi tạo nhiều lần đột phá trong lúc đang chờ thiên kiếp.
       this.breakthroughInProgress = false;
+      this.alchemySession = null;
+      this.alchemyInterval = null;
+      this.setupLifecycleListeners();
+    }
+
+    setupLifecycleListeners() {
+      if (typeof document !== 'undefined') {
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden) {
+            this.pauseLoops();
+          } else {
+            if (this.player) this.startLoops();
+          }
+        });
+      }
+    }
+
+    pauseLoops() {
+      if (this.idleTimer) {
+        clearInterval(this.idleTimer);
+        this.idleTimer = null;
+      }
+      if (this.saveTimer) {
+        clearInterval(this.saveTimer);
+        this.saveTimer = null;
+      }
+    }
+
+    normalizePlayerState(p) {
+      if (!p) return p;
+      if (!p.skills || !Array.isArray(p.skills) || p.skills.length === 0) {
+        if (p.cultivationPath && p.cultivationPath.skills && p.cultivationPath.skills.length > 0) {
+          p.skills = JSON.parse(JSON.stringify(p.cultivationPath.skills));
+        } else if (p.activeSkill) {
+          p.skills = [p.activeSkill];
+        } else {
+          p.skills = [{
+            id: 'sk_basic_qi',
+            name: 'Ngự Khí Quyết',
+            mpCost: 10,
+            cooldown: 2,
+            dmgMult: 1.25,
+            desc: 'Tập trung linh khí tạo thành luồng khí kình tấn công địch nhân.'
+          }];
+        }
+      }
+      if (!p.activeSkill) p.activeSkill = p.skills[0];
+      if (p.sectContribTotal === undefined) p.sectContribTotal = p.sectContrib || 0;
+      if (p.sectPatrolKills === undefined) p.sectPatrolKills = 0;
+      if (!p.sectManualsBought) p.sectManualsBought = [];
+      if (p.sectSalaryClaimedYear === undefined) p.sectSalaryClaimedYear = -1;
+      if (p.bonusCrit === undefined) p.bonusCrit = 0;
+      if (p.bonusLifeSteal === undefined) p.bonusLifeSteal = 0;
+      if (!p.unlockedHerbIds) p.unlockedHerbIds = ['herb_linhchi', 'herb_thanh_u', 'herb_hoaviem'];
+      if (!p.inventory) p.inventory = {};
+      if (p.dungeonState === undefined) p.dungeonState = null;
+      return p;
+    }
+
+    migrateSaveData(rawData) {
+      if (!rawData) return null;
+      let parsed = null;
+      if (typeof rawData === 'string') {
+        try {
+          parsed = JSON.parse(rawData);
+        } catch (e) {
+          console.error('Failed to parse save data JSON:', e);
+          return null;
+        }
+      } else {
+        parsed = rawData;
+      }
+
+      // Schema v1: raw player object or schemaVersion missing / < 2
+      if (!parsed.schemaVersion || parsed.schemaVersion < 2) {
+        const rawPlayer = parsed.player || parsed;
+        const normalizedPlayer = this.normalizePlayerState(rawPlayer);
+        return {
+          schemaVersion: 2,
+          timestamp: Date.now(),
+          player: normalizedPlayer,
+          marketItems: parsed.marketItems || []
+        };
+      }
+
+      // Schema v2
+      parsed.player = this.normalizePlayerState(parsed.player);
+      return parsed;
     }
 
     setCombatEngine(combatEngine) {
@@ -2924,6 +3937,9 @@
         equippedArmor: path.startArtifact.type === 'armor' ? path.startArtifact : null,
         equippedArtifact: path.startArtifact.type === 'artifact' ? path.startArtifact : null,
         activeSkill: path.startSkill,
+        skills: path.skills ? JSON.parse(JSON.stringify(path.skills)) : [path.startSkill],
+        unlockedHerbIds: ['herb_linhchi', 'herb_thanh_u', 'herb_hoaviem'],
+        dungeonState: null,
 
         spiritStones: 100,
         inventory: {
@@ -3976,6 +4992,16 @@
     }
 
     craftRecipe(recipeId) {
+      const recipe = RECIPES.find(r => r.id === recipeId);
+      if (!recipe) return;
+      if (recipe.type === 'alchemy') {
+        this.startInteractiveAlchemy(recipeId);
+      } else {
+        this.craftEquipment(recipeId);
+      }
+    }
+
+    craftEquipment(recipeId) {
       const p = this.player;
       const recipe = RECIPES.find(r => r.id === recipeId);
       if (!recipe) return;
@@ -3983,7 +5009,7 @@
       for (const [itemId, count] of Object.entries(recipe.ingredients)) {
         if ((p.inventory[itemId] || 0) < count) {
           const itemObj = ITEMS[itemId];
-          this.addLog(`Không đủ nguyên liệu 【${itemObj.name}】 (cần ${count}, có ${p.inventory[itemId] || 0})!`, 'warning');
+          this.addLog(`Không đủ nguyên liệu 【${itemObj ? itemObj.name : itemId}】 (cần ${count}, có ${p.inventory[itemId] || 0})!`, 'warning');
           return;
         }
       }
@@ -3994,7 +5020,7 @@
 
       this.renderer.setScene(SCENES.ALCHEMY);
       let rate = recipe.successRate;
-      if (p.cultivationPath && p.cultivationPath.id === 'dan_y_tu') rate += 0.15;
+      if (p.cultivationPath && p.cultivationPath.id === 'luyen_khi_su') rate += 0.15;
 
       setTimeout(() => {
         this.renderer.setScene(SCENES.MEDITATE);
@@ -4002,13 +5028,482 @@
           sound.playLoot();
           p.inventory[recipe.resultId] = (p.inventory[recipe.resultId] || 0) + 1;
           const resultItem = ITEMS[recipe.resultId];
-          this.addLog(`🔥 Luyện chế thành công! Lò thần mở nắp, nhận được 【${resultItem.name}】 x1!`, 'loot');
+          this.addLog(`🔨 Rèn đúc thành công! Thần binh xuất thế, nhận được 【${resultItem ? resultItem.name : recipe.resultId}】 x1!`, 'loot');
+          this.renderer.addFloatingText('RÈN THÀNH!', 320, 160, '#facc15', true);
         } else {
           sound.playHurt();
-          this.addLog(`💥 Nổ lò! Dược lực mất cân bằng khiến đan dược cháy thành tro bụi!`, 'danger');
+          this.addLog(`💥 Rèn thất bại! Thần thiết vỡ vụn do khống chế đan hỏa chưa chuẩn!`, 'danger');
         }
         this.updateUI();
-      }, 1500);
+      }, 1200);
+    }
+
+    startInteractiveAlchemy(recipeId) {
+      const p = this.player;
+      const recipe = RECIPES.find(r => r.id === recipeId);
+      if (!recipe) return;
+
+      if (this.alchemySession && this.alchemySession.active) {
+        this.addLog('Lò luyện đang vận hành, hãy hoàn tất mẻ đan hiện tại!', 'warning');
+        return;
+      }
+
+      for (const [itemId, count] of Object.entries(recipe.ingredients)) {
+        if ((p.inventory[itemId] || 0) < count) {
+          const itemObj = ITEMS[itemId];
+          this.addLog(`Không đủ nguyên liệu 【${itemObj ? itemObj.name : itemId}】 (cần ${count}, có ${p.inventory[itemId] || 0})!`, 'warning');
+          return;
+        }
+      }
+
+      for (const [itemId, count] of Object.entries(recipe.ingredients)) {
+        p.inventory[itemId] -= count;
+      }
+
+      let targetMin = 40;
+      let targetMax = 70;
+      if (recipe.reqRealmIndex >= 14) {
+        targetMin = 50;
+        targetMax = 65;
+      }
+
+      if (this.alchemyInterval) clearInterval(this.alchemyInterval);
+      this.alchemySession = {
+        active: true,
+        recipe: recipe,
+        temp: 35,
+        purity: 50,
+        fireMode: 'gentle',
+        targetMin: targetMin,
+        targetMax: targetMax,
+        overheatTicks: 0
+      };
+
+      this.renderer.setScene(SCENES.ALCHEMY);
+      this.updateAlchemyPanelUI();
+
+      this.alchemyInterval = setInterval(() => {
+        if (!this.alchemySession || !this.alchemySession.active) {
+          clearInterval(this.alchemyInterval);
+          return;
+        }
+        const sess = this.alchemySession;
+        if (sess.fireMode === 'martial') {
+          sess.temp = Math.min(105, sess.temp + 1.4);
+        } else {
+          sess.temp = Math.max(15, sess.temp - 0.8);
+        }
+
+        if (sess.temp >= sess.targetMin && sess.temp <= sess.targetMax) {
+          sess.purity = Math.min(100, sess.purity + 0.6);
+        } else {
+          sess.purity = Math.max(0, sess.purity - 0.4);
+        }
+
+        if (sess.temp >= 95) {
+          sess.overheatTicks++;
+          if (sess.overheatTicks >= 20) {
+            this.explodeCauldron();
+            return;
+          }
+        } else {
+          sess.overheatTicks = Math.max(0, sess.overheatTicks - 1);
+        }
+
+        this.updateAlchemyPanelUI();
+      }, 100);
+
+      this.addLog(`🔥 Khai lò! Bắt đầu luyện chế 【${recipe.name}】. Hãy giữ nhiệt độ trong khoảng [${targetMin}°C - ${targetMax}°C] rồi bấm Thu Đan!`, 'golden');
+      this.updateUI();
+    }
+
+    setAlchemyFireMode(mode) {
+      if (!this.alchemySession || !this.alchemySession.active) return;
+      this.alchemySession.fireMode = mode;
+      this.updateAlchemyPanelUI();
+    }
+
+    harvestPill() {
+      if (!this.alchemySession || !this.alchemySession.active) return;
+      const sess = this.alchemySession;
+      if (this.alchemyInterval) clearInterval(this.alchemyInterval);
+      sess.active = false;
+      this.renderer.setScene(SCENES.MEDITATE);
+
+      const purity = Math.round(sess.purity);
+      let grade = 'Hạ Phẩm';
+      let gradeBonus = '';
+      let count = 1;
+
+      if (purity >= 90) {
+        grade = 'CỰC PHẨM';
+        count = 2;
+        gradeBonus = ' (Dược lực tuyệt đỉnh, sinh đôi đan x2!)';
+      } else if (purity >= 70) {
+        grade = 'THƯỢNG PHẨM';
+        gradeBonus = ' (Dược lực tinh thuần 150%)';
+      } else if (purity >= 50) {
+        grade = 'TRUNG PHẨM';
+        gradeBonus = ' (Dược lực đạt chuẩn)';
+      } else {
+        grade = 'HẠ PHẨM';
+        gradeBonus = ' (Dược lực suy giảm do lẫn tạp chất)';
+      }
+
+      const p = this.player;
+      p.inventory[sess.recipe.resultId] = (p.inventory[sess.recipe.resultId] || 0) + count;
+      sound.playLoot();
+
+      const resultItem = ITEMS[sess.recipe.resultId];
+      this.addLog(`✨ Đan thành mở nắp! Luyện thành 【${resultItem ? resultItem.name : sess.recipe.resultId}】 x${count} — Phẩm cấp: 【${grade}】 (Tinh thuần: ${purity}%)${gradeBonus}!`, 'loot');
+      this.renderer.addFloatingText(`${grade} ĐAN!`, 320, 160, purity >= 90 ? '#facc15' : '#38bdf8', true);
+
+      this.alchemySession = null;
+      this.updateAlchemyPanelUI();
+      this.updateUI();
+    }
+
+    explodeCauldron() {
+      if (this.alchemyInterval) clearInterval(this.alchemyInterval);
+      if (this.alchemySession) this.alchemySession.active = false;
+      this.alchemySession = null;
+
+      this.renderer.triggerShake(14, 25);
+      this.renderer.spawnSmokeParticles(25);
+      sound.playHurt();
+
+      this.addLog(`💥 NỔ LÒ! Nhiệt độ đan hỏa quá cao vượt ngưỡng khống chế khiến lò thần phát nổ! Toàn bộ linh dược hóa thành tro bụi!`, 'danger');
+      this.renderer.addFloatingText('💥 NỔ LÒ ĐAN!', 320, 160, '#ef4444', true);
+
+      setTimeout(() => {
+        this.renderer.setScene(SCENES.MEDITATE);
+        this.updateAlchemyPanelUI();
+        this.updateUI();
+      }, 1200);
+    }
+
+    updateAlchemyPanelUI() {
+      const panel = document.getElementById('interactive-alchemy-panel');
+      if (!panel) return;
+
+      if (!this.alchemySession || !this.alchemySession.active) {
+        panel.classList.add('hidden');
+        return;
+      }
+
+      panel.classList.remove('hidden');
+      const sess = this.alchemySession;
+      const titleEl = document.getElementById('alchemy-recipe-title');
+      const gradeEl = document.getElementById('alchemy-grade-preview');
+      const purityBar = document.getElementById('alchemy-purity-bar');
+      const purityText = document.getElementById('alchemy-purity-text');
+      const tempBar = document.getElementById('alchemy-temp-bar');
+      const tempText = document.getElementById('alchemy-temp-text');
+      const rangeText = document.getElementById('alchemy-target-range');
+      const btnMartial = document.getElementById('btn-fire-martial');
+      const btnGentle = document.getElementById('btn-fire-gentle');
+
+      if (titleEl) titleEl.textContent = `🔥 Đang Luyện: ${sess.recipe.name}`;
+      if (rangeText) rangeText.textContent = `${sess.targetMin}°C - ${sess.targetMax}°C`;
+
+      const purity = Math.round(sess.purity);
+      if (purityBar) purityBar.style.width = `${purity}%`;
+      if (purityText) purityText.textContent = `${purity}%`;
+
+      let curGrade = 'Hạ Phẩm';
+      if (purity >= 90) curGrade = 'Cực Phẩm ⭐⭐⭐';
+      else if (purity >= 70) curGrade = 'Thượng Phẩm ⭐⭐';
+      else if (purity >= 50) curGrade = 'Trung Phẩm ⭐';
+      if (gradeEl) gradeEl.textContent = `Dự kiến: ${curGrade}`;
+
+      const temp = Math.round(sess.temp);
+      if (tempText) tempText.textContent = `${temp}°C`;
+      if (tempBar) {
+        tempBar.style.width = `${Math.min(100, Math.max(0, temp))}%`;
+        if (temp >= 95) tempBar.style.background = '#ef4444';
+        else if (temp >= sess.targetMin && temp <= sess.targetMax) tempBar.style.background = '#22c55e';
+        else tempBar.style.background = '#f59e0b';
+      }
+
+      if (btnMartial && btnGentle) {
+        if (sess.fireMode === 'martial') {
+          btnMartial.style.boxShadow = '0 0 10px #ef4444';
+          btnGentle.style.boxShadow = 'none';
+        } else {
+          btnGentle.style.boxShadow = '0 0 10px #38bdf8';
+          btnMartial.style.boxShadow = 'none';
+        }
+      }
+    }
+
+    openHerbEncyclopedia() {
+      const modal = document.getElementById('herb-encyclopedia-modal');
+      const listEl = document.getElementById('herb-encyclopedia-list');
+      if (!modal || !listEl) return;
+
+      listEl.innerHTML = '';
+      Object.values(HERB_ENCYCLOPEDIA).forEach(herb => {
+        const card = document.createElement('div');
+        card.className = 'pixel-box';
+        card.style.background = 'rgba(30, 41, 59, 0.7)';
+        card.style.padding = '8px';
+        card.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: bold; color: var(--text-gold); font-size: 14px;">🌿 ${herb.name}</span>
+            <span class="badge-realm" style="font-size: 11px;">${herb.grade} • ${herb.nature}</span>
+          </div>
+          <div style="font-size: 12px; color: #94a3b8; margin: 4px 0;"><strong>Khu vực phân bố:</strong> ${herb.regions.join(', ')}</div>
+          <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 4px;"><em>"${herb.lore}"</em></div>
+          <div style="font-size: 11px; color: #38bdf8;"><strong>Đan phương tương thích:</strong> ${herb.recipes.map(rId => {
+            const r = RECIPES.find(rec => rec.id === rId);
+            return r ? r.name : rId;
+          }).join(', ')}</div>
+        `;
+        listEl.appendChild(card);
+      });
+
+      modal.classList.remove('hidden');
+    }
+
+    closeHerbEncyclopedia() {
+      const modal = document.getElementById('herb-encyclopedia-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    generateDungeon(region) {
+      const nodes = [
+        { id: 'f1_n1', floor: 1, type: 'combat', name: 'Canh Cổng Yêu Binh', status: 'available', nextNodes: ['f2_n1', 'f2_n2'] },
+        { id: 'f1_n2', floor: 1, type: 'treasure', name: 'Túi Trữ Vật Rơi Rớt', status: 'available', nextNodes: ['f2_n2', 'f2_n3'] },
+
+        { id: 'f2_n1', floor: 2, type: 'combat', name: 'Yêu Thú Trùng Vòng', status: 'locked', nextNodes: ['f3_n1', 'f3_n2'] },
+        { id: 'f2_n2', floor: 2, type: 'event', name: 'Cấm Chế Cổ Trận', status: 'locked', nextNodes: ['f3_n1', 'f3_n2', 'f3_n3'] },
+        { id: 'f2_n3', floor: 2, type: 'rest', name: 'Linh Tuyền Tĩnh Tọa', status: 'locked', nextNodes: ['f3_n2', 'f3_n3'] },
+
+        { id: 'f3_n1', floor: 3, type: 'combat', name: 'Bầy Hung Thú', status: 'locked', nextNodes: ['f4_n1'] },
+        { id: 'f3_n2', floor: 3, type: 'treasure', name: 'Bảo Khố Thượng Cổ', status: 'locked', nextNodes: ['f4_n1', 'f4_n2'] },
+        { id: 'f3_n3', floor: 3, type: 'rest', name: 'Dược Điền Di Tích', status: 'locked', nextNodes: ['f4_n2'] },
+
+        { id: 'f4_n1', floor: 4, type: 'elite', name: 'Thống Lãnh Yêu Ma (Tinh Anh)', status: 'locked', nextNodes: ['f5_n1'] },
+        { id: 'f4_n2', floor: 4, type: 'treasure', name: 'Mật Thất Bí Kíp', status: 'locked', nextNodes: ['f5_n1'] },
+
+        { id: 'f5_n1', floor: 5, type: 'boss', name: `Thủ Lĩnh Bí Cảnh 【${region.name}】`, status: 'locked', nextNodes: [] }
+      ];
+
+      return {
+        regionId: region.id,
+        regionName: region.name,
+        currentFloor: 1,
+        currentNodeId: null,
+        cleared: false,
+        nodes: nodes
+      };
+    }
+
+    startDungeon(regionId) {
+      const p = this.player;
+      if (!p) return;
+      const region = WORLD_REGIONS.find(r => r.id === regionId) || WORLD_REGIONS[0];
+      if (p.realmIndex < region.reqRealmIndex) {
+        this.addLog(`Cảnh giới chưa đủ để khai mở Bí Cảnh 【${region.name}】! (Cần: ${REALMS[region.reqRealmIndex].name})`, 'warning');
+        return;
+      }
+
+      p.dungeonState = this.generateDungeon(region);
+      this.addLog(`🌀 Đã bước vào Bí Cảnh 【${region.name}】! Cấm chế thượng cổ phong tỏa lối thoát, hãy vượt qua 5 tầng để thu hoạch cơ duyên!`, 'golden');
+      this.renderDungeonMapUI();
+      this.updateUI();
+    }
+
+    retreatDungeon() {
+      const p = this.player;
+      if (!p || !p.dungeonState) return;
+
+      if (confirm('Đạo hữu có chắc muốn rút lui khỏi Bí Cảnh? Tiến trình thám hiểm hiện tại sẽ được lưu giữ hoặc làm mới!')) {
+        p.dungeonState = null;
+        const container = document.getElementById('dungeon-container');
+        if (container) container.classList.add('hidden');
+        this.addLog('💨 Đã an toàn rút lui khỏi Bí Cảnh trở về!', 'system');
+        this.updateUI();
+      }
+    }
+
+    enterDungeonNode(nodeId) {
+      const p = this.player;
+      if (!p || !p.dungeonState) return;
+      const node = p.dungeonState.nodes.find(n => n.id === nodeId);
+      if (!node || node.status !== 'available') {
+        this.addLog('Lối đi này hiện chưa mở hoặc đã hoàn thành!', 'warning');
+        return;
+      }
+
+      p.dungeonState.currentNodeId = nodeId;
+      p.dungeonState.currentFloor = node.floor;
+      node.status = 'current';
+      this.renderDungeonMapUI();
+
+      const region = WORLD_REGIONS.find(r => r.id === p.dungeonState.regionId) || WORLD_REGIONS[0];
+
+      if (node.type === 'combat' || node.type === 'elite' || node.type === 'boss') {
+        let monKey = region.monsters[Math.floor(Math.random() * region.monsters.length)];
+        let baseMon = MONSTERS[monKey] || MONSTERS['wolf_novice'];
+        let mon = JSON.parse(JSON.stringify(baseMon));
+
+        if (node.type === 'elite') {
+          mon.name = `[Tinh Anh] ${mon.name}`;
+          mon.hp = Math.floor(mon.hp * 1.4);
+          mon.atk = Math.floor(mon.atk * 1.3);
+          mon.exp = Math.floor(mon.exp * 1.5);
+          mon.stone = Math.floor(mon.stone * 1.5);
+        } else if (node.type === 'boss') {
+          mon.name = `👑 [THỦ LĨNH] ${mon.name}`;
+          mon.hp = Math.floor(mon.hp * 2.2);
+          mon.atk = Math.floor(mon.atk * 1.6);
+          mon.def = Math.floor(mon.def * 1.4);
+          mon.exp = Math.floor(mon.exp * 3.0);
+          mon.stone = Math.floor(mon.stone * 4.0);
+        }
+
+        this.addLog(`⚔️ Bước vào phòng thử thách: Chạm trán 【${mon.name}】!`, 'battle');
+        this.combatEngine.startCombat(this.player, mon, (won, fled) => {
+          if (won) {
+            this.handleDungeonNodeCleared(nodeId);
+          } else {
+            this.addLog('Thử thách thất bại! Bí cảnh bài xích đạo hữu trở ra...', 'danger');
+            p.dungeonState = null;
+            this.renderDungeonMapUI();
+            this.updateUI();
+          }
+        });
+      } else if (node.type === 'treasure') {
+        const stones = Math.floor(Math.random() * 80) + 40;
+        const herbKeys = region.herbs && region.herbs.length > 0 ? region.herbs : ['herb_linhchi'];
+        const gainedHerb = herbKeys[Math.floor(Math.random() * herbKeys.length)];
+        p.spiritStones += stones;
+        p.inventory[gainedHerb] = (p.inventory[gainedHerb] || 0) + 2;
+        sound.playLoot();
+
+        const herbObj = ITEMS[gainedHerb];
+        this.addLog(`🎁 Mở bảo rương tại phòng! Thu được +${stones} Linh Thạch và 【${herbObj ? herbObj.name : gainedHerb}】 x2!`, 'loot');
+        this.renderer.addFloatingText(`+${stones} Linh Thạch`, 320, 160, '#facc15');
+        this.handleDungeonNodeCleared(nodeId);
+      } else if (node.type === 'rest') {
+        const healHp = Math.floor(p.maxHp * 0.5);
+        const healMp = Math.floor(p.maxMp * 0.5);
+        p.curHp = Math.min(p.maxHp, p.curHp + healHp);
+        p.curMp = Math.min(p.maxMp, p.curMp + healMp);
+        sound.playBreakthrough();
+        this.addLog(`💧 Ngồi đả tọa bên linh tuyền cổ xưa, hồi phục ${healHp} HP và ${healMp} MP!`, 'system');
+        this.renderer.addFloatingText(`+${healHp} HP`, 320, 160, '#34d399');
+        this.handleDungeonNodeCleared(nodeId);
+      } else if (node.type === 'event') {
+        const roll = Math.random();
+        if (roll > 0.4) {
+          const expGain = 150 * node.floor;
+          p.exp += expGain;
+          this.addLog(`📜 Chiêm ngưỡng bia văn cổ đại, đạo tâm đại chấn! Thu được +${expGain} Điểm Tu Vi!`, 'golden');
+        } else {
+          const dmg = Math.floor(p.maxHp * 0.15);
+          p.curHp = Math.max(1, p.curHp - dmg);
+          sound.playHurt();
+          this.addLog(`⚡ Cấm chế bẫy cổ xưa kích hoạt! Bị thiên lôi phản phệ mất ${dmg} HP!`, 'danger');
+        }
+        this.handleDungeonNodeCleared(nodeId);
+      }
+    }
+
+    handleDungeonNodeCleared(nodeId) {
+      const p = this.player;
+      if (!p || !p.dungeonState) return;
+      const node = p.dungeonState.nodes.find(n => n.id === nodeId);
+      if (!node) return;
+
+      node.status = 'cleared';
+
+      if (node.nextNodes && node.nextNodes.length > 0) {
+        node.nextNodes.forEach(nxtId => {
+          const nxt = p.dungeonState.nodes.find(n => n.id === nxtId);
+          if (nxt && nxt.status === 'locked') {
+            nxt.status = 'available';
+          }
+        });
+      }
+
+      if (node.floor === 5) {
+        p.dungeonState.cleared = true;
+        sound.playBreakthrough();
+        this.renderer.addFloatingText('ĐẠI PHÁ BÍ CẢNH!', 320, 140, '#facc15', true);
+        const grandBonus = 500;
+        p.spiritStones += grandBonus;
+        p.inventory['pill_trucco'] = (p.inventory['pill_trucco'] || 0) + 1;
+        this.addLog(`👑 ĐẠI THẮNG QUANG VINH! Đạo hữu đã chinh phục toàn bộ 5 tầng Bí Cảnh 【${p.dungeonState.regionName}】! Thưởng lớn: +${grandBonus} Linh Thạch & 1 Trúc Cơ Đan!`, 'golden');
+      }
+
+      this.renderDungeonMapUI();
+      this.updateUI();
+    }
+
+    renderDungeonMapUI() {
+      const container = document.getElementById('dungeon-container');
+      const mapEl = document.getElementById('dungeon-node-map');
+      const titleEl = document.getElementById('dungeon-title');
+      const statusText = document.getElementById('dungeon-status-text');
+
+      if (!container || !mapEl) return;
+      const p = this.player;
+      if (!p || !p.dungeonState) {
+        container.classList.add('hidden');
+        return;
+      }
+
+      container.classList.remove('hidden');
+      const ds = p.dungeonState;
+      if (titleEl) titleEl.textContent = `🏯 ${ds.regionName} — Tầng ${ds.currentFloor}/5`;
+      if (statusText) {
+        statusText.textContent = ds.cleared
+          ? '🎉 Toàn bộ Bí Cảnh đã được chinh phục thành công!'
+          : 'Chọn lối đi phát sáng tiếp theo để tiến sâu vào bí cảnh...';
+      }
+
+      mapEl.innerHTML = '';
+
+      for (let f = 1; f <= 5; f++) {
+        const floorNodes = ds.nodes.filter(n => n.floor === f);
+        const row = document.createElement('div');
+        row.className = 'dungeon-floor-row';
+
+        const label = document.createElement('div');
+        label.style.fontSize = '11px';
+        label.style.fontWeight = 'bold';
+        label.style.color = '#94a3b8';
+        label.style.minWidth = '50px';
+        label.textContent = `Tầng ${f}:`;
+        row.appendChild(label);
+
+        floorNodes.forEach(n => {
+          const btn = document.createElement('div');
+          btn.className = `dungeon-node ${n.status}`;
+
+          let icon = '⚔️';
+          if (n.type === 'treasure') icon = '🎁';
+          else if (n.type === 'rest') icon = '💧';
+          else if (n.type === 'event') icon = '❓';
+          else if (n.type === 'elite') icon = '👹';
+          else if (n.type === 'boss') icon = '👑';
+
+          btn.innerHTML = `
+            <div style="font-size: 16px;">${icon}</div>
+            <div style="font-size: 11px; margin-top: 2px;">${n.name}</div>
+            <div style="font-size: 9px; color: #94a3b8; text-transform: uppercase;">${n.status === 'cleared' ? '✓ Đã Qua' : (n.status === 'current' ? '▶ Đang Ở' : (n.status === 'available' ? '★ Mở' : 'Khóa'))}</div>
+          `;
+
+          if (n.status === 'available') {
+            btn.onclick = () => this.enterDungeonNode(n.id);
+          }
+          row.appendChild(btn);
+        });
+
+        mapEl.appendChild(row);
+      }
     }
 
     refreshMarket() {
@@ -4089,6 +5584,15 @@
       if (!p || !p.sectId) return;
       const quest = SECT_QUESTS.find(q => q.id === questId);
       if (!quest) return;
+
+      const curRank = this.getCurrentSectRank();
+      const sect = SECTS.find(s => s.id === p.sectId);
+      const curRankIdx = sect ? sect.ranks.indexOf(curRank) : 0;
+      if (quest.minRankIndex !== undefined && curRankIdx < quest.minRankIndex) {
+        const reqRankName = sect && sect.ranks[quest.minRankIndex] ? sect.ranks[quest.minRankIndex].rank : 'Cao hơn';
+        this.addLog(`Chưa đủ chức vị tông môn để giao nộp nhiệm vụ này (yêu cầu: 【${reqRankName}】)!`, 'warning');
+        return;
+      }
 
       if (quest.reqItem) {
         if ((p.inventory[quest.reqItem] || 0) < quest.reqCount) {
@@ -4216,6 +5720,15 @@
         p.bonusLifespan = (p.bonusLifespan || 0) + man.lifespanGain;
         effects.push(`+${man.lifespanGain} Năm Thọ Nguyên`);
       }
+      if (man.skill) {
+        if (!p.skills) p.skills = [p.activeSkill];
+        if (p.skills.length < 2) {
+          p.skills.push(man.skill);
+        } else {
+          p.skills[1] = man.skill;
+        }
+        effects.push(`Tuyệt kỹ: 【${man.skill.name}】`);
+      }
 
       this.recalculatePlayerStats();
       sound.playBreakthrough();
@@ -4302,13 +5815,22 @@
 
     resetCharacter() {
       localStorage.removeItem('tutien_savegame');
+      localStorage.removeItem('tutien_savegame_backup');
       location.reload();
     }
 
     saveToLocalStorage() {
       if (!this.player) return;
       try {
-        localStorage.setItem('tutien_savegame', JSON.stringify(this.player));
+        const envelope = {
+          schemaVersion: 2,
+          timestamp: Date.now(),
+          player: this.player,
+          marketItems: this.marketItems || []
+        };
+        const jsonStr = JSON.stringify(envelope);
+        localStorage.setItem('tutien_savegame', jsonStr);
+        localStorage.setItem('tutien_savegame_backup', jsonStr);
       } catch (e) {
         console.error('Lưu game thất bại:', e);
       }
@@ -4316,22 +5838,30 @@
 
     loadFromLocalStorage() {
       try {
-        const dataStr = localStorage.getItem('tutien_savegame');
+        let dataStr = localStorage.getItem('tutien_savegame');
+        if (!dataStr) {
+          dataStr = localStorage.getItem('tutien_savegame_backup');
+        }
         if (dataStr) {
-          this.player = JSON.parse(dataStr);
-          if (this.player.sectContribTotal === undefined) this.player.sectContribTotal = this.player.sectContrib || 0;
-          if (this.player.sectPatrolKills === undefined) this.player.sectPatrolKills = 0;
-          if (!this.player.sectManualsBought) this.player.sectManualsBought = [];
-          if (this.player.bonusCrit === undefined) this.player.bonusCrit = 0;
-          if (this.player.bonusLifeSteal === undefined) this.player.bonusLifeSteal = 0;
-          this.ensureWorldState();
-          this.currentRegion = this.getWorldRegion(this.player.worldLocation);
+          const envelope = this.migrateSaveData(dataStr);
+          if (envelope && envelope.player) {
+            this.player = envelope.player;
+            if (envelope.marketItems && envelope.marketItems.length > 0) {
+              this.marketItems = envelope.marketItems;
+            }
+            this.ensureWorldState();
+            this.currentRegion = this.getWorldRegion(this.player.worldLocation);
 
-          this.recalculatePlayerStats();
-          this.refreshMarket();
-          this.startLoops();
-          this.addLog(`Đã tự động tải dữ liệu đạo hữu 【${this.player.name}】 thành công!`, 'system');
-          return true;
+            this.recalculatePlayerStats();
+            if (!this.marketItems || this.marketItems.length === 0) {
+              this.refreshMarket();
+            } else {
+              this.renderMarketUI();
+            }
+            this.startLoops();
+            this.addLog(`Đã tự động tải dữ liệu đạo hữu 【${this.player.name}】 thành công! (Dữ liệu v${envelope.schemaVersion || 2})`, 'system');
+            return true;
+          }
         }
       } catch (e) {
         console.error('Tải game thất bại:', e);
@@ -4341,26 +5871,28 @@
 
     exportSaveJSON() {
       if (!this.player) return null;
-      return JSON.stringify(this.player, null, 2);
+      const envelope = {
+        schemaVersion: 2,
+        timestamp: Date.now(),
+        player: this.player,
+        marketItems: this.marketItems || []
+      };
+      return JSON.stringify(envelope, null, 2);
     }
 
     importSaveJSON(jsonStr) {
       try {
-        const parsed = JSON.parse(jsonStr);
-        if (parsed && parsed.name && parsed.realmIndex !== undefined) {
-          this.player = parsed;
-          if (this.player.sectContribTotal === undefined) this.player.sectContribTotal = this.player.sectContrib || 0;
-          if (this.player.sectPatrolKills === undefined) this.player.sectPatrolKills = 0;
-          if (!this.player.sectManualsBought) this.player.sectManualsBought = [];
-          if (this.player.bonusCrit === undefined) this.player.bonusCrit = 0;
-          if (this.player.bonusLifeSteal === undefined) this.player.bonusLifeSteal = 0;
+        const envelope = this.migrateSaveData(jsonStr);
+        if (envelope && envelope.player && envelope.player.name && envelope.player.realmIndex !== undefined) {
+          this.player = envelope.player;
+          this.marketItems = envelope.marketItems || [];
           this.ensureWorldState();
           this.currentRegion = this.getWorldRegion(this.player.worldLocation);
 
           this.recalculatePlayerStats();
           this.saveToLocalStorage();
           this.updateUI();
-          this.addLog(`Nhập dữ liệu nhân vật 【${this.player.name}】 thành công!`, 'golden');
+          this.addLog(`Nhập dữ liệu nhân vật 【${this.player.name}】 thành công! (Schema v${envelope.schemaVersion})`, 'golden');
           return true;
         }
       } catch (e) {
@@ -4676,7 +6208,8 @@
         const salary = (curRank && curRank.salary) || 10;
         if (p.sectSalaryClaimedYear === p.age) {
           btnSalary.disabled = true;
-          btnSalary.textContent = `✅ Đã Nhận Bổng Lộc (Năm ${p.age})`;
+          const remMonths = Math.max(1, 12 - (p.month || 1));
+          btnSalary.textContent = `✅ Đã Nhận (Còn ${remMonths} tháng đến niên mới)`;
           btnSalary.classList.remove('primary-btn');
         } else {
           btnSalary.disabled = false;
@@ -4689,11 +6222,17 @@
       const questListEl = document.getElementById('sect-quest-list');
       if (questListEl) {
         questListEl.innerHTML = '';
+        const curRankIdx = sect.ranks.indexOf(curRank);
+
         SECT_QUESTS.forEach(q => {
           let isMet = false;
           let progressInfo = '';
+          const isRankLocked = q.minRankIndex !== undefined && curRankIdx < q.minRankIndex;
+          const reqRankName = q.minRankIndex !== undefined && sect.ranks[q.minRankIndex] ? sect.ranks[q.minRankIndex].rank : null;
 
-          if (q.reqItem) {
+          if (isRankLocked) {
+            progressInfo = `🔒 Yêu cầu chức vị: ${reqRankName}`;
+          } else if (q.reqItem) {
             const count = (p.inventory && p.inventory[q.reqItem]) || 0;
             const itemObj = ITEMS[q.reqItem];
             isMet = count >= q.reqCount;
@@ -4709,7 +6248,7 @@
           }
 
           const card = document.createElement('div');
-          card.className = 'sect-quest-card';
+          card.className = `sect-quest-card ${isRankLocked ? 'locked' : ''}`;
           card.innerHTML = `
             <div style="flex: 1;">
               <div class="sect-quest-title">📜 ${q.name}</div>
@@ -4718,23 +6257,23 @@
                 <span>🎁 Thưởng: <strong>+${q.contrib} Cống Hiến</strong></span>
                 ${q.stone ? `<span>• <strong>+${q.stone} Linh Thạch</strong></span>` : ''}
               </div>
-              <div style="font-size: 11px; margin-top: 4px; font-weight: bold; color: ${isMet ? '#34d399' : '#f87171'};">
+              <div style="font-size: 11px; margin-top: 4px; font-weight: bold; color: ${isRankLocked ? '#f87171' : (isMet ? '#34d399' : '#f87171')};">
                 ${progressInfo}
               </div>
             </div>
             <div style="display: flex; flex-direction: column; gap: 5px; align-items: flex-end;">
-              ${q.reqKills && !isMet ? `<button class="pixel-btn small-btn btn-patrol" style="border-color: #ef4444; color: #fca5a5;">⚔️ Đi Diệt Yêu</button>` : ''}
+              ${q.reqKills && !isMet && !isRankLocked ? `<button class="pixel-btn small-btn btn-patrol" style="border-color: #ef4444; color: #fca5a5;">⚔️ Đi Diệt Yêu</button>` : ''}
               <button class="pixel-btn small-btn btn-submit ${isMet ? 'primary-btn' : ''}" ${isMet ? '' : 'disabled'}>
-                ${isMet ? `Giao Nộp (+${q.contrib})` : 'Chưa Đủ ĐK'}
+                ${isRankLocked ? 'Chưa Đạt Cấp' : (isMet ? `Giao Nộp (+${q.contrib})` : 'Chưa Đủ ĐK')}
               </button>
             </div>
           `;
 
           const btnSubmit = card.querySelector('.btn-submit');
-          if (btnSubmit) btnSubmit.onclick = () => this.completeSectQuest(q.id);
+          if (btnSubmit && !isRankLocked) btnSubmit.onclick = () => this.completeSectQuest(q.id);
 
           const btnPatrol = card.querySelector('.btn-patrol');
-          if (btnPatrol) btnPatrol.onclick = () => this.startSectPatrolFight();
+          if (btnPatrol && !isRankLocked) btnPatrol.onclick = () => this.startSectPatrolFight();
 
           questListEl.appendChild(card);
         });
@@ -4913,8 +6452,10 @@
         }
       }
       mapEl.innerHTML = gridHtml;
-      mapEl.querySelectorAll('.world-grid-cell').forEach(cell => {
-        cell.addEventListener('contextmenu', event => {
+      if (!mapEl._delegated) {
+        mapEl.addEventListener('contextmenu', event => {
+          const cell = event.target.closest('.world-grid-cell');
+          if (!cell) return;
           event.preventDefault();
           this.openWorldCellMenu(
             Number(cell.dataset.gridX),
@@ -4924,7 +6465,19 @@
             event.clientY
           );
         });
-      });
+        mapEl.addEventListener('click', event => {
+          const cell = event.target.closest('.world-grid-cell');
+          if (!cell) return;
+          this.openWorldCellMenu(
+            Number(cell.dataset.gridX),
+            Number(cell.dataset.gridY),
+            cell.dataset.regionId || null,
+            event.clientX,
+            event.clientY
+          );
+        });
+        mapEl._delegated = true;
+      }
 
       const travelCost = this.getWorldTravelCost(location);
       if (locationEl) {
@@ -5440,6 +6993,7 @@
 
     const btnAttack = document.getElementById('btn-combat-attack');
     const btnSkill = document.getElementById('btn-combat-skill');
+    const btnSkill2 = document.getElementById('btn-combat-skill2');
     const btnArtifact = document.getElementById('btn-combat-artifact');
     const btnPill = document.getElementById('btn-combat-pill');
     const btnFlee = document.getElementById('btn-combat-flee');
@@ -5448,7 +7002,8 @@
     const btnCloseResult = document.getElementById('btn-combat-close-result');
 
     if (btnAttack) btnAttack.addEventListener('click', () => combatEngine.playerNormalAttack());
-    if (btnSkill) btnSkill.addEventListener('click', () => combatEngine.playerCastSkill());
+    if (btnSkill) btnSkill.addEventListener('click', () => combatEngine.playerCastSkill(0));
+    if (btnSkill2) btnSkill2.addEventListener('click', () => combatEngine.playerCastSkill(1));
     if (btnArtifact) btnArtifact.addEventListener('click', () => combatEngine.playerUseArtifact());
     if (btnPill) btnPill.addEventListener('click', () => combatEngine.playerUsePill('pill_hoixuan'));
     if (btnFlee) btnFlee.addEventListener('click', () => combatEngine.playerFlee());
@@ -5457,31 +7012,146 @@
     if (btnCombatSpeed) btnCombatSpeed.addEventListener('click', () => combatEngine.toggleCombatSpeed());
     if (btnCloseResult) btnCloseResult.addEventListener('click', () => combatEngine.closeResultAndEnd());
 
-    // Phím tắt chiến đấu: [1..5], [A] Tự Động, [S] Tốc Độ, [Space/Enter] Tiếp Tục
+    // Nút Luyện Đan Tương Tác & Dược Điển
+    const btnOpenHerb = document.getElementById('btn-open-herb-encyclopedia');
+    if (btnOpenHerb) btnOpenHerb.addEventListener('click', () => systems.openHerbEncyclopedia());
+    const btnCloseHerb = document.getElementById('btn-close-herb-modal');
+    if (btnCloseHerb) btnCloseHerb.addEventListener('click', () => systems.closeHerbEncyclopedia());
+    const btnFireMartial = document.getElementById('btn-fire-martial');
+    if (btnFireMartial) btnFireMartial.addEventListener('click', () => systems.setAlchemyFireMode('martial'));
+    const btnFireGentle = document.getElementById('btn-fire-gentle');
+    if (btnFireGentle) btnFireGentle.addEventListener('click', () => systems.setAlchemyFireMode('gentle'));
+    const btnHarvestPill = document.getElementById('btn-harvest-pill');
+    if (btnHarvestPill) btnHarvestPill.addEventListener('click', () => systems.harvestPill());
+
+    // Nút Bí Cảnh Roguelike 5 Tầng
+    const btnEnterDungeon = document.getElementById('btn-enter-dungeon');
+    if (btnEnterDungeon) {
+      btnEnterDungeon.addEventListener('click', () => {
+        const selectReg = document.getElementById('select-region');
+        const regIdx = selectReg ? Number(selectReg.value || 0) : 0;
+        const reg = WORLD_REGIONS[regIdx] || WORLD_REGIONS[0];
+        systems.startDungeon(reg.id);
+      });
+    }
+    const btnDungeonRetreat = document.getElementById('btn-dungeon-retreat');
+    if (btnDungeonRetreat) btnDungeonRetreat.addEventListener('click', () => systems.retreatDungeon());
+
+    // Unified Keyboard Dispatcher: Combat actions, Modal shortcuts, Drawer toggle
     window.addEventListener('keydown', (e) => {
-      if (!combatEngine || !combatEngine.inCombat) return;
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
 
-      if (['1', '2', '3', '4', '5'].includes(e.key)) {
-        e.preventDefault();
-        if (!combatEngine.isPlayerTurn || combatEngine.isProcessingTurn) return;
-
-        if (e.key === '1') combatEngine.playerNormalAttack();
-        else if (e.key === '2') combatEngine.playerCastSkill();
-        else if (e.key === '3') combatEngine.playerUseArtifact();
-        else if (e.key === '4') combatEngine.playerUsePill('pill_hoixuan');
-        else if (e.key === '5') combatEngine.playerFlee();
-      } else if (e.key === 'a' || e.key === 'A') {
-        e.preventDefault();
-        combatEngine.toggleAutoCombat();
-      } else if (e.key === 's' || e.key === 'S') {
-        e.preventDefault();
-        combatEngine.toggleCombatSpeed();
-      } else if (e.key === ' ' || e.key === 'Enter') {
-        const overlay = document.getElementById('combat-result-overlay');
-        if (overlay && !overlay.classList.contains('hidden')) {
+      // 1. Phím tắt chiến đấu khi đang trong trận
+      if (combatEngine && combatEngine.inCombat) {
+        if (['1', '2', '3', '4', '5'].includes(e.key) || e.key === 'e' || e.key === 'E') {
           e.preventDefault();
-          combatEngine.closeResultAndEnd();
+          if (!combatEngine.isPlayerTurn || combatEngine.isProcessingTurn) return;
+
+          if (e.key === '1') combatEngine.playerNormalAttack();
+          else if (e.key === '2') combatEngine.playerCastSkill(0);
+          else if (e.key === 'e' || e.key === 'E') combatEngine.playerCastSkill(1);
+          else if (e.key === '3') combatEngine.playerUseArtifact();
+          else if (e.key === '4') combatEngine.playerUsePill('pill_hoixuan');
+          else if (e.key === '5') combatEngine.playerFlee();
+          return;
+        } else if (e.key === 'a' || e.key === 'A') {
+          e.preventDefault();
+          combatEngine.toggleAutoCombat();
+          return;
+        } else if (e.key === 's' || e.key === 'S') {
+          e.preventDefault();
+          combatEngine.toggleCombatSpeed();
+          return;
+        } else if (e.key === ' ' || e.key === 'Enter') {
+          const overlay = document.getElementById('combat-result-overlay');
+          if (overlay && !overlay.classList.contains('hidden')) {
+            e.preventDefault();
+            combatEngine.closeResultAndEnd();
+            return;
+          }
+        }
+      }
+
+      // 2. Phím tắt giao diện chung (L: Thiên Cơ Lục, Escape: Đóng Modal, Enter/Space xác nhận)
+      if (e.key === 'l' || e.key === 'L') {
+        e.preventDefault();
+        if (isLogPinned) {
+          const container = document.getElementById('log-messages');
+          if (container) container.scrollTop = container.scrollHeight;
+        } else {
+          toggleLogDrawer();
+        }
+      } else if (e.key === 'Escape') {
+        const mobMenuModal = document.getElementById('mobile-menu-modal');
+        if (mobMenuModal && !mobMenuModal.classList.contains('hidden')) {
+          e.preventDefault();
+          mobMenuModal.classList.add('hidden');
+          return;
+        }
+        const herbModal = document.getElementById('herb-encyclopedia-modal');
+        if (herbModal && !herbModal.classList.contains('hidden')) {
+          e.preventDefault();
+          herbModal.classList.add('hidden');
+          return;
+        }
+        const itemModal = document.getElementById('item-detail-modal');
+        const btModal = document.getElementById('breakthrough-modal');
+        const confirmModal = document.getElementById('custom-confirm-modal');
+        const alertModal = document.getElementById('custom-alert-modal');
+        const jsonModal = document.getElementById('json-modal');
+        const eventModal = document.getElementById('event-modal');
+
+        if (alertModal && !alertModal.classList.contains('hidden')) {
+          e.preventDefault();
+          alertModal.classList.add('hidden');
+          return;
+        }
+        if (confirmModal && !confirmModal.classList.contains('hidden')) {
+          e.preventDefault();
+          const btnNo = document.getElementById('btn-confirm-no');
+          if (btnNo) btnNo.click();
+          else confirmModal.classList.add('hidden');
+          return;
+        }
+        if (btModal && !btModal.classList.contains('hidden')) {
+          e.preventDefault();
+          btModal.classList.add('hidden');
+          return;
+        }
+        if (itemModal && !itemModal.classList.contains('hidden')) {
+          e.preventDefault();
+          itemModal.classList.add('hidden');
+          return;
+        }
+        if (jsonModal && !jsonModal.classList.contains('hidden')) {
+          e.preventDefault();
+          jsonModal.classList.add('hidden');
+          return;
+        }
+        if (eventModal && !eventModal.classList.contains('hidden')) {
+          e.preventDefault();
+          eventModal.classList.add('hidden');
+          return;
+        }
+
+        if (isLogDrawerOpen) {
+          e.preventDefault();
+          setLogDrawerOpen(false);
+        }
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        const btModal = document.getElementById('breakthrough-modal');
+        if (btModal && !btModal.classList.contains('hidden')) {
+          e.preventDefault();
+          btModal.classList.add('hidden');
+          return;
+        }
+        const alertModal = document.getElementById('custom-alert-modal');
+        if (alertModal && !alertModal.classList.contains('hidden')) {
+          e.preventDefault();
+          const btnOk = document.getElementById('btn-alert-ok');
+          if (btnOk) btnOk.click();
+          else alertModal.classList.add('hidden');
+          return;
         }
       }
     });
@@ -5743,87 +7413,6 @@
         }
       });
     }
-
-    // Phím tắt bàn phím: 'L' mở/đóng Thiên Cơ Lục, 'Escape' đóng modals/drawer, 'Space/Enter' xác nhận
-    window.addEventListener('keydown', (e) => {
-      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
-
-      if (e.key === 'l' || e.key === 'L') {
-        e.preventDefault();
-        if (isLogPinned) {
-          const container = document.getElementById('log-messages');
-          if (container) container.scrollTop = container.scrollHeight;
-        } else {
-          toggleLogDrawer();
-        }
-      } else if (e.key === 'Escape') {
-        const mobMenuModal = document.getElementById('mobile-menu-modal');
-        if (mobMenuModal && !mobMenuModal.classList.contains('hidden')) {
-          e.preventDefault();
-          mobMenuModal.classList.add('hidden');
-          return;
-        }
-        const itemModal = document.getElementById('item-detail-modal');
-        const btModal = document.getElementById('breakthrough-modal');
-        const confirmModal = document.getElementById('custom-confirm-modal');
-        const alertModal = document.getElementById('custom-alert-modal');
-        const jsonModal = document.getElementById('json-modal');
-        const eventModal = document.getElementById('event-modal');
-
-        if (alertModal && !alertModal.classList.contains('hidden')) {
-          e.preventDefault();
-          alertModal.classList.add('hidden');
-          return;
-        }
-        if (confirmModal && !confirmModal.classList.contains('hidden')) {
-          e.preventDefault();
-          const btnNo = document.getElementById('btn-confirm-no');
-          if (btnNo) btnNo.click();
-          else confirmModal.classList.add('hidden');
-          return;
-        }
-        if (btModal && !btModal.classList.contains('hidden')) {
-          e.preventDefault();
-          btModal.classList.add('hidden');
-          return;
-        }
-        if (itemModal && !itemModal.classList.contains('hidden')) {
-          e.preventDefault();
-          itemModal.classList.add('hidden');
-          return;
-        }
-        if (jsonModal && !jsonModal.classList.contains('hidden')) {
-          e.preventDefault();
-          jsonModal.classList.add('hidden');
-          return;
-        }
-        if (eventModal && !eventModal.classList.contains('hidden')) {
-          e.preventDefault();
-          eventModal.classList.add('hidden');
-          return;
-        }
-
-        if (isLogDrawerOpen) {
-          e.preventDefault();
-          setLogDrawerOpen(false);
-        }
-      } else if (e.key === 'Enter' || e.key === ' ') {
-        const btModal = document.getElementById('breakthrough-modal');
-        if (btModal && !btModal.classList.contains('hidden')) {
-          e.preventDefault();
-          btModal.classList.add('hidden');
-          return;
-        }
-        const alertModal = document.getElementById('custom-alert-modal');
-        if (alertModal && !alertModal.classList.contains('hidden')) {
-          e.preventDefault();
-          const btnOk = document.getElementById('btn-alert-ok');
-          if (btnOk) btnOk.click();
-          else alertModal.classList.add('hidden');
-          return;
-        }
-      }
-    });
   }
 
   // ==========================================================================
@@ -5984,4 +7573,43 @@
     };
   }
 
+  if (typeof window !== 'undefined') {
+    window.ParticlePool = ParticlePool;
+    window.FloatingTextPool = FloatingTextPool;
+    window.PixelRenderer = PixelRenderer;
+    window.CombatStatusManager = CombatStatusManager;
+    window.CombatEngine = CombatEngine;
+    window.GameSystems = GameSystems;
+    window.CULTIVATION_PATHS = CULTIVATION_PATHS;
+    window.HERB_ENCYCLOPEDIA = HERB_ENCYCLOPEDIA;
+    window.RECIPES = RECIPES;
+    window.SECTS = SECTS;
+    window.SECT_QUESTS = SECT_QUESTS;
+    window.WORLD_REGIONS = WORLD_REGIONS;
+    window.MONSTERS = MONSTERS;
+    window.ITEMS = ITEMS;
+    window.REALMS = REALMS;
+    window.SCENES = SCENES;
+  }
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+      ParticlePool,
+      FloatingTextPool,
+      PixelRenderer,
+      CombatStatusManager,
+      CombatEngine,
+      GameSystems,
+      CULTIVATION_PATHS,
+      HERB_ENCYCLOPEDIA,
+      RECIPES,
+      SECTS,
+      SECT_QUESTS,
+      WORLD_REGIONS,
+      MONSTERS,
+      ITEMS,
+      REALMS,
+      SCENES
+    };
+  }
 })();
