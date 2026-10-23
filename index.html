@@ -510,6 +510,7 @@
               <div id="region-info" class="destiny-results" style="margin-bottom: 12px;"></div>
               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <button id="btn-explore" class="pixel-btn primary-btn">🧭 Du Ngoạn Ngoại Vi</button>
+                <button id="btn-gather-resources" class="pixel-btn" style="border-color: #10b981; color: #6ee7b7; background: rgba(16, 185, 129, 0.15);">🌿 Hái Dược & Khai Khoáng</button>
                 <button id="btn-enter-dungeon" class="pixel-btn" style="border-color: #f59e0b; color: #fbbf24;">⚡ Tiến Vào Bí Cảnh Động Phủ (5 Tầng)</button>
               </div>
 
@@ -637,6 +638,7 @@
         <section id="tab-bachbao" class="tab-pane">
           <div class="sub-tab-bar">
             <button class="sub-tab-btn active" data-subtab="subtab-inventory">🎒 Túi Càn Khôn & Trang Bị</button>
+            <button class="sub-tab-btn" data-subtab="subtab-compendium">📖 Vạn Vật Quyển</button>
             <button class="sub-tab-btn" data-subtab="subtab-market">⚖️ Phường Thị Tiên Giới</button>
           </div>
 
@@ -644,13 +646,45 @@
           <div id="subtab-inventory" class="sub-tab-content active">
             <div class="pixel-box" style="margin-bottom: 10px;">
               <h4>Trang Bị Hiện Tại</h4>
-              <div style="display: flex; gap: 16px; margin-top: 6px; font-size: 12px;">
+              <div style="display: flex; gap: 16px; margin-top: 6px; font-size: 12px; flex-wrap: wrap;">
                 <div>🗡️ Vũ Khí: <strong id="equip-weapon" style="color: var(--text-gold);">Chưa có</strong></div>
                 <div>🛡️ Hộ Giáp: <strong id="equip-armor" style="color: var(--text-cyan);">Chưa có</strong></div>
                 <div>🔮 Pháp Bảo: <strong id="equip-artifact" style="color: var(--text-purple);">Chưa có</strong></div>
               </div>
             </div>
-            <div id="inventory-list" class="item-grid"></div>
+
+            <!-- Thanh lọc phân loại túi đồ -->
+            <div class="inventory-filter-bar">
+              <button class="inv-filter-btn active" data-filter="all">Tất Cả</button>
+              <button class="inv-filter-btn" data-filter="usable">💊 Sử Dụng</button>
+              <button class="inv-filter-btn" data-filter="material">🌿 Nguyên Liệu</button>
+              <button class="inv-filter-btn" data-filter="equipment">⚔️ Trang Bị</button>
+            </div>
+
+            <div id="inventory-list" class="item-grid" style="margin-top: 10px;"></div>
+          </div>
+
+          <!-- Phân mục 1.5: Vạn Vật Quyển (Item Codex) -->
+          <div id="subtab-compendium" class="sub-tab-content">
+            <div class="pixel-box">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <div>
+                  <h3 style="margin: 0; color: var(--text-gold);">📖 Vạn Vật Quyển & Chỉ Dẫn Thu Thập</h3>
+                  <p style="color: var(--text-dim); margin: 4px 0 0 0; font-size: 0.85rem;">Bách khoa toàn thư ghi chép toàn bộ đan dược, phù lục, linh thảo, linh khoáng và cách thức đoạt được.</p>
+                </div>
+                <div style="font-size: 0.9rem; color: var(--text-cyan);">Đã Thu Thập: <strong id="compendium-unlocked-count" style="color: #facc15;">0/0</strong></div>
+              </div>
+
+              <!-- Thanh lọc phân loại bách khoa -->
+              <div class="inventory-filter-bar" style="margin-top: 10px;">
+                <button class="comp-filter-btn active" data-filter="all">Tất Cả</button>
+                <button class="comp-filter-btn" data-filter="usable">💊 Dược Đan & Phù Chú</button>
+                <button class="comp-filter-btn" data-filter="material">🌿 Linh Thảo & Khoáng Thạch</button>
+                <button class="comp-filter-btn" data-filter="equipment">⚔️ Pháp Bảo & Binh Khí</button>
+              </div>
+
+              <div id="compendium-list" class="compendium-grid" style="margin-top: 12px; max-height: 480px; overflow-y: auto;"></div>
+            </div>
           </div>
 
           <!-- Phân mục 2: Phường Thị -->
@@ -1013,6 +1047,14 @@
         <div id="item-detail-stats-section" class="item-detail-section">
           <div class="item-section-label">⚡ Hiệu Quả & Thuộc Tính Gia Tăng:</div>
           <div id="item-detail-stats" class="item-stats-list"></div>
+        </div>
+
+        <div id="item-detail-source-section" class="item-detail-section">
+          <div class="item-section-label">🧭 Nguồn Gốc & Cách Thu Thập:</div>
+          <div id="item-detail-source-text" class="item-detail-desc-text" style="color: #6ee7b7; font-size: 0.85rem; line-height: 1.4;">
+            Đang tải nguồn gốc...
+          </div>
+          <div id="item-detail-source-actions" style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;"></div>
         </div>
 
         <div class="item-detail-price-row">

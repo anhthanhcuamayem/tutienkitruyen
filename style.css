@@ -3321,3 +3321,155 @@ body.combat-active-mode #tab-combat {
     font-size: 24px;
   }
 }
+
+
+/* ==========================================================================
+   ITEM SYSTEM, INVENTORY FILTER & COMPENDIUM STYLES
+   ========================================================================== */
+.inventory-filter-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.inv-filter-btn, .comp-filter-btn {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid var(--border-inner);
+  color: var(--text-dim);
+  padding: 5px 12px;
+  font-size: 0.82rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.inv-filter-btn:hover, .comp-filter-btn:hover {
+  border-color: var(--border-gold);
+  color: var(--text-gold);
+}
+
+.inv-filter-btn.active, .comp-filter-btn.active {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: #f59e0b;
+  color: #fbbf24;
+  font-weight: bold;
+}
+
+.compendium-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+}
+
+.compendium-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid var(--border-inner);
+  border-radius: 4px;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.compendium-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-gold);
+}
+
+.compendium-card.locked {
+  opacity: 0.75;
+}
+
+.compendium-card-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.compendium-card-icon {
+  font-size: 24px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.compendium-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.compendium-card-name {
+  font-weight: bold;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compendium-card-meta {
+  display: flex;
+  gap: 6px;
+  font-size: 0.75rem;
+  margin-top: 2px;
+}
+
+.comp-badge {
+  padding: 1px 6px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.comp-badge-owned {
+  border-color: #10b981;
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.comp-badge-unowned {
+  border-color: #64748b;
+  color: #94a3b8;
+}
+
+.compendium-card-desc {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  line-height: 1.35;
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.compendium-card-source {
+  font-size: 0.75rem;
+  color: #6ee7b7;
+  background: rgba(16, 185, 129, 0.08);
+  padding: 4px 6px;
+  border-radius: 3px;
+  margin-bottom: 8px;
+  border-left: 2px solid #10b981;
+}
+
+.item-source-nav-btn {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: #10b981;
+  color: #6ee7b7;
+  font-size: 0.78rem;
+  padding: 4px 8px;
+}
+
+.item-source-nav-btn:hover {
+  background: rgba(16, 185, 129, 0.3);
+  color: #a7f3d0;
+}
