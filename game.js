@@ -3392,6 +3392,7 @@
       this.renderer = renderer;
       this.addLog = logCallback;
       this.onCombatEnd = onCombatEndCallback;
+      this.activeCombatEndHandler = onCombatEndCallback;
 
       this.inCombat = false;
       this.player = null;
@@ -3448,6 +3449,18 @@
       return Math.max(1, dmg);
     }
 
+    addCultivationExp(amount) {
+      const p = this.player;
+      if (!p) return 0;
+
+      const realm = REALMS[p.realmIndex] || REALMS[0];
+      const currentExp = Math.min(realm.maxExp, Math.max(0, Math.floor(Number(p.exp) || 0)));
+      const safeAmount = Math.max(0, Math.floor(Number(amount) || 0));
+      const nextExp = Math.min(realm.maxExp, currentExp + safeAmount);
+      p.exp = nextExp;
+      return nextExp - currentExp;
+    }
+
     updateMonsterIntent() {
       if (!this.monster || !this.inCombat) return;
       if (this.monsterCombat.rage >= 90) {
@@ -3485,7 +3498,11 @@
       this.roundCount = 1;
       this.player = player;
       this.monster = JSON.parse(JSON.stringify(monsterData));
-      this.onCombatEnd = onCombatEnd;
+      // Callback truyền riêng cho trận này chỉ có hiệu lực trong trận đó;
+      // nếu không truyền, vẫn dùng callback mặc định để luôn thoát màn combat.
+      this.activeCombatEndHandler = typeof onCombatEnd === 'function'
+        ? onCombatEnd
+        : this.onCombatEnd;
 
       this.playerCombat = {
         curHp: this.player.curHp,
@@ -4523,7 +4540,9 @@
 
       this.renderer.setScene(SCENES.MEDITATE);
       this.renderer.setStatusText('Đang đả tọa hấp thu thiên địa linh khí...');
-      if (this.onCombatEnd) this.onCombatEnd(won, fled);
+      const endHandler = this.activeCombatEndHandler;
+      this.activeCombatEndHandler = null;
+      if (endHandler) endHandler(won, fled);
       this.renderer.checkVisibilityAndResume();
     }
 
