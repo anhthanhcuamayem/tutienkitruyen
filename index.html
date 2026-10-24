@@ -30,6 +30,10 @@
       <button id="btn-export-json" class="pixel-btn small-btn desktop-only">📤 Xuất JSON</button>
       <button id="btn-import-json" class="pixel-btn small-btn desktop-only">📥 Nhập JSON</button>
       <button id="btn-reset-char" class="pixel-btn small-btn primary-btn desktop-only" title="Xóa nhân vật làm lại cuộc đời">🔄 Luân Hồi</button>
+      <button id="btn-account" class="pixel-btn small-btn auth-account-btn" title="Đăng nhập tài khoản">
+        <span id="auth-account-icon">👤</span>
+        <span id="auth-account-label" class="desktop-text">Đăng nhập</span>
+      </button>
       <button id="btn-mobile-menu" class="pixel-btn small-btn mobile-only" title="Quản Lý Dữ Liệu">⚙️</button>
       <button id="btn-toggle-log" class="pixel-btn small-btn btn-3d" title="Mở/Đóng Nhật Ký Thiên Cơ Lục (Phím L)">
         📜 <span class="desktop-text">Thiên Cơ Lục</span> <span id="log-unread-badge" class="badge-unread hidden">0</span>
@@ -1118,7 +1122,72 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: TÀI KHOẢN NEON AUTH ================= -->
+  <div id="auth-modal" class="modal-overlay hidden">
+    <div class="modal-window auth-window" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+      <div class="modal-header auth-modal-header">
+        <span id="auth-title">☯️ TÀI KHOẢN ĐẠO HỮU</span>
+        <button id="btn-auth-close" class="modal-close-btn" type="button" title="Đóng">&times;</button>
+      </div>
+
+      <div id="auth-logged-out" class="auth-content">
+        <div class="auth-intro">Đăng nhập để bảo vệ nhân vật và sử dụng tài khoản trên nhiều thiết bị.</div>
+
+        <div class="auth-mode-tabs" role="tablist" aria-label="Chế độ tài khoản">
+          <button id="btn-auth-signin-mode" class="auth-mode-btn active" type="button">Đăng nhập</button>
+          <button id="btn-auth-signup-mode" class="auth-mode-btn" type="button">Đăng ký</button>
+        </div>
+
+        <form id="auth-form" class="auth-form">
+          <label id="auth-name-field" class="auth-field hidden">
+            <span>Tên hiển thị</span>
+            <input id="auth-name" type="text" autocomplete="name" maxlength="80" placeholder="Tên đạo hữu">
+          </label>
+          <label class="auth-field">
+            <span>Email</span>
+            <input id="auth-email" type="email" autocomplete="email" required placeholder="dao-huu@example.com">
+          </label>
+          <label class="auth-field">
+            <span>Mật khẩu</span>
+            <input id="auth-password" type="password" autocomplete="current-password" minlength="8" required placeholder="Ít nhất 8 ký tự">
+          </label>
+          <button id="btn-auth-submit" class="pixel-btn primary-btn auth-submit-btn" type="submit">Đăng nhập</button>
+        </form>
+
+        <div id="auth-verify-section" class="auth-verify-section hidden">
+          <div class="auth-verify-title">📨 XÁC MINH EMAIL</div>
+          <div class="auth-verify-help">Nhập mã đã được gửi đến email để hoàn tất đăng ký.</div>
+          <div class="auth-verify-row">
+            <input id="auth-otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="Mã xác minh">
+            <button id="btn-auth-verify" class="pixel-btn primary-btn" type="button">Xác minh</button>
+          </div>
+        </div>
+
+        <div id="auth-status" class="auth-status" role="status" aria-live="polite"></div>
+        <div class="auth-note">Mật khẩu được xử lý bởi Neon Auth, không lưu trong game.js.</div>
+      </div>
+
+      <div id="auth-logged-in" class="auth-content hidden">
+        <div class="auth-user-card">
+          <div class="auth-user-icon">✨</div>
+          <div>
+            <div class="auth-user-label">Đã đăng nhập</div>
+            <div id="auth-user-name" class="auth-user-name">Đạo hữu</div>
+            <div id="auth-user-email" class="auth-user-email"></div>
+          </div>
+        </div>
+        <div id="auth-session-status" class="auth-status success" role="status"></div>
+        <button id="btn-auth-signout" class="pixel-btn btn-danger auth-submit-btn" type="button">Đăng xuất</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Nạp file game.js trực tiếp -->
+  <script>
+    // Auth URL công khai của branch Neon Auth. Không đặt DATABASE_URL ở frontend.
+    window.NEON_AUTH_URL = 'https://ep-quiet-frost-b3acpcrp.neonauth.c-4.ap-southeast-1.aws.neon.tech/neondb/auth';
+  </script>
+  <script src="auth.js"></script>
   <script src="game.js"></script>
 </body>
 </html>
