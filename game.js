@@ -8649,38 +8649,6 @@
       return false;
     }
 
-    exportSaveJSON() {
-      if (!this.player) return null;
-      const envelope = {
-        schemaVersion: 2,
-        timestamp: Date.now(),
-        player: this.player,
-        marketItems: this.marketItems || []
-      };
-      return JSON.stringify(envelope, null, 2);
-    }
-
-    importSaveJSON(jsonStr) {
-      try {
-        const envelope = this.migrateSaveData(jsonStr);
-        if (envelope && envelope.player && envelope.player.name && envelope.player.realmIndex !== undefined) {
-          this.player = envelope.player;
-          this.marketItems = envelope.marketItems || [];
-          this.ensureWorldState();
-          this.currentRegion = this.getWorldRegion(this.player.worldLocation);
-
-          this.recalculatePlayerStats();
-          this.saveToLocalStorage();
-          this.updateUI();
-          this.addLog(`Nhập dữ liệu nhân vật 【${this.player.name}】 thành công! (Schema v${envelope.schemaVersion})`, 'golden');
-          return true;
-        }
-      } catch (e) {
-        alert('Chuỗi JSON không hợp lệ!');
-      }
-      return false;
-    }
-
     getPillIdByName(name) {
       for (const [id, item] of Object.entries(ITEMS)) {
         if (item.name === name) return id;
@@ -10228,7 +10196,6 @@
         const btModal = document.getElementById('breakthrough-modal');
         const confirmModal = document.getElementById('custom-confirm-modal');
         const alertModal = document.getElementById('custom-alert-modal');
-        const jsonModal = document.getElementById('json-modal');
         const eventModal = document.getElementById('event-modal');
 
         if (alertModal && !alertModal.classList.contains('hidden')) {
@@ -10251,11 +10218,6 @@
         if (itemModal && !itemModal.classList.contains('hidden')) {
           e.preventDefault();
           itemModal.classList.add('hidden');
-          return;
-        }
-        if (jsonModal && !jsonModal.classList.contains('hidden')) {
-          e.preventDefault();
-          jsonModal.classList.add('hidden');
           return;
         }
         if (eventModal && !eventModal.classList.contains('hidden')) {
@@ -10303,43 +10265,6 @@
       });
     }
 
-    const btnExport = document.getElementById('btn-export-json');
-    const jsonModal = document.getElementById('json-modal');
-    const jsonText = document.getElementById('json-textarea');
-    const btnJsonAction = document.getElementById('btn-json-action');
-    const btnJsonClose = document.getElementById('btn-json-close');
-
-    if (btnExport && jsonModal && jsonText) {
-      btnExport.addEventListener('click', () => {
-        const jsonStr = systems.exportSaveJSON();
-        jsonText.value = jsonStr || '';
-        btnJsonAction.textContent = 'Sao Chép JSON';
-        btnJsonAction.onclick = () => {
-          navigator.clipboard.writeText(jsonText.value);
-          systems.showAlert('Sao Chép Thành Công', 'Đã sao chép chuỗi JSON vào bộ nhớ đệm!');
-        };
-        jsonModal.classList.remove('hidden');
-      });
-    }
-
-    const btnImport = document.getElementById('btn-import-json');
-    if (btnImport && jsonModal && jsonText) {
-      btnImport.addEventListener('click', () => {
-        jsonText.value = '';
-        btnJsonAction.textContent = 'Khôi Phục Dữ Liệu';
-        btnJsonAction.onclick = () => {
-          if (systems.importSaveJSON(jsonText.value)) {
-            jsonModal.classList.add('hidden');
-          }
-        };
-        jsonModal.classList.remove('hidden');
-      });
-    }
-
-    if (btnJsonClose && jsonModal) {
-      btnJsonClose.addEventListener('click', () => jsonModal.classList.add('hidden'));
-    }
-
     const btnReset = document.getElementById('btn-reset-char');
     if (btnReset) {
       btnReset.addEventListener('click', () => {
@@ -10384,24 +10309,6 @@
         sound.playLoot();
         systems.showAlert('Lưu Thành Công', 'Đã lưu dữ liệu tu tiên vào thần thức (localStorage)!');
         mobileMenuModal.classList.add('hidden');
-      });
-    }
-
-    const btnMobileExport = document.getElementById('btn-mobile-export-json');
-    if (btnMobileExport) {
-      btnMobileExport.addEventListener('click', () => {
-        mobileMenuModal.classList.add('hidden');
-        const btnExp = document.getElementById('btn-export-json');
-        if (btnExp) btnExp.click();
-      });
-    }
-
-    const btnMobileImport = document.getElementById('btn-mobile-import-json');
-    if (btnMobileImport) {
-      btnMobileImport.addEventListener('click', () => {
-        mobileMenuModal.classList.add('hidden');
-        const btnImp = document.getElementById('btn-import-json');
-        if (btnImp) btnImp.click();
       });
     }
 
