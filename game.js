@@ -4723,7 +4723,7 @@
       // 1. Kịch Độc (Poison DoT)
       if (s.poison > 0) {
         const pDmg = Math.max(1, Math.floor(maxHp * 0.05));
-        targetCombat.curHp = Math.max(1, targetCombat.curHp - pDmg);
+        targetCombat.curHp = Math.max(0, targetCombat.curHp - pDmg);
         if (renderer) renderer.addFloatingText(`-${pDmg} Độc`, floatX, 175, '#a855f7');
         if (addLog) addLog(`☠️ 【${targetName}】 trúng kịch độc công tâm, khí huyết hao tổn ${pDmg}!`, 'danger');
         s.poison--;
@@ -4732,7 +4732,7 @@
       // 2. Thiêu Đốt (Burn DoT)
       if (s.burn > 0) {
         const bDmg = Math.max(1, Math.floor(maxHp * 0.06));
-        targetCombat.curHp = Math.max(1, targetCombat.curHp - bDmg);
+        targetCombat.curHp = Math.max(0, targetCombat.curHp - bDmg);
         if (renderer) renderer.addFloatingText(`-${bDmg} Thiêu Đốt`, floatX, 155, '#f97316');
         if (addLog) addLog(`🔥 【${targetName}】 bị linh hỏa thiêu đốt, mất ${bDmg} Khí Huyết!`, 'danger');
         s.burn--;
@@ -4741,7 +4741,7 @@
       // 3. Xuất Huyết (Bleed DoT stackable)
       if (s.bleed > 0) {
         const blDmg = Math.max(1, Math.floor(maxHp * 0.035 * s.bleed));
-        targetCombat.curHp = Math.max(1, targetCombat.curHp - blDmg);
+        targetCombat.curHp = Math.max(0, targetCombat.curHp - blDmg);
         if (renderer) renderer.addFloatingText(`-${blDmg} Xuất Huyết (${s.bleed}T)`, floatX, 135, '#dc2626');
         if (addLog) addLog(`🩸 【${targetName}】 vết thương xuất huyết dữ dội (${s.bleed} tầng), mất ${blDmg} Khí Huyết!`, 'danger');
         s.bleed = Math.max(0, s.bleed - 1);
@@ -4793,6 +4793,21 @@
       this.combatSpeed = 1; // 1x hoặc 2x
       this.roundCount = 1;
       this.resultAutoTimer = null;
+    }
+
+    setSystems(systems) {
+      this.systems = systems;
+      if (typeof window !== 'undefined' && !this.lifecycleSaveAttached) {
+        this.lifecycleSaveAttached = true;
+        window.addEventListener('beforeunload', () => {
+          if (!this.inCombat || !this.player) return;
+          this.player.curHp = Math.max(1, Math.min(this.player.maxHp, Math.floor(Number(this.playerCombat.curHp) || 0)));
+          this.player.curMp = Math.max(0, Math.min(this.player.maxMp, Math.floor(Number(this.playerCombat.curMp) || 0)));
+          if (this.systems && typeof this.systems.saveToLocalStorage === 'function') {
+            this.systems.saveToLocalStorage();
+          }
+        });
+      }
     }
 
     calculateEvasion(attackerSpd, defenderSpd, defenderDodgeMod = 0, deltaRealm = 0) {
@@ -4863,6 +4878,11 @@
     }
 
     startCombat(player, monsterData, onCombatEnd = null) {
+      if (this.systems && this.systems.breakthroughInProgress) {
+        this.addLog('Đạo hữu đang độ kiếp, không thể tiến vào trận chiến!', 'warning');
+        return false;
+      }
+      if (this.inCombat) return false;
       this.inCombat = true;
       this.isPlayerTurn = false;
       this.isProcessingTurn = false;
@@ -5821,7 +5841,9 @@
       sound.playHurt();
 
       this.player.spiritStones = Math.floor(this.player.spiritStones * 0.9);
-      this.player.curHp = Math.floor(this.player.maxHp * 0.2);
+      const recoveryHp = Math.max(1, Math.floor(this.player.maxHp * 0.2));
+      this.playerCombat.curHp = recoveryHp;
+      this.player.curHp = recoveryHp;
 
       this.showResultModal(false, {
         monsterName: this.monster.name
@@ -5891,8 +5913,13 @@
       if (this.combatInterval) clearInterval(this.combatInterval);
       if (this.resultAutoTimer) clearTimeout(this.resultAutoTimer);
 
-      this.player.curHp = this.playerCombat.curHp;
-      this.player.curMp = this.playerCombat.curMp;
+      if (won || fled) {
+        this.player.curHp = Math.max(1, Math.min(this.player.maxHp, this.playerCombat.curHp));
+        this.player.curMp = Math.max(0, Math.min(this.player.maxMp, this.playerCombat.curMp));
+      } else {
+        this.player.curHp = Math.max(1, Math.floor(this.player.maxHp * 0.2));
+        this.player.curMp = Math.max(0, Math.min(this.player.maxMp, this.playerCombat.curMp));
+      }
       this.updateCombatButtons(false);
 
       const overlay = document.getElementById('combat-result-overlay');
@@ -5902,8 +5929,14 @@
       if (actionsGrid) actionsGrid.classList.remove('turn-active');
 
       if (won && this.player && this.player.sectId) {
-        this.player.sectPatrolKills = (this.player.sectPatrolKills || 0) + 1;
-        this.addLog(`[Tông Môn] Tích lũy chiến tích trừ yêu: ${Math.min(3, this.player.sectPatrolKills)}/3 yêu thú!`, 'system');
+        this.player.sectQuestKills = this.player.sectQuestKills || {};
+        if (this.monster && this.monster.id) {
+          this.player.sectQuestKills[this.monster.id] = (this.player.sectQuestKills[this.monster.id] || 0) + 1;
+        }
+        if (this.monster && this.monster.id === 'wolf_novice') {
+          this.player.sectPatrolKills = (this.player.sectPatrolKills || 0) + 1;
+          this.addLog(`[Tông Môn] Tích lũy chiến tích tuần tra: ${Math.min(3, this.player.sectPatrolKills)}/3 yêu lang!`, 'system');
+        }
       }
 
       document.body.classList.remove('combat-active-mode', 'combat-result-ready');
@@ -6151,7 +6184,31 @@
     }
 
     normalizePlayerState(p) {
-      if (!p) return p;
+      if (!p || typeof p !== 'object' || Array.isArray(p)) return null;
+      const finiteInt = (value, fallback, min = 0, max = Number.MAX_SAFE_INTEGER) => {
+        const number = Number(value);
+        if (!Number.isFinite(number)) return fallback;
+        return Math.max(min, Math.min(max, Math.floor(number)));
+      };
+      const finiteNumber = (value, fallback, min = 0, max = Number.MAX_SAFE_INTEGER) => {
+        const number = Number(value);
+        if (!Number.isFinite(number)) return fallback;
+        return Math.max(min, Math.min(max, number));
+      };
+      p.name = typeof p.name === 'string' && p.name.trim() ? p.name.trim().slice(0, 32) : 'Vô Danh Tu Sĩ';
+      p.realmIndex = finiteInt(p.realmIndex, 0, 0, REALMS.length - 1);
+      p.exp = finiteInt(p.exp, 0, 0, REALMS[p.realmIndex].maxExp);
+      p.age = finiteInt(p.age, 16, 1, 9999);
+      p.month = finiteInt(p.month, 1, 1, 12);
+      p.comprehension = finiteInt(p.comprehension, 100, 1, 1000);
+      p.spiritStones = finiteInt(p.spiritStones, 0);
+      p.curHp = finiteInt(p.curHp, 1);
+      p.curMp = finiteInt(p.curMp, 0);
+      if (!p.inventory || typeof p.inventory !== 'object' || Array.isArray(p.inventory)) p.inventory = {};
+      Object.keys(p.inventory).forEach(id => { p.inventory[id] = finiteInt(p.inventory[id], 0); });
+      if (!p.signedRegions || typeof p.signedRegions !== 'object' || Array.isArray(p.signedRegions)) p.signedRegions = {};
+      if (!p.sectQuestKills || typeof p.sectQuestKills !== 'object' || Array.isArray(p.sectQuestKills)) p.sectQuestKills = {};
+      if (p.sectId === undefined) p.sectId = null;
       if (!p.skills || !Array.isArray(p.skills) || p.skills.length === 0) {
         if (p.cultivationPath && p.cultivationPath.skills && p.cultivationPath.skills.length > 0) {
           p.skills = JSON.parse(JSON.stringify(p.cultivationPath.skills));
@@ -6191,8 +6248,19 @@
       if (p.bonusCrit === undefined) p.bonusCrit = 0;
       if (p.bonusLifeSteal === undefined) p.bonusLifeSteal = 0;
       if (!p.unlockedHerbIds) p.unlockedHerbIds = ['herb_linhchi', 'herb_thanh_u', 'herb_hoaviem'];
-      if (!p.inventory) p.inventory = {};
       if (p.dungeonState === undefined) p.dungeonState = null;
+      ['bonusHp', 'bonusMp', 'bonusAtk', 'bonusDef', 'bonusSpd', 'bonusLifespan', 'sectContrib', 'sectContribTotal', 'sectPatrolKills'].forEach(key => {
+        p[key] = finiteInt(p[key], 0);
+      });
+      p.bonusCrit = finiteNumber(p.bonusCrit, 0, 0, 1);
+      p.bonusLifeSteal = finiteNumber(p.bonusLifeSteal, 0, 0, 1);
+      p.sectManualsBought = Array.isArray(p.sectManualsBought) ? p.sectManualsBought.filter(value => typeof value === 'string') : [];
+      p.sectSalaryClaimedYear = Number.isFinite(Number(p.sectSalaryClaimedYear)) ? Math.floor(Number(p.sectSalaryClaimedYear)) : -1;
+      p.daoTamBuff = Number.isFinite(Number(p.daoTamBuff)) ? Math.max(0, Math.min(0.2, Number(p.daoTamBuff))) : 0;
+      ['equippedWeapon', 'equippedArmor', 'equippedArtifact'].forEach(key => {
+        if (p[key] && typeof p[key] === 'object') p[key] = JSON.parse(JSON.stringify(p[key]));
+        else p[key] = null;
+      });
       return p;
     }
 
@@ -6330,21 +6398,29 @@
       } else {
         parsed = rawData;
       }
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null;
 
       // Schema v1: raw player object or schemaVersion missing / < 2
       if (!parsed.schemaVersion || parsed.schemaVersion < 2) {
         const rawPlayer = parsed.player || parsed;
         const normalizedPlayer = this.normalizePlayerState(rawPlayer);
+        if (!normalizedPlayer) return null;
         return {
           schemaVersion: 2,
           timestamp: Date.now(),
           player: normalizedPlayer,
-          marketItems: parsed.marketItems || []
+          marketItems: Array.isArray(parsed.marketItems)
+            ? parsed.marketItems.filter(item => item && ITEMS[item.id]).map(item => ({ ...JSON.parse(JSON.stringify(ITEMS[item.id])), stock: Math.max(0, Math.floor(Number(item.stock ?? 1) || 0)) }))
+            : []
         };
       }
 
       // Schema v2
       parsed.player = this.normalizePlayerState(parsed.player);
+      if (!parsed.player) return null;
+      parsed.marketItems = Array.isArray(parsed.marketItems)
+        ? parsed.marketItems.filter(item => item && ITEMS[item.id]).map(item => ({ ...JSON.parse(JSON.stringify(ITEMS[item.id])), stock: Math.max(0, Math.floor(Number(item.stock ?? 1) || 0)) }))
+        : [];
       return parsed;
     }
 
@@ -6388,9 +6464,9 @@
 
         bonusHp: 0, bonusMp: 0, bonusAtk: 0, bonusDef: 0, bonusSpd: 0,
 
-        equippedWeapon: path.startArtifact.type === 'weapon' ? path.startArtifact : null,
-        equippedArmor: path.startArtifact.type === 'armor' ? path.startArtifact : null,
-        equippedArtifact: path.startArtifact.type === 'artifact' ? path.startArtifact : null,
+        equippedWeapon: path.startArtifact.type === 'weapon' ? JSON.parse(JSON.stringify(path.startArtifact)) : null,
+        equippedArmor: path.startArtifact.type === 'armor' ? JSON.parse(JSON.stringify(path.startArtifact)) : null,
+        equippedArtifact: path.startArtifact.type === 'artifact' ? JSON.parse(JSON.stringify(path.startArtifact)) : null,
         activeSkill: path.startSkill,
         skills: path.skills ? JSON.parse(JSON.stringify(path.skills)) : [path.startSkill],
         unlockedHerbIds: ['herb_linhchi', 'herb_thanh_u', 'herb_hoaviem'],
@@ -6431,7 +6507,8 @@
     recalculatePlayerStats() {
       const p = this.player;
       if (!p) return;
-      const base = REALMS[p.realmIndex];
+      p.realmIndex = Math.max(0, Math.min(REALMS.length - 1, Math.floor(Number(p.realmIndex) || 0)));
+      const base = REALMS[p.realmIndex] || REALMS[REALMS.length - 1];
 
       let phyHp = 0, phyDef = 0, phyAtk = 0;
       if (p.physique) {
@@ -6511,7 +6588,7 @@
     tickCultivation() {
       const p = this.player;
       this.ensureWorldState();
-      const baseRealm = REALMS[p.realmIndex];
+      const baseRealm = REALMS[p.realmIndex] || REALMS[REALMS.length - 1];
       if (p.exp >= baseRealm.maxExp) return;
 
       const baseExpPerSec = Math.max(1, Math.floor(Math.sqrt(baseRealm.maxExp) * CULTIVATION_BALANCE.passiveRate));
@@ -6553,7 +6630,9 @@
 
           this.refreshMarket();
           if (p.age >= p.maxLifespan) {
+            this.pauseLoops();
             this.handleDeathByAge();
+            return;
           }
         }
       }
@@ -6562,7 +6641,7 @@
     activeGatherQi() {
       if (!this.player) return;
       const p = this.player;
-      const baseRealm = REALMS[p.realmIndex];
+      const baseRealm = REALMS[p.realmIndex] || REALMS[REALMS.length - 1];
 
       if (p.exp >= baseRealm.maxExp) {
         this.addLog('Tu vi đã chạm bình cảnh đỉnh phong! Cần lập tức đả tọa đột phá!', 'warning');
@@ -6599,7 +6678,17 @@
       // Độ kiếp có thời gian chờ; các click liên tiếp không được tạo thêm timer.
       if (this.breakthroughInProgress) return;
 
-      const realm = REALMS[p.realmIndex];
+      if (this.combatEngine && this.combatEngine.inCombat) {
+        this.addLog('Đang trong sinh tử chiến, không thể vừa giao chiến vừa độ kiếp!', 'warning');
+        return;
+      }
+
+      if (p.realmIndex >= REALMS.length - 1) {
+        this.addLog('Đạo hữu đã đạt cảnh giới tối cao của phiên bản hiện tại.', 'golden');
+        return;
+      }
+
+      const realm = REALMS[p.realmIndex] || REALMS[REALMS.length - 1];
 
       if (p.exp < realm.maxExp) {
         this.addLog(`Tu vi chưa đạt đỉnh phong (${p.exp}/${realm.maxExp}), cưỡng ép đột phá ắt tẩu hỏa nhập ma!`, 'warning');
@@ -6614,11 +6703,15 @@
       if (p.physique && p.physique.breakBonus) successChance += p.physique.breakBonus;
 
       let usedPill = null;
-      if (realm.pillNeeded && p.inventory[this.getPillIdByName(realm.pillNeeded)] > 0) {
-        const pillId = this.getPillIdByName(realm.pillNeeded);
+      const pillId = realm.pillNeeded ? this.getPillIdByName(realm.pillNeeded) : null;
+      if (pillId && p.inventory[pillId] > 0) {
         p.inventory[pillId]--;
         usedPill = realm.pillNeeded;
         successChance += 0.35;
+      } else if (p.daoTamBuff > 0) {
+        successChance += p.daoTamBuff;
+        usedPill = 'Đạo Tâm Đan';
+        p.daoTamBuff = 0;
       } else if (p.inventory['pill_daotam'] > 0) {
         p.inventory['pill_daotam']--;
         usedPill = 'Đạo Tâm Đan';
@@ -6662,13 +6755,13 @@
       const isSuccess = Math.random() < successChance;
 
       if (isSuccess) {
-        p.realmIndex++;
+        p.realmIndex = Math.min(REALMS.length - 1, p.realmIndex + 1);
         p.exp = 0;
         this.recalculatePlayerStats();
         p.curHp = p.maxHp;
         p.curMp = p.maxMp;
 
-        const newRealm = REALMS[p.realmIndex];
+        const newRealm = REALMS[p.realmIndex] || REALMS[REALMS.length - 1];
         sound.playBreakthrough();
         this.renderer.setScene(SCENES.MEDITATE);
 
@@ -6795,7 +6888,7 @@
       let item = ITEMS[itemId];
 
       // Nếu xem từ slot trang bị
-      if (!item && source && source.startsWith('equipped_')) {
+      if (source && source.startsWith('equipped_')) {
         const slot = source.replace('equipped_', '');
         if (slot === 'weapon') item = p.equippedWeapon;
         if (slot === 'armor') item = p.equippedArmor;
@@ -7085,7 +7178,7 @@
     refineEquipment(itemId, source) {
       const p = this.player;
       if (!p) return;
-      let item = ITEMS[itemId];
+      let item = ITEMS[itemId] ? JSON.parse(JSON.stringify(ITEMS[itemId])) : null;
       let isEquipped = false;
       let slot = null;
 
@@ -7094,6 +7187,7 @@
         if (slot === 'weapon') item = p.equippedWeapon;
         if (slot === 'armor') item = p.equippedArmor;
         if (slot === 'artifact') item = p.equippedArtifact;
+        if (item) item = JSON.parse(JSON.stringify(item));
         isEquipped = true;
       } else {
         if (!p.inventory[itemId] || p.inventory[itemId] <= 0) return;
@@ -7134,6 +7228,15 @@
 
       if (Math.random() <= successRate) {
         item.refineLevel = nextLevel;
+        const targetSlot = slot || (item.type === 'weapon' ? 'weapon' : item.type === 'armor' ? 'armor' : 'artifact');
+        if (isEquipped) {
+          p[`equipped${targetSlot.charAt(0).toUpperCase()}${targetSlot.slice(1)}`] = item;
+        } else {
+          p.inventory[itemId]--;
+          const oldItem = p[`equipped${targetSlot.charAt(0).toUpperCase()}${targetSlot.slice(1)}`];
+          if (oldItem && oldItem.id) p.inventory[oldItem.id] = (p.inventory[oldItem.id] || 0) + 1;
+          p[`equipped${targetSlot.charAt(0).toUpperCase()}${targetSlot.slice(1)}`] = item;
+        }
         sound.playBreakthrough();
         this.renderer.addFloatingText(`THỐI LUYỆN +${nextLevel}!`, 320, 160, '#facc15', true);
         this.addLog(`🔥 Thối luyện thành công 【${item.name}】 lên +${nextLevel}! Uy lực tăng thêm 15%!`, 'golden');
@@ -7638,10 +7741,15 @@
           }
           break;
         case 'accept_deal':
-          p.spiritStones -= 100;
-          p.age += 5;
+          if ((p.spiritStones || 0) < 100) {
+            this.addLog('Không đủ 100 Linh Thạch để giao dịch với tà tu.', 'warning');
+            break;
+          }
+          p.spiritStones = Math.max(0, p.spiritStones - 100);
+          p.age = Math.min(p.maxLifespan, p.age + 5);
           const dealExpGain = this.addCultivationExp(3000);
           this.addLog(`Uống Huyết Đan tà đạo: Đổi 100 Linh Thạch và 5 năm thọ nguyên lấy ${dealExpGain} Tu Vi!`, 'danger');
+          if (p.age >= p.maxLifespan) this.handleDeathByAge();
           break;
         case 'flee':
           this.addLog('Đạo hữu lùi bước thần tốc, tà tu đuổi theo không kịp đành chửi thề bỏ đi.', 'system');
@@ -7703,11 +7811,13 @@
       }
 
       p.skillMastery = (p.skillMastery || 1) + 1;
-      if (p.activeSkill) {
-        p.activeSkill.dmgMult = Number((p.activeSkill.dmgMult * 1.25).toFixed(2));
+      const combatSkill = (p.skills && p.skills[0]) || p.activeSkill;
+      if (combatSkill) {
+        combatSkill.dmgMult = Number(((combatSkill.dmgMult || 1) * 1.25).toFixed(2));
+        p.activeSkill = combatSkill;
       }
       sound.playCheatSystem();
-      this.addLog(`🌀 [Kim Thủ Chỉ] 【Đốn Ngộ Thành Công】! Kỹ năng 【${p.activeSkill.name}】 thăng lên Tầng ${p.skillMastery}! Sát thương tăng 25%!`, 'system');
+      this.addLog(`🌀 [Kim Thủ Chỉ] 【Đốn Ngộ Thành Công】! Kỹ năng 【${combatSkill ? combatSkill.name : 'chưa lĩnh ngộ'}】 thăng lên Tầng ${p.skillMastery}! Sát thương tăng 25%!`, 'system');
       this.updateUI();
     }
 
@@ -8228,15 +8338,22 @@
 
     refreshMarket() {
       const keys = Object.keys(ITEMS);
-      const shuffled = keys.sort(() => 0.5 - Math.random());
-      this.marketItems = shuffled.slice(0, 6).map(k => ITEMS[k]);
+      for (let i = keys.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [keys[i], keys[j]] = [keys[j], keys[i]];
+      }
+      this.marketItems = keys.slice(0, 6).map(k => ({ ...JSON.parse(JSON.stringify(ITEMS[k])), stock: 1 }));
       this.renderMarketUI();
     }
 
     buyItem(itemId) {
       const p = this.player;
-      const item = ITEMS[itemId];
+      const item = (this.marketItems || []).find(entry => entry && entry.id === itemId);
       if (!item) return;
+      if (item.stock !== undefined && item.stock <= 0) {
+        this.addLog(`【${item.name}】 đã hết hàng trong Phường Thị.`, 'warning');
+        return;
+      }
 
       if (p.spiritStones < item.price) {
         this.addLog(`Linh Thạch không đủ để mua 【${item.name}】 (cần ${item.price} Linh Thạch)!`, 'warning');
@@ -8245,8 +8362,10 @@
 
       p.spiritStones -= item.price;
       p.inventory[itemId] = (p.inventory[itemId] || 0) + 1;
+      if (item.stock !== undefined) item.stock--;
       sound.playLoot();
       this.addLog(`Đã mua 【${item.name}】 x1 từ Phường Thị với giá ${item.price} Linh Thạch.`, 'loot');
+      this.renderMarketUI();
       this.updateUI();
     }
 
@@ -8270,10 +8389,38 @@
       const sect = SECTS.find(s => s.id === sectId);
       if (!sect) return;
 
+      if (p.sectId && p.sectId !== sect.id) {
+        const oldSect = SECTS.find(item => item.id === p.sectId);
+        const oldManualIds = Array.isArray(p.sectManualsBought) ? p.sectManualsBought : [];
+        const oldManualSkills = [];
+        oldManualIds.forEach(manualId => {
+          const manual = oldSect && oldSect.manuals ? oldSect.manuals.find(item => item.id === manualId) : null;
+          if (!manual) return;
+          ['atk', 'def', 'hp', 'mp', 'crit', 'lifeSteal', 'lifespanGain'].forEach(key => {
+            const targetKey = key === 'lifespanGain' ? 'bonusLifespan' : `bonus${key.charAt(0).toUpperCase()}${key.slice(1)}`;
+            if (manual[key]) p[targetKey] = Math.max(0, (p[targetKey] || 0) - manual[key]);
+          });
+          if (manual.skill && manual.skill.id) oldManualSkills.push(manual.skill.id);
+        });
+        if (oldManualSkills.length) {
+          p.knownSkills = (p.knownSkills || []).filter(skill => skill && !oldManualSkills.includes(skill.id));
+          p.skills = (p.skills || []).filter(skill => skill && !oldManualSkills.includes(skill.id));
+          p.activeSkill = p.skills[0] || null;
+        }
+        p.sectContrib = 0;
+        p.sectContribTotal = 0;
+        p.sectPatrolKills = 0;
+        p.sectQuestKills = {};
+        p.sectManualsBought = [];
+        p.sectSalaryClaimedYear = -1;
+        p.lastSectRank = null;
+        this.addLog('Đổi tông môn: chức vị, cống hiến và bí tịch của sơn môn cũ đã được thanh toán lại.', 'warning');
+      }
       p.sectId = sect.id;
       p.sectContrib = p.sectContrib || 0;
       p.sectContribTotal = p.sectContribTotal || p.sectContrib || 0;
       p.sectPatrolKills = p.sectPatrolKills || 0;
+      p.sectQuestKills = p.sectQuestKills || {};
       p.sectManualsBought = p.sectManualsBought || [];
       sound.playBreakthrough();
       this.addLog(`🏯 Đạo hữu chính thức bái nhập 【${sect.name}】! Trở thành môn nhân sơn môn!`, 'golden');
@@ -8327,12 +8474,25 @@
           return;
         }
         p.spiritStones -= quest.costStone;
-      } else if (quest.reqKills) {
-        if ((p.sectPatrolKills || 0) < quest.reqKills) {
-          this.addLog(`Chưa hoàn thành tuần tra trừ yêu! (Đã diệt: ${p.sectPatrolKills || 0}/${quest.reqKills})`, 'warning');
+      } else if (quest.costMp) {
+        if ((p.curMp || 0) < quest.costMp) {
+          this.addLog(`Linh lực không đủ để hộ sơn (cần ${quest.costMp} MP, hiện có ${p.curMp || 0}).`, 'warning');
           return;
         }
-        p.sectPatrolKills -= quest.reqKills;
+        p.curMp -= quest.costMp;
+      } else if (quest.reqKills) {
+        const killCount = quest.reqMonster
+          ? ((p.sectQuestKills && p.sectQuestKills[quest.reqMonster]) || 0)
+          : (p.sectPatrolKills || 0);
+        if (killCount < quest.reqKills) {
+          this.addLog(`Chưa hoàn thành nhiệm vụ diệt yêu! (Đã diệt: ${killCount}/${quest.reqKills})`, 'warning');
+          return;
+        }
+        if (quest.reqMonster) {
+          p.sectQuestKills[quest.reqMonster] = killCount - quest.reqKills;
+        } else {
+          p.sectPatrolKills -= quest.reqKills;
+        }
       }
 
       p.sectContrib = (p.sectContrib || 0) + quest.contrib;
@@ -8478,7 +8638,13 @@
           return;
         }
 
-        if (itemId === 'pill_tay_tuy' || item.compGain) {
+        if (itemId === 'pill_daotam') {
+          p.daoTamBuff = Math.min(0.2, (p.daoTamBuff || 0) + (item.breakBonus || 0.2));
+          p.inventory[itemId]--;
+          sound.playBreakthrough();
+          this.renderer.addFloatingText('ĐẠO TÂM KIÊN ĐỊNH!', 320, 160, '#f8fafc', true);
+          this.addLog(`🤍 Nuốt 【${item.name}】! Đạo tâm được củng cố, lần đột phá kế tiếp tăng ${Math.floor((item.breakBonus || 0.2) * 100)}% tỷ lệ thành công.`, 'golden');
+        } else if (itemId === 'pill_tay_tuy' || item.compGain) {
           p.comprehension = Math.round((p.comprehension || 100) + (item.compGain || 3));
           p.curHp = p.maxHp;
           p.curMp = p.maxMp;
@@ -8704,7 +8870,7 @@
           p.inventory[p.equippedWeapon.id] = (p.inventory[p.equippedWeapon.id] || 0) + 1;
         }
         p.inventory[itemId]--;
-        p.equippedWeapon = item;
+        p.equippedWeapon = JSON.parse(JSON.stringify(item));
         this.recalculatePlayerStats();
         sound.playClick();
         this.addLog(`Đã trang bị vũ khí: 【${item.name}】!`, 'system');
@@ -8713,7 +8879,7 @@
           p.inventory[p.equippedArmor.id] = (p.inventory[p.equippedArmor.id] || 0) + 1;
         }
         p.inventory[itemId]--;
-        p.equippedArmor = item;
+        p.equippedArmor = JSON.parse(JSON.stringify(item));
         this.recalculatePlayerStats();
         sound.playClick();
         this.addLog(`Đã trang bị hộ giáp: 【${item.name}】!`, 'system');
@@ -8722,7 +8888,7 @@
           p.inventory[p.equippedArtifact.id] = (p.inventory[p.equippedArtifact.id] || 0) + 1;
         }
         p.inventory[itemId]--;
-        p.equippedArtifact = item;
+        p.equippedArtifact = JSON.parse(JSON.stringify(item));
         this.recalculatePlayerStats();
         sound.playClick();
         this.addLog(`Đã trang bị pháp bảo: 【${item.name}】!`, 'system');
@@ -8756,20 +8922,28 @@
           marketItems: this.marketItems || []
         };
         const jsonStr = JSON.stringify(envelope);
+        const previousPrimary = localStorage.getItem('tutien_savegame');
+        localStorage.setItem('tutien_savegame_backup', previousPrimary || jsonStr);
         localStorage.setItem('tutien_savegame', jsonStr);
-        localStorage.setItem('tutien_savegame_backup', jsonStr);
       } catch (e) {
-        console.error('Lưu game thất bại:', e);
+        const isQuotaError = e && (e.name === 'QuotaExceededError' || e.code === 22);
+        const message = isQuotaError
+          ? 'Không đủ dung lượng lưu game trên trình duyệt. Hãy xóa bớt dữ liệu trang web rồi lưu lại.'
+          : `Lưu game thất bại: ${e && e.message ? e.message : e}`;
+        console.error(message, e);
+        if (typeof window !== 'undefined' && window.gameDebug && typeof window.gameDebug.capture === 'function') {
+          window.gameDebug.capture(e, { source: 'saveToLocalStorage', quota: isQuotaError });
+        }
+        if (this.addLog) this.addLog(`⚠️ ${message}`, 'danger');
       }
     }
 
     loadFromLocalStorage() {
       try {
-        let dataStr = localStorage.getItem('tutien_savegame');
-        if (!dataStr) {
-          dataStr = localStorage.getItem('tutien_savegame_backup');
-        }
-        if (dataStr) {
+        const saveKeys = ['tutien_savegame', 'tutien_savegame_backup'];
+        for (const key of saveKeys) {
+          const dataStr = localStorage.getItem(key);
+          if (!dataStr) continue;
           const envelope = this.migrateSaveData(dataStr);
           if (envelope && envelope.player) {
             this.player = envelope.player;
@@ -8800,14 +8974,15 @@
       for (const [id, item] of Object.entries(ITEMS)) {
         if (item.name === name) return id;
       }
-      return 'pill_trucco';
+      return null;
     }
 
     updateUI() {
       if (!this.player) return;
       const p = this.player;
       this.ensureWorldState();
-      const base = REALMS[p.realmIndex];
+      p.realmIndex = Math.max(0, Math.min(REALMS.length - 1, Math.floor(Number(p.realmIndex) || 0)));
+      const base = REALMS[p.realmIndex] || REALMS[REALMS.length - 1];
 
       const nameEl = document.getElementById('player-name');
       const pathEl = document.getElementById('player-path');
@@ -9341,8 +9516,14 @@
             const count = p.spiritStones || 0;
             isMet = count >= q.costStone;
             progressInfo = `Quyên góp: ${q.costStone} Linh Thạch (Hiện có: ${count})`;
+          } else if (q.costMp) {
+            const count = p.curMp || 0;
+            isMet = count >= q.costMp;
+            progressInfo = `Vận chuyển: ${q.costMp} MP (Hiện có: ${count})`;
           } else if (q.reqKills) {
-            const kills = p.sectPatrolKills || 0;
+            const kills = q.reqMonster
+              ? ((p.sectQuestKills && p.sectQuestKills[q.reqMonster]) || 0)
+              : (p.sectPatrolKills || 0);
             isMet = kills >= q.reqKills;
             progressInfo = `Chiến tích diệt yêu: ${Math.min(q.reqKills, kills)} / ${q.reqKills}`;
           }
@@ -9781,9 +9962,10 @@
           <div class="item-name" style="cursor: pointer;" title="Bấm để xem chi tiết">${item.icon ? `<span class="item-icon-tag">${item.icon}</span> ` : ''}${item.name}</div>
           <div class="item-desc">${item.desc}</div>
           <div class="item-price" style="color: var(--text-gold);">💰 Giá: ${item.price} Linh Thạch</div>
+          <div class="item-stock" style="font-size: 11px; color: ${item.stock === 0 ? '#f87171' : '#94a3b8'};">${item.stock === 0 ? 'Hết hàng' : `Còn ${item.stock ?? 1}`}</div>
           <div class="item-actions" style="display: flex; gap: 6px; margin-top: 6px;">
             <button class="pixel-btn small-btn btn-market-inspect" style="background: rgba(30, 41, 59, 0.7);">🔍 Xem</button>
-            <button class="pixel-btn small-btn primary-btn btn-market-buy">Mua</button>
+            <button class="pixel-btn small-btn primary-btn btn-market-buy" ${item.stock === 0 ? 'disabled' : ''}>Mua</button>
           </div>
         `;
         card.querySelector('.btn-market-inspect').onclick = (e) => {
@@ -9873,9 +10055,17 @@
     let timeBadge = '';
     if (activeGameSystems && activeGameSystems.player) {
       const p = activeGameSystems.player;
-      timeBadge = `<span class="log-timestamp">[Năm ${p.age} • T.${p.month}]</span>`;
+      timeBadge = `[Năm ${p.age} • T.${p.month}]`;
     }
-    entry.innerHTML = `${timeBadge}<span>${text}</span>`;
+    if (timeBadge) {
+      const timestampEl = document.createElement('span');
+      timestampEl.className = 'log-timestamp';
+      timestampEl.textContent = timeBadge;
+      entry.appendChild(timestampEl);
+    }
+    const textEl = document.createElement('span');
+    textEl.textContent = String(text ?? '');
+    entry.appendChild(textEl);
     container.appendChild(entry);
     container.scrollTop = container.scrollHeight;
 
@@ -10493,11 +10683,11 @@
     const btnMobileSound = document.getElementById('btn-mobile-sound-toggle');
     if (btnMobileSound) {
       btnMobileSound.addEventListener('click', () => {
-        const isMuted = sound.toggleMute();
-        btnMobileSound.textContent = isMuted ? '🔇 Âm Thanh: TẮT' : '🔊 Âm Thanh: BẬT';
+        const isEnabled = sound.toggleSound();
+        btnMobileSound.textContent = isEnabled ? '🔊 Âm Thanh: BẬT' : '🔇 Âm Thanh: TẮT';
         const deskSoundBtn = document.getElementById('btn-sound-toggle');
         if (deskSoundBtn) {
-          deskSoundBtn.innerHTML = isMuted ? '<span class="desktop-text">🔇 Âm Thanh: TẮT</span><span class="mobile-icon">🔇</span>' : '<span class="desktop-text">🔊 Âm Thanh: BẬT</span><span class="mobile-icon">🔊</span>';
+          deskSoundBtn.innerHTML = isEnabled ? '<span class="desktop-text">🔊 Âm Thanh: BẬT</span><span class="mobile-icon">🔊</span>' : '<span class="desktop-text">🔇 Âm Thanh: TẮT</span><span class="mobile-icon">🔇</span>';
         }
       });
     }
