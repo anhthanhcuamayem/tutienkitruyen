@@ -659,6 +659,14 @@
 
   const sound = new SoundSystem();
 
+  // Cân bằng tiến độ: tốc độ hấp thu tăng chậm hơn so với ngưỡng đột phá,
+  // còn Tụ Linh chủ động vẫn hữu ích nhưng không thể đẩy cấp quá nhanh.
+  const CULTIVATION_BALANCE = Object.freeze({
+    passiveRate: 0.08,
+    activeGatherRate: 0.18,
+    activeGatherCooldownMs: 1000
+  });
+
   // ==========================================================================
   // 3. GAME DATA (CẢNH GIỚI, LINH CĂN, THỂ CHẤT, KIM THỦ CHỈ, THẾ GIỚI)
   // ==========================================================================
@@ -4368,9 +4376,9 @@
         stoneGain *= 2;
       }
 
-      this.player.exp += expGain;
+      const actualExpGain = this.addCultivationExp(expGain);
       this.player.spiritStones = (this.player.spiritStones || 0) + stoneGain;
-      this.addLog(`Thu hoạch: +${expGain} Tu Vi, +${stoneGain} Linh Thạch.`, 'loot');
+      this.addLog(`Thu hoạch: +${actualExpGain} Tu Vi, +${stoneGain} Linh Thạch.`, 'loot');
 
       if (this.player.equippedArtifact && this.player.equippedArtifact.id === 'art_chuoi') {
         const mpRestored = Math.floor(this.player.maxMp * 0.1);
@@ -4405,15 +4413,15 @@
 
         this.player.bonusAtk = (this.player.bonusAtk || 0) + bonusAtk;
         this.player.bonusHp = (this.player.bonusHp || 0) + bonusHp;
-        this.player.exp += bonusExp;
+        const actualBonusExp = this.addCultivationExp(bonusExp);
 
         sound.playCheatSystem();
-        this.addLog(`🌀 [Kim Thủ Chỉ] 【Thần Cấp Cắn Nuốt】 phát động! +${bonusAtk} Công kích vĩnh viễn, +${bonusHp} HP vĩnh viễn, +${bonusExp} Tu Vi!`, 'system');
+        this.addLog(`🌀 [Kim Thủ Chỉ] 【Thần Cấp Cắn Nuốt】 phát động! +${bonusAtk} Công kích vĩnh viễn, +${bonusHp} HP vĩnh viễn, +${actualBonusExp} Tu Vi!`, 'system');
       }
 
       this.showResultModal(true, {
         monsterName: this.monster.name,
-        exp: expGain,
+        exp: actualExpGain,
         stone: stoneGain,
         drops: droppedItems
       });
@@ -4714,6 +4722,7 @@
       this.marketItems = [];
       this.idleTimer = null;
       this.saveTimer = null;
+      this.gatherQiCooldownUntil = 0;
       this.worldEncounter = null;
       this.worldSelectedCell = null;
       // Ngăn người chơi khởi tạo nhiều lần đột phá trong lúc đang chờ thiên kiếp.
@@ -4956,13 +4965,25 @@
       }, 5000);
     }
 
+    addCultivationExp(amount) {
+      const p = this.player;
+      if (!p) return 0;
+
+      const realm = REALMS[p.realmIndex] || REALMS[0];
+      const currentExp = Math.min(realm.maxExp, Math.max(0, Math.floor(Number(p.exp) || 0)));
+      const safeAmount = Math.max(0, Math.floor(Number(amount) || 0));
+      const nextExp = Math.min(realm.maxExp, currentExp + safeAmount);
+      p.exp = nextExp;
+      return nextExp - currentExp;
+    }
+
     tickCultivation() {
       const p = this.player;
       this.ensureWorldState();
       const baseRealm = REALMS[p.realmIndex];
       if (p.exp >= baseRealm.maxExp) return;
 
-      const baseExpPerSec = Math.max(1, Math.floor(Math.sqrt(baseRealm.maxExp) * 0.12));
+      const baseExpPerSec = Math.max(1, Math.floor(Math.sqrt(baseRealm.maxExp) * CULTIVATION_BALANCE.passiveRate));
       let expGain = baseExpPerSec * (p.comprehension / 100);
       if (p.spiritualRoot && p.spiritualRoot.speedMod) expGain *= p.spiritualRoot.speedMod;
       if (p.physique && p.physique.expBonus) expGain *= (1 + p.physique.expBonus);
@@ -4978,7 +4999,7 @@
         expGain *= 2;
       }
 
-      p.exp = Math.min(baseRealm.maxExp, p.exp + Math.max(1, Math.floor(expGain)));
+      this.addCultivationExp(Math.max(1, Math.floor(expGain)));
       p.curHp = Math.min(p.maxHp, p.curHp + Math.ceil(p.maxHp * 0.02));
       p.curMp = Math.min(p.maxMp, p.curMp + Math.ceil(p.maxMp * 0.03));
     }
@@ -5017,12 +5038,23 @@
         return;
       }
 
+      const now = Date.now();
+      if (now < this.gatherQiCooldownUntil) return;
+      this.gatherQiCooldownUntil = now + CULTIVATION_BALANCE.activeGatherCooldownMs;
+      const gatherButton = document.getElementById('btn-gather-qi');
+      if (gatherButton) {
+        gatherButton.disabled = true;
+        setTimeout(() => {
+          if (gatherButton && Date.now() >= this.gatherQiCooldownUntil) gatherButton.disabled = false;
+        }, CULTIVATION_BALANCE.activeGatherCooldownMs);
+      }
+
       sound.playMeditateDing();
-      let gain = Math.max(2, Math.floor(Math.sqrt(baseRealm.maxExp) * 0.3 * (p.comprehension / 100)));
+      let gain = Math.max(2, Math.floor(Math.sqrt(baseRealm.maxExp) * CULTIVATION_BALANCE.activeGatherRate * (p.comprehension / 100)));
       if (p.teaBuffUntil && Date.now() < p.teaBuffUntil) {
         gain *= 2;
       }
-      p.exp = Math.min(baseRealm.maxExp, p.exp + gain);
+      gain = this.addCultivationExp(gain);
 
       this.renderer.addFloatingText(`+${gain} Tu Vi`, 320, 160, '#38bdf8');
       this.renderer.spawnQiParticles();
@@ -6056,8 +6088,8 @@
           break;
         case 'drink':
           const expGain = Math.floor(1500 * (p.comprehension / 100));
-          p.exp += expGain;
-          this.addLog(`Linh dịch tẩy tủy! Tu vi bạo tăng ${expGain} điểm!`, 'golden');
+          const drinkExpGain = this.addCultivationExp(expGain);
+          this.addLog(`Linh dịch tẩy tủy! Tu vi bạo tăng ${drinkExpGain} điểm!`, 'golden');
           break;
         case 'bathe':
           p.bonusDef = (p.bonusDef || 0) + 15;
@@ -6077,8 +6109,8 @@
         case 'accept_deal':
           p.spiritStones -= 100;
           p.age += 5;
-          p.exp += 3000;
-          this.addLog('Uống Huyết Đan tà đạo: Đổi 100 Linh Thạch và 5 năm thọ nguyên lấy 3000 Tu Vi!', 'danger');
+          const dealExpGain = this.addCultivationExp(3000);
+          this.addLog(`Uống Huyết Đan tà đạo: Đổi 100 Linh Thạch và 5 năm thọ nguyên lấy ${dealExpGain} Tu Vi!`, 'danger');
           break;
         case 'flee':
           this.addLog('Đạo hữu lùi bước thần tốc, tà tu đuổi theo không kịp đành chửi thề bỏ đi.', 'system');
@@ -6556,8 +6588,8 @@
         const roll = Math.random();
         if (roll > 0.4) {
           const expGain = 150 * node.floor;
-          p.exp += expGain;
-          this.addLog(`📜 Chiêm ngưỡng bia văn cổ đại, đạo tâm đại chấn! Thu được +${expGain} Điểm Tu Vi!`, 'golden');
+          const actualExpGain = this.addCultivationExp(expGain);
+          this.addLog(`📜 Chiêm ngưỡng bia văn cổ đại, đạo tâm đại chấn! Thu được +${actualExpGain} Điểm Tu Vi!`, 'golden');
         } else {
           const dmg = Math.floor(p.maxHp * 0.15);
           p.curHp = Math.max(1, p.curHp - dmg);
@@ -6949,7 +6981,7 @@
           this.addLog(`Uống 【${item.name}】, hồi phục ${Math.floor(item.mpPercent * 100)}% Linh Lực!`, 'heal');
         } else if (item.expGain) {
           let gain = Math.floor(item.expGain * (p.comprehension / 100));
-          p.exp += gain;
+          gain = this.addCultivationExp(gain);
           p.inventory[itemId]--;
           sound.playLoot();
           this.addLog(`Uống 【${item.name}】, đan khí hóa tu vi tăng +${gain} Tu Vi!`, 'golden');
@@ -6998,9 +7030,9 @@
         if (itemId === 'herb_linhchi') {
           const heal = Math.floor(p.maxHp * 0.2);
           p.curHp = Math.min(p.maxHp, p.curHp + heal);
-          p.exp += 35;
-          this.renderer.addFloatingText(`+${heal} HP | +35 Tu Vi`, 320, 160, '#34d399');
-          this.addLog(`Nuốt vào Linh Chi Thảo, khí huyết hồi phục ${heal} và nạp +35 Tu Vi!`, 'heal');
+          const expGain = this.addCultivationExp(35);
+          this.renderer.addFloatingText(`+${heal} HP | +${expGain} Tu Vi`, 320, 160, '#34d399');
+          this.addLog(`Nuốt vào Linh Chi Thảo, khí huyết hồi phục ${heal} và nạp +${expGain} Tu Vi!`, 'heal');
         } else if (itemId === 'herb_thanh_u') {
           const mana = Math.floor(p.maxMp * 0.25);
           p.curMp = Math.min(p.maxMp, p.curMp + mana);
@@ -7019,9 +7051,9 @@
         } else if (itemId === 'herb_bachnien') {
           p.curHp = Math.min(p.maxHp, p.curHp + Math.floor(p.maxHp * 0.6));
           p.curMp = Math.min(p.maxMp, p.curMp + Math.floor(p.maxMp * 0.6));
-          p.exp += 150;
-          this.renderer.addFloatingText(`+60% HP/MP | +150 Tu Vi`, 320, 160, '#fbbf24', true);
-          this.addLog(`Nuốt vào Bách Niên Linh Dược! Uẩn dưỡng kinh mạch, hồi 60% HP & MP, nạp +150 Tu Vi!`, 'golden');
+          const expGain = this.addCultivationExp(150);
+          this.renderer.addFloatingText(`+60% HP/MP | +${expGain} Tu Vi`, 320, 160, '#fbbf24', true);
+          this.addLog(`Nuốt vào Bách Niên Linh Dược! Uẩn dưỡng kinh mạch, hồi 60% HP & MP, nạp +${expGain} Tu Vi!`, 'golden');
         } else if (itemId === 'herb_huyen_bang') {
           p.bonusDef = (p.bonusDef || 0) + 3;
           p.curMp = Math.min(p.maxMp, p.curMp + Math.floor(p.maxMp * 0.4));
@@ -7038,9 +7070,9 @@
         } else if (itemId === 'herb_cuuchuyen') {
           p.curHp = p.maxHp;
           p.curMp = p.maxMp;
-          p.exp += 800;
-          this.renderer.addFloatingText(`CỬU CHUYỂN TIÊN KHÍ!`, 320, 160, '#f472b6', true);
-          this.addLog(`Nuốt vào Cửu Chuyển Tiên Thảo! Cửu sắc hào quang bao phủ, hồi phục 100% HP & MP, nạp +800 Tu Vi!`, 'golden');
+          const expGain = this.addCultivationExp(800);
+          this.renderer.addFloatingText(`CỬU CHUYỂN TIÊN KHÍ! +${expGain} Tu Vi`, 320, 160, '#f472b6', true);
+          this.addLog(`Nuốt vào Cửu Chuyển Tiên Thảo! Cửu sắc hào quang bao phủ, hồi phục 100% HP & MP, nạp +${expGain} Tu Vi!`, 'golden');
         } else if (itemId === 'herb_thienkiem') {
           p.bonusAtk = (p.bonusAtk || 0) + 15;
           p.bonusCrit = (p.bonusCrit || 0) + 0.01;
@@ -7048,14 +7080,14 @@
           this.renderer.addFloatingText(`KIẾM KHÍ THÔNG MINH!`, 320, 160, '#fbbf24', true);
           this.addLog(`Nuốt vào Thiên Kiếm Thảo! Vô biên kiếm khí tẩm nhuần linh căn: Vĩnh viễn +15 Công Kích, +1% Bạo Kích!`, 'golden');
         } else if (itemId === 'herb_ngo_dao_diep') {
-          p.exp += 350;
+          const expGain = this.addCultivationExp(350);
           p.teaBuffUntil = Date.now() + 30000;
-          this.renderer.addFloatingText(`NGỘ ĐẠO 30s!`, 320, 160, '#facc15', true);
-          this.addLog(`Nhai nuốt Ngộ Đạo Cổ Trà Diệp! Cảm ngộ thiên đạo: +350 Tu Vi và x2 tốc độ tu vi trong 30 giây!`, 'golden');
+          this.renderer.addFloatingText(`NGỘ ĐẠO 30s! +${expGain} Tu Vi`, 320, 160, '#facc15', true);
+          this.addLog(`Nhai nuốt Ngộ Đạo Cổ Trà Diệp! Cảm ngộ thiên đạo: +${expGain} Tu Vi và x2 tốc độ tu vi trong 30 giây!`, 'golden');
         } else {
           p.curHp = Math.min(p.maxHp, p.curHp + Math.floor(p.maxHp * 0.15));
-          p.exp += 20;
-          this.addLog(`Nuốt vào 【${item.name}】, hồi phục 15% Khí Huyết và tăng +20 Tu Vi!`, 'heal');
+          const expGain = this.addCultivationExp(20);
+          this.addLog(`Nuốt vào 【${item.name}】, hồi phục 15% Khí Huyết và tăng +${expGain} Tu Vi!`, 'heal');
         }
       } else if (item.type === 'treasure_map') {
         p.inventory[itemId]--;
@@ -7443,7 +7475,7 @@
       }
 
       // Tốc độ hấp thu tu vi thực tế
-      const baseExpPerSec = Math.max(1, Math.floor(Math.sqrt(base.maxExp) * 0.12));
+      const baseExpPerSec = Math.max(1, Math.floor(Math.sqrt(base.maxExp) * CULTIVATION_BALANCE.passiveRate));
       let expGainRate = baseExpPerSec * (p.comprehension / 100);
       if (p.spiritualRoot && p.spiritualRoot.speedMod) expGainRate *= p.spiritualRoot.speedMod;
       if (p.physique && p.physique.expBonus) expGainRate *= (1 + p.physique.expBonus);
