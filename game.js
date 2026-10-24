@@ -9876,10 +9876,24 @@
       window.neonAuth?.open();
     };
 
+    const startGuestFlow = () => {
+      document.body.classList.remove('auth-required');
+      document.body.classList.add('guest-mode-active');
+      window.neonAuth?.close();
+      if (creationModal && !systems.player) {
+        creationModal.classList.remove('hidden');
+        if (!creationFlowInitialized) {
+          initCreationModal(systems);
+          creationFlowInitialized = true;
+        }
+      }
+    };
+    window.addEventListener('neon-auth-guest-play', startGuestFlow);
+
     window.addEventListener('neon-auth-change', event => {
       if (event.detail?.user && !systems.player) {
         showCreationForAuthenticatedPlayer();
-      } else if (!event.detail?.user && !systems.player) {
+      } else if (!event.detail?.user && !systems.player && !document.body.classList.contains('guest-mode-active')) {
         requireAuthForNewPlayer();
       }
     });
@@ -10331,6 +10345,15 @@
       });
     }
 
+    const btnMobileAccount = document.getElementById('btn-mobile-account');
+    if (btnMobileAccount) {
+      btnMobileAccount.addEventListener('click', () => {
+        sound.playClick();
+        mobileMenuModal.classList.add('hidden');
+        window.neonAuth?.open();
+      });
+    }
+
     const btnMobileSave = document.getElementById('btn-mobile-save');
     if (btnMobileSave) {
       btnMobileSave.addEventListener('click', () => {
@@ -10499,6 +10522,11 @@
     const rollPhyEl = document.getElementById('roll-physique');
     const rollCompEl = document.getElementById('roll-comp');
     const btnStart = document.getElementById('btn-start-game');
+
+    const nameInput = document.getElementById('input-dao-hieu');
+    if (nameInput && window.neonAuth?.getUser()?.name) {
+      nameInput.value = window.neonAuth.getUser().name;
+    }
 
     function performRoll() {
       sound.playCheatSystem();
