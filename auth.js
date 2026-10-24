@@ -23,22 +23,44 @@
     return payload?.error?.message || payload?.message || payload?.error || fallback;
   }
 
+  function getNetworkErrorMessage(error) {
+    if (!(error instanceof TypeError) || !/fetch|network/i.test(error.message || '')) {
+      return error.message || 'Không thể kết nối Neon Auth.';
+    }
+    const origin = window.location.origin === 'null' ? 'file:// (mở trực tiếp file)' : window.location.origin;
+    return `Không kết nối được Neon Auth từ ${origin}. Hãy mở bằng Vercel hoặc http://localhost:8080 và thêm đúng domain này trong Neon > Better Auth > Domains.`;
+  }
+
+  function recordAuthError(error, context = {}) {
+    if (window.gameDebug?.capture) {
+      window.gameDebug.capture(error, { scope: 'neon-auth', ...context });
+    }
+  }
+
   async function authRequest(path, options = {}) {
     if (!authUrl) throw new Error('Chưa cấu hình NEON_AUTH_URL.');
 
-    const response = await fetch(`${authUrl}/${path.replace(/^\//, '')}`, {
-      method: options.method || 'GET',
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-        ...(options.body ? { 'Content-Type': 'application/json' } : {})
-      },
-      body: options.body ? JSON.stringify(options.body) : undefined
-    });
+    let response;
+    try {
+      response = await fetch(`${authUrl}/${path.replace(/^\//, '')}`, {
+        method: options.method || 'GET',
+        credentials: 'include',
+        headers: {
+          Accept: 'application/json',
+          ...(options.body ? { 'Content-Type': 'application/json' } : {})
+        },
+        body: options.body ? JSON.stringify(options.body) : undefined
+      });
+    } catch (error) {
+      recordAuthError(error, { endpoint: path, method: options.method || 'GET' });
+      throw error;
+    }
 
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) {
-      throw new Error(getErrorMessage(payload, `Auth thất bại (${response.status}).`));
+      const error = new Error(getErrorMessage(payload, `Auth thất bại (${response.status}).`));
+      recordAuthError(error, { endpoint: path, method: options.method || 'GET', status: response.status, code: payload?.code || '' });
+      throw error;
     }
     return payload?.data || payload;
   }
@@ -147,7 +169,7 @@
       setStatus(authMode === 'signup' ? 'Tạo tài khoản thành công!' : 'Đăng nhập thành công!', 'success');
       setTimeout(closeModal, 700);
     } catch (error) {
-      setStatus(error.message || 'Không thể đăng nhập.', 'error');
+      setStatus(getNetworkErrorMessage(error), 'error');
     } finally {
       if (submit) {
         submit.disabled = false;
