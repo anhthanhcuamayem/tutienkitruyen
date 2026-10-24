@@ -1349,126 +1349,136 @@
 
   const ITEMS = {
     // ==========================================
-    // 1. DƯỢC THẢO (LINH DƯỢC NGUYÊN LIỆU)
+    // 1. DƯỢC THẢO (LINH DƯỢC NGUYÊN LIỆU & NUỐT TRỰC TIẾP)
     // ==========================================
     herb_linhchi: {
-      id: 'herb_linhchi', name: 'Linh Chi Thảo', type: 'herb',
-      desc: 'Linh thảo sơ cấp chứa linh khí trời đất, tính ôn hòa, nguyên liệu cơ bản cho đan dược Luyện Khí.',
+      id: 'herb_linhchi', name: 'Linh Chi Thảo', type: 'herb', icon: '🍄',
+      desc: 'Linh thảo sơ cấp chứa linh khí trời đất, tính ôn hòa. Nuốt trực tiếp hồi 20% HP & nạp +35 Tu Vi hoặc dùng luyện đan Luyện Khí.',
+      rawEffectDesc: 'Hồi phục 20% Khí Huyết và nạp +35 Tu Vi',
       price: 15,
       howToGet: '🌿 Hái tại Linh Sơn Ngoại Vi | ⚔️ Diệt U Minh Yêu Lang | 🏪 Phường Thị (15 Linh Thạch)',
       sources: ['Linh Sơn Ngoại Vi', 'U Minh Yêu Lang', 'Phường Thị']
     },
     herb_thanh_u: {
-      id: 'herb_thanh_u', name: 'Thanh U Thảo', type: 'herb',
-      desc: 'Thảo mộc thanh mát dùng chế tạo thuốc hồi linh và đan giải độc an thần.',
+      id: 'herb_thanh_u', name: 'Thanh U Thảo', type: 'herb', icon: '🌿',
+      desc: 'Thảo mộc thanh mát dùng chế tạo thuốc hồi linh và đan giải độc. Nuốt trực tiếp lập tức hồi 25% Linh Lực.',
+      rawEffectDesc: 'Hồi phục 25% Linh Lực và thanh lọc tâm trí',
       price: 20,
       howToGet: '🌿 Hái tại Linh Sơn Ngoại Vi, Vạn Yêu Sơn Mạch | ⚔️ Diệt Lục Hoa Độc Xà | 🏪 Phường Thị',
       sources: ['Linh Sơn Ngoại Vi', 'Vạn Yêu Sơn Mạch', 'Lục Hoa Độc Xà', 'Phường Thị']
     },
     herb_u_hon: {
-      id: 'herb_u_hon', name: 'U Hồn Thảo', type: 'herb',
-      desc: 'Linh thảo âm hàn sinh trưởng nơi thi cốt cổ xưa, dùng luyện chế phù chú và thuốc giải tà độc.',
+      id: 'herb_u_hon', name: 'U Hồn Thảo', type: 'herb', icon: '🌾',
+      desc: 'Linh thảo âm hàn sinh trưởng nơi thi cốt cổ xưa. Nuốt trực tiếp kích hoạt U Ảnh Bộ, tăng +20 Thân Pháp trong 3 phút.',
+      rawEffectDesc: 'Kích phát U Ảnh Bộ, tăng +20 Thân Pháp trong 3 phút',
       price: 45,
       howToGet: '🌿 Hái tại Vạn Yêu Sơn Mạch | ⚔️ Rớt từ U Hồn Tà Tu, Lục Hoa Độc Xà | 🏪 Phường Thị',
       sources: ['Vạn Yêu Sơn Mạch', 'U Hồn Tà Tu', 'Phường Thị']
     },
     herb_hoaviem: {
-      id: 'herb_hoaviem', name: 'Hỏa Viêm Thảo', type: 'herb',
-      desc: 'Linh thảo sinh trưởng cạnh dung nham, dương khí sung túc, nguyên liệu Trúc Cơ Đan và Hỏa Phù.',
+      id: 'herb_hoaviem', name: 'Hỏa Viêm Thảo', type: 'herb', icon: '🌺',
+      desc: 'Linh thảo sinh trưởng cạnh dung nham, dương khí sung túc. Nuốt trực tiếp kích hoạt Chân Hỏa Huyết, tăng +20 Công Kích trong 3 phút.',
+      rawEffectDesc: 'Kích hoạt Chân Hỏa Huyết, tăng +20 Công Kích trong 3 phút',
       price: 60,
       howToGet: '🌿 Hái tại Vạn Yêu Sơn Mạch | ⚔️ Diệt Xích Diễm Hổ, Huyết Dực Thần Điêu | 🏪 Phường Thị',
       sources: ['Vạn Yêu Sơn Mạch', 'Xích Diễm Hổ', 'Phường Thị']
     },
     herb_bachnien: {
-      id: 'herb_bachnien', name: 'Bách Niên Linh Dược', type: 'herb',
-      desc: 'Dược liệu trăm năm giữa linh tuyền cấm địa, tích tụ tinh hoa đất trời, uẩn dưỡng kinh mạch.',
+      id: 'herb_bachnien', name: 'Bách Niên Linh Dược', type: 'herb', icon: '🌸',
+      desc: 'Dược liệu trăm năm giữa linh tuyền cấm địa, tích tụ tinh hoa đất trời. Nuốt trực tiếp hồi 60% HP & MP, tăng +150 Tu Vi.',
+      rawEffectDesc: 'Uẩn dưỡng kinh mạch, hồi 60% HP & MP, nạp +150 Tu Vi',
       price: 150,
       howToGet: '🌿 Hái tại Cổ Kiếm Bí Cảnh | ⚔️ Diệt Bạo Nộ Cuồng Hùng, Tàn Hồn Kiếm Tiên | 🏪 Phường Thị',
       sources: ['Cổ Kiếm Bí Cảnh', 'Bạo Nộ Cuồng Hùng', 'Phường Thị']
     },
     herb_huyen_bang: {
-      id: 'herb_huyen_bang', name: 'Huyền Băng Linh Thảo', type: 'herb',
-      desc: 'Linh thảo ngàn năm đóng băng trên vách đá tuyết, trong suốt như ngọc, dược tính băng hàn chí thuần.',
+      id: 'herb_huyen_bang', name: 'Huyền Băng Linh Thảo', type: 'herb', icon: '❄️',
+      desc: 'Linh thảo ngàn năm đóng băng trên vách đá tuyết, trong suốt như ngọc. Nuốt trực tiếp ngưng tụ Hàn Băng Thuẫn, tăng +35 Phòng Ngự trong 3 phút.',
+      rawEffectDesc: 'Ngưng tụ Hàn Băng Thuẫn, tăng +35 Phòng Ngự trong 3 phút',
       price: 280,
       howToGet: '🌿 Hái tại Cổ Kiếm Bí Cảnh | 📦 Rương Bí Cảnh | 🏪 Phường Thị',
       sources: ['Cổ Kiếm Bí Cảnh', 'Rương Bí Cảnh', 'Phường Thị']
     },
     herb_longhuyet: {
-      id: 'herb_longhuyet', name: 'Long Huyết Thảo', type: 'herb',
-      desc: 'Thảo mộc hấp thu huyết mạch giao long, đỏ rực như máu, tôi luyện tiên cốt và luyện Ngưng Anh Đan.',
+      id: 'herb_longhuyet', name: 'Long Huyết Thảo', type: 'herb', icon: '🩸',
+      desc: 'Thảo mộc hấp thu huyết mạch giao long, đỏ rực như máu. Nuốt trực tiếp tôi luyện kinh mạch: Tăng vĩnh viễn +50 HP tối đa!',
+      rawEffectDesc: 'Hấp thu huyết mạch Chân Long, tăng vĩnh viễn +50 HP tối đa',
       price: 400,
       howToGet: '🌿 Hái tại Huyết Sát Ma Vực | ⚔️ Diệt Huyết Nguyệt Yêu Vương, Ma Tướng | 🏪 Phường Thị',
       sources: ['Huyết Sát Ma Vực', 'Huyết Nguyệt Yêu Vương', 'Phường Thị']
     },
     herb_cuuchuyen: {
-      id: 'herb_cuuchuyen', name: 'Cửu Chuyển Tiên Thảo', type: 'herb',
-      desc: 'Linh chi chín màu tỏa ánh hào quang, vô cùng hiếm gặp, giúp khai khiếu ngưng anh và đột phá Hóa Thần.',
+      id: 'herb_cuuchuyen', name: 'Cửu Chuyển Tiên Thảo', type: 'herb', icon: '🪷',
+      desc: 'Linh chi chín màu tỏa ánh hào quang. Nuốt trực tiếp khai thông đại khiếu: Tăng vĩnh viễn +100 HP, +50 MP và nạp +500 Tu Vi!',
+      rawEffectDesc: 'Khai thông cửu khiếu: Tăng vĩnh viễn +100 HP, +50 MP và +500 Tu Vi',
       price: 1200,
       howToGet: '🌿 Hái tại Thượng Cổ Vực Thẳm | ⚔️ Diệt Vạn Niên Hủ Mộc, Huyết Ma Trưởng Lão | 📦 Rương Cổ',
       sources: ['Thượng Cổ Vực Thẳm', 'Vạn Niên Hủ Mộc', 'Bí Cảnh']
     },
     herb_thienkiem: {
-      id: 'herb_thienkiem', name: 'Thiên Kiếm Thảo', type: 'herb',
-      desc: 'Lá cây sắc nhọn như phi kiếm cắm thẳng vào vách đá, ẩn chứa kiếm ý thiên nhiên vô kiên bất tồi.',
+      id: 'herb_thienkiem', name: 'Thiên Kiếm Thảo', type: 'herb', icon: '🎋',
+      desc: 'Lá cây sắc nhọn như phi kiếm cắm thẳng vào vách đá. Nuốt trực tiếp ngưng đọng Kiếm Ý: Tăng vĩnh viễn +10 Công Kích và +1% Bạo Kích!',
+      rawEffectDesc: 'Ngưng đọng Kiếm Ý Tiên Thiên: Tăng vĩnh viễn +10 Công Kích & +1% Bạo Kích',
       price: 3000,
       howToGet: '🌿 Hái tại Thượng Cổ Vực Thẳm | ⚔️ Diệt Thái Cổ Bích Giao Long | 👑 Đổi Tông Môn',
       sources: ['Thượng Cổ Vực Thẳm', 'Thái Cổ Bích Giao Long', 'Tông Môn']
     },
     herb_ngo_dao: {
-      id: 'herb_ngo_dao', name: 'Ngộ Đạo Cổ Trà Diệp', type: 'herb',
-      desc: 'Lá trà hái từ cổ thụ ngàn năm nơi tiên giới, dùng pha chế Ngộ Đạo Trà tăng vọt tốc độ tu luyện.',
+      id: 'herb_ngo_dao', name: 'Ngộ Đạo Cổ Trà Diệp', type: 'herb', icon: '🍃',
+      desc: 'Lá trà hái từ cổ thụ ngàn năm nơi tiên giới. Nuốt trực tiếp tăng 50% tốc độ tu luyện trong 30 giây hoặc dùng hãm Ngộ Đạo Cổ Trà.',
+      rawEffectDesc: 'Tăng 50% tốc độ tích lũy tu vi trong 30 giây',
       price: 300,
       howToGet: '🌿 Hái tại Thượng Cổ Vực Thẳm | 🍵 Kỳ Ngộ Trà Tiên | 📦 Rương Bí Cảnh',
       sources: ['Thượng Cổ Vực Thẳm', 'Kỳ Ngộ', 'Rương Bí Cảnh']
     },
 
     // ==========================================
-    // 2. KHOÁNG THẠCH & TINH KIM (NGUYÊN LIỆU)
+    // 2. KHOÁNG THẠCH & TINH KIM (NGUYÊN LIỆU & THỐI LUYỆN)
     // ==========================================
     ore_huyenthiet: {
-      id: 'ore_huyenthiet', name: 'Huyền Thiết Tinh', type: 'ore',
-      desc: 'Quặng sắt đen rắn chắc, dùng rèn pháp khí sơ cấp và đúc hộ giáp Luyện Khí.',
+      id: 'ore_huyenthiet', name: 'Huyền Thiết Tinh', type: 'ore', icon: '⬛',
+      desc: 'Quặng sắt đen rắn chắc, dùng rèn đúc và thối luyện pháp khí sơ cấp (+1 đến +3).',
       price: 20,
       howToGet: '⛏️ Đào mỏ tại Linh Sơn Ngoại Vi | ⚔️ Diệt Cương Nha Hắc Trư | 🏪 Phường Thị',
       sources: ['Linh Sơn Ngoại Vi', 'Cương Nha Hắc Trư', 'Phường Thị']
     },
     ore_dong_tinh: {
-      id: 'ore_dong_tinh', name: 'Thanh Đồng Cổ Tinh', type: 'ore',
+      id: 'ore_dong_tinh', name: 'Thanh Đồng Cổ Tinh', type: 'ore', icon: '🥉',
       desc: 'Tinh chất đồng xanh thượng cổ dẫn linh lực cực tốt, dùng chế tạo Bùa Chú và Pháp Khí.',
       price: 40,
       howToGet: '⛏️ Đào mỏ tại Linh Sơn Ngoại Vi, Vạn Yêu Sơn Mạch | 🏪 Phường Thị (40 Linh Thạch)',
       sources: ['Linh Sơn Ngoại Vi', 'Vạn Yêu Sơn Mạch', 'Phường Thị']
     },
     ore_tutinh: {
-      id: 'ore_tutinh', name: 'Tử Tinh Khoáng', type: 'ore',
-      desc: 'Khoáng thạch tím chứa linh lực ổn định, dùng đúc Xích Tiêu Kiếm và luyện Trúc Cơ Đan.',
+      id: 'ore_tutinh', name: 'Tử Tinh Khoáng', type: 'ore', icon: '🔮',
+      desc: 'Khoáng thạch tím chứa linh lực ổn định, dùng đúc Xích Tiêu Kiếm và thối luyện trung cấp (+4 đến +6).',
       price: 75,
       howToGet: '⛏️ Đào mỏ tại Vạn Yêu Sơn Mạch | ⚔️ Diệt Xích Diễm Hổ | 🏪 Phường Thị',
       sources: ['Vạn Yêu Sơn Mạch', 'Xích Diễm Hổ', 'Phường Thị']
     },
     ore_thienngoai: {
-      id: 'ore_thienngoai', name: 'Thiên Ngoại Vẫn Thiết', type: 'ore',
-      desc: 'Thiên thạch rơi xuống từ cửu tiêu hư không, dùng rèn Trảm Yêu Cự Kiếm và Long Lân Bảo Giáp.',
+      id: 'ore_thienngoai', name: 'Thiên Ngoại Vẫn Thiết', type: 'ore', icon: '☄️',
+      desc: 'Thiên thạch rơi xuống từ cửu tiêu hư không, dùng rèn Trảm Yêu Cự Kiếm và thối luyện cao cấp (+7 đến +10).',
       price: 300,
       howToGet: '⛏️ Đào mỏ tại Cổ Kiếm Bí Cảnh | ⚔️ Diệt Cổ Kiếm Khôi Lỗi, Tàn Hồn Kiếm Tiên',
       sources: ['Cổ Kiếm Bí Cảnh', 'Cổ Kiếm Khôi Lỗi', 'Phường Thị']
     },
     ore_huyettinh: {
-      id: 'ore_huyettinh', name: 'Huyết Ma Thạch', type: 'ore',
+      id: 'ore_huyettinh', name: 'Huyết Ma Thạch', type: 'ore', icon: '🔴',
       desc: 'Huyết thạch ma đạo đúc vũ khí khát máu và hộ giáp phòng ngự tà ác.',
       price: 800,
       howToGet: '⛏️ Đào mỏ tại Huyết Sát Ma Vực | ⚔️ Diệt Sát Lục Ma Tướng, Huyết Ma Trưởng Lão',
       sources: ['Huyết Sát Ma Vực', 'Sát Lục Ma Tướng']
     },
     ore_thai_at: {
-      id: 'ore_thai_at', name: 'Thái Ất Chân Kim', type: 'ore',
+      id: 'ore_thai_at', name: 'Thái Ất Chân Kim', type: 'ore', icon: '🥇',
       desc: 'Kim loại tiên gia màu hoàng kim ánh bạch sắc, đúc phi kiếm thì sắc bén trảm phá hư không.',
       price: 1500,
       howToGet: '⛏️ Đào mỏ tại Thượng Cổ Vực Thẳm | ⚔️ Diệt Thái Cổ Bích Giao Long | 📦 Rương Chí Bảo',
       sources: ['Thượng Cổ Vực Thẳm', 'Thái Cổ Bích Giao Long']
     },
     ore_hondon: {
-      id: 'ore_hondon', name: 'Hỗn Độn Thần Thiết', type: 'ore',
+      id: 'ore_hondon', name: 'Hỗn Độn Thần Thiết', type: 'ore', icon: '✨',
       desc: 'Thần tài khai thiên lập địa, vô kiên bất tồi, dùng rèn Hỗn Độn Tiên Y và Bát Hoang Tiên Kiếm.',
       price: 2500,
       howToGet: '⛏️ Đào mỏ tại Thượng Cổ Vực Thẳm | ⚔️ Diệt Hỗn Độn Thạch Hoàng | 👑 Đổi Tông Môn',
@@ -1479,91 +1489,91 @@
     // 3. YÊU ĐAN & YÊU THÚ DỊ BẢO (NGUYÊN LIỆU)
     // ==========================================
     core_yeu_dan_1: {
-      id: 'core_yeu_dan_1', name: 'Yêu Đan Nhất Giai', type: 'monster_mat',
+      id: 'core_yeu_dan_1', name: 'Yêu Đan Nhất Giai', type: 'monster_mat', icon: '🟢',
       desc: 'Nội đan kết tinh linh khí của yêu thú Luyện Khí Kỳ. Dùng chế tạo Độn Địa Phù và Tụ Khí Đan.',
       price: 35,
       howToGet: '⚔️ Rớt khi trảm sát U Minh Yêu Lang, Cương Nha Hắc Trư, Lục Hoa Độc Xà (Linh Sơn Ngoại Vi)',
       sources: ['Linh Sơn Ngoại Vi', 'U Minh Yêu Lang', 'Cương Nha Hắc Trư']
     },
     core_yeu_dan_2: {
-      id: 'core_yeu_dan_2', name: 'Yêu Đan Nhị Giai', type: 'monster_mat',
-      desc: 'Nội đan đỏ thẫm chứa thú hồn mãnh liệt của yêu thú Trúc Cơ Kỳ. Nguyên liệu cốt lõi luyện Trúc Cơ Đan.',
+      id: 'core_yeu_dan_2', name: 'Yêu Đan Nhị Giai', type: 'monster_mat', icon: '🔵',
+      desc: 'Nội đan đỏ thẫm chứa thú hồn mãnh liệt của yêu thú Trúc Cơ Kỳ. Nguyên liệu cốt lõi luyện Trúc Cơ Đan và Hàn Băng Phù.',
       price: 120,
       howToGet: '⚔️ Rớt khi diệt Xích Diễm Hổ, Bạo Nộ Cuồng Hùng, Huyết Dực Thần Điêu (Vạn Yêu Sơn Mạch)',
       sources: ['Vạn Yêu Sơn Mạch', 'Xích Diễm Hổ', 'Bạo Nộ Cuồng Hùng']
     },
     core_yeu_dan_3: {
-      id: 'core_yeu_dan_3', name: 'Yêu Đan Tam Giai', type: 'monster_mat',
-      desc: 'Nội đan Kim Đan Kỳ tỏa kim quang rực rỡ. Dùng luyện Kim Đan Hóa Thần Hoàn và Đạo Tâm Đan.',
+      id: 'core_yeu_dan_3', name: 'Yêu Đan Tam Giai', type: 'monster_mat', icon: '🟡',
+      desc: 'Nội đan Kim Đan Kỳ tỏa kim quang rực rỡ. Dùng luyện Kim Đan Hóa Thần Hoàn và Thiên Nhãn Phù.',
       price: 450,
       howToGet: '⚔️ Rớt khi diệt Cổ Kiếm Khôi Lỗi, Tàn Hồn Kiếm Tiên, U Hồn Tà Tu (Cổ Kiếm Bí Cảnh)',
       sources: ['Cổ Kiếm Bí Cảnh', 'Cổ Kiếm Khôi Lỗi', 'Tàn Hồn Kiếm Tiên']
     },
     core_yeu_dan_4: {
-      id: 'core_yeu_dan_4', name: 'Yêu Đan Tứ Giai', type: 'monster_mat',
+      id: 'core_yeu_dan_4', name: 'Yêu Đan Tứ Giai', type: 'monster_mat', icon: '🟣',
       desc: 'Huyết đan Nguyên Anh ngưng tụ sát khí cuồn cuộn. Nguyên liệu thượng thừa luyện Ngưng Anh Đan.',
       price: 1500,
       howToGet: '⚔️ Rớt khi diệt Huyết Ma Trưởng Lão, Sát Lục Ma Tướng, Huyết Nguyệt Yêu Vương (Huyết Sát Ma Vực)',
       sources: ['Huyết Sát Ma Vực', 'Huyết Ma Trưởng Lão', 'Huyết Nguyệt Yêu Vương']
     },
     core_yeu_dan_5: {
-      id: 'core_yeu_dan_5', name: 'Thái Cổ Thần Hạch', type: 'monster_mat',
+      id: 'core_yeu_dan_5', name: 'Thái Cổ Thần Hạch', type: 'monster_mat', icon: '🌟',
       desc: 'Tinh hạch chí tôn của thần thú viễn cổ, chứa đựng pháp tắc càn khôn. Dùng luyện Hóa Thần Đan.',
       price: 6000,
       howToGet: '👑 Tiêu diệt Boss Thái Cổ Bích Giao Long, Vạn Niên Hủ Mộc, Thạch Hoàng (Thượng Cổ Vực Thẳm)',
       sources: ['Thượng Cổ Vực Thẳm', 'Thái Cổ Bích Giao Long', 'Hỗn Độn Thạch Hoàng']
     },
     mat_lang_nanh: {
-      id: 'mat_lang_nanh', name: 'U Minh Lang Nanh', type: 'monster_mat',
+      id: 'mat_lang_nanh', name: 'U Minh Lang Nanh', type: 'monster_mat', icon: '🐺',
       desc: 'Nanh vuốt bén ngót của yêu lang hoang dã. Dùng rèn Thanh Phong Kiếm và chế tiễn ti.',
       price: 25,
       howToGet: '⚔️ Rớt từ U Minh Yêu Lang tại Linh Sơn Ngoại Vi',
       sources: ['Linh Sơn Ngoại Vi', 'U Minh Yêu Lang']
     },
     mat_tru_nha: {
-      id: 'mat_tru_nha', name: 'Cương Nha Trư Nha', type: 'monster_mat',
+      id: 'mat_tru_nha', name: 'Cương Nha Trư Nha', type: 'monster_mat', icon: '🐗',
       desc: 'Cặp nanh lợn rừng đen cứng như thép rèn. Dùng gia cố giáp trụ Huyền Thiết sơ cấp.',
       price: 30,
       howToGet: '⚔️ Rớt từ Cương Nha Hắc Trư tại Linh Sơn Ngoại Vi',
       sources: ['Linh Sơn Ngoại Vi', 'Cương Nha Hắc Trư']
     },
     mat_xa_noc: {
-      id: 'mat_xa_noc', name: 'Lục Hoa Xà Nọc', type: 'monster_mat',
+      id: 'mat_xa_noc', name: 'Lục Hoa Xà Nọc', type: 'monster_mat', icon: '🧪',
       desc: 'Nọc độc lục sắc kịch độc, dùng chế thuốc độc ám khí hoặc luyện Thanh Tâm Ngưng Thần Đan.',
       price: 30,
       howToGet: '⚔️ Rớt từ Lục Hoa Độc Xà tại Linh Sơn Ngoại Vi',
       sources: ['Linh Sơn Ngoại Vi', 'Lục Hoa Độc Xà']
     },
     mat_ho_bi: {
-      id: 'mat_ho_bi', name: 'Xích Diễm Hổ Bì', type: 'monster_mat',
+      id: 'mat_ho_bi', name: 'Xích Diễm Hổ Bì', type: 'monster_mat', icon: '🐅',
       desc: 'Tấm da hổ rực lửa bất xâm thủy hỏa. Dùng may Tinh Vân Đạo Bào và luyện Bạo Khí Cuồng Đan.',
       price: 100,
       howToGet: '⚔️ Rớt từ Xích Diễm Hổ tại Vạn Yêu Sơn Mạch',
       sources: ['Vạn Yêu Sơn Mạch', 'Xích Diễm Hổ']
     },
     mat_hung_dam: {
-      id: 'mat_hung_dam', name: 'Cuồng Hùng Huyết Đảm', type: 'monster_mat',
+      id: 'mat_hung_dam', name: 'Cuồng Hùng Huyết Đảm', type: 'monster_mat', icon: '🐻',
       desc: 'Mật gấu cuồng bạo chứa đầy tinh huyết, dùng luyện thuốc cường hóa gân cốt và thể phách.',
       price: 120,
       howToGet: '⚔️ Rớt từ Bạo Nộ Cuồng Hùng tại Vạn Yêu Sơn Mạch',
       sources: ['Vạn Yêu Sơn Mạch', 'Bạo Nộ Cuồng Hùng']
     },
     mat_dieu_vu: {
-      id: 'mat_dieu_vu', name: 'Huyết Dực Điêu Vũ', type: 'monster_mat',
-      desc: 'Lông vũ thần điêu sắc nhọn như dao cạo, dùng chế tạo Thần Hành Phù và ám tiễn.',
+      id: 'mat_dieu_vu', name: 'Huyết Dực Điêu Vũ', type: 'monster_mat', icon: '🪶',
+      desc: 'Lông vũ thần điêu sắc nhọn như dao cạo, dùng chế tạo Thần Hành Phù và Ẩn Thân Phù.',
       price: 130,
       howToGet: '⚔️ Rớt từ Huyết Dực Thần Điêu tại Vạn Yêu Sơn Mạch',
       sources: ['Vạn Yêu Sơn Mạch', 'Huyết Dực Thần Điêu']
     },
     mat_giao_lan: {
-      id: 'mat_giao_lan', name: 'Bích Giao Long Lân', type: 'monster_mat',
+      id: 'mat_giao_lan', name: 'Bích Giao Long Lân', type: 'monster_mat', icon: '🐉',
       desc: 'Vảy rồng lấp lánh lam quang, đao thương bất nhập, thủy hỏa bất hoại. Dùng chế Long Lân Bảo Giáp.',
       price: 1800,
       howToGet: '👑 Rớt từ Boss Thái Cổ Bích Giao Long tại Thượng Cổ Vực Thẳm',
       sources: ['Thượng Cổ Vực Thẳm', 'Thái Cổ Bích Giao Long']
     },
     mat_hu_moc: {
-      id: 'mat_hu_moc', name: 'Vạn Niên Mộc Tâm', type: 'monster_mat',
+      id: 'mat_hu_moc', name: 'Vạn Niên Mộc Tâm', type: 'monster_mat', icon: '🪵',
       desc: 'Lõi cây vạn năm hấp thu tinh hoa nhật nguyệt, chứa đựng sức sống vô tận kéo dài thọ nguyên.',
       price: 2200,
       howToGet: '👑 Rớt từ Vạn Niên Hủ Mộc Yêu Vương tại Thượng Cổ Vực Thẳm',
@@ -1574,119 +1584,119 @@
     // 4. VẬT PHẨM SỬ DỤNG: ĐAN DƯỢC
     // ==========================================
     pill_hoixuan: {
-      id: 'pill_hoixuan', name: 'Hồi Xuân Đan', type: 'pill', healPercent: 0.5,
+      id: 'pill_hoixuan', name: 'Hồi Xuân Đan', type: 'pill', icon: '💚', healPercent: 0.5,
       desc: 'Lập tức hồi phục 50% Khí Huyết (HP) tối đa.',
       price: 40,
       howToGet: '🧪 Luyện đan tại Động Phủ (2 Linh Chi Thảo) | 🏪 Phường Thị (40 Linh Thạch) | 🏯 Tông Môn',
       sources: ['Động Phủ Luyện Đan', 'Phường Thị', 'Tông Môn']
     },
     pill_tulinh: {
-      id: 'pill_tulinh', name: 'Tụ Linh Đan', type: 'pill', mpPercent: 0.6,
+      id: 'pill_tulinh', name: 'Tụ Linh Đan', type: 'pill', icon: '💙', mpPercent: 0.6,
       desc: 'Lập tức hồi phục 60% Linh Lực (MP) tối đa.',
       price: 50,
       howToGet: '🧪 Luyện đan tại Động Phủ (2 Thanh U Thảo) | 🏪 Phường Thị (50 Linh Thạch)',
       sources: ['Động Phủ Luyện Đan', 'Phường Thị']
     },
     pill_tukhi: {
-      id: 'pill_tukhi', name: 'Tụ Khí Đan', type: 'pill', expGain: 350,
+      id: 'pill_tukhi', name: 'Tụ Khí Đan', type: 'pill', icon: '💊', expGain: 350,
       desc: 'Uống vào tăng trực tiếp 350 điểm Tu Vi (hưởng thêm hệ số Ngộ Tính).',
       price: 80,
       howToGet: '🧪 Luyện đan (2 Linh Chi + 1 Thanh U + 1 Huyền Thiết) | 🏪 Phường Thị | 🎁 Điểm Danh',
       sources: ['Động Phủ Luyện Đan', 'Phường Thị', 'Điểm Danh']
     },
     pill_bao_khi: {
-      id: 'pill_bao_khi', name: 'Bạo Khí Cuồng Đan', type: 'pill', atkBuff: 0.35,
+      id: 'pill_bao_khi', name: 'Bạo Khí Cuồng Đan', type: 'pill', icon: '💥', atkBuff: 0.35,
       desc: 'Bộc phát tiềm năng đan điền, tăng 35% Công Kích trong 5 hiệp đấu kế tiếp.',
       price: 150,
       howToGet: '🧪 Luyện đan (2 Hỏa Viêm Thảo + 1 Xích Diễm Hổ Bì) | 🏪 Phường Thị (150 Linh Thạch)',
       sources: ['Động Phủ Luyện Đan', 'Phường Thị', 'Xích Diễm Hổ']
     },
     pill_ngung_than: {
-      id: 'pill_ngung_than', name: 'Thanh Tâm Ngưng Thần Đan', type: 'pill', cleanseDebuff: true, healPercent: 0.25,
+      id: 'pill_ngung_than', name: 'Thanh Tâm Ngưng Thần Đan', type: 'pill', icon: '🧘', cleanseDebuff: true, healPercent: 0.25,
       desc: 'Xua tan tà khí, hóa giải lập tức toàn bộ hiệu ứng xấu (Độc, Lửa, Xuất Huyết, Tê Liệt) và hồi 25% HP.',
       price: 120,
       howToGet: '🧪 Luyện đan (2 Thanh U Thảo + 1 U Hồn Thảo + 1 Lục Hoa Xà Nọc) | 🏪 Phường Thị',
       sources: ['Động Phủ Luyện Đan', 'Phường Thị']
     },
     pill_quy_nguyen: {
-      id: 'pill_quy_nguyen', name: 'Ngũ Hành Quy Nguyên Đan', type: 'pill', healPercent: 1.0, mpPercent: 1.0,
+      id: 'pill_quy_nguyen', name: 'Ngũ Hành Quy Nguyên Đan', type: 'pill', icon: '🌀', healPercent: 1.0, mpPercent: 1.0,
       desc: 'Linh dược bảo mệnh cực phẩm, lập tức hồi phục đầy 100% Khí Huyết và 100% Linh Lực.',
       price: 800,
       howToGet: '🧪 Luyện đan (2 Bách Niên Dược + 1 Long Huyết Thảo + 1 Yêu Đan Tam Giai) | 📦 Rương Bí Cảnh',
       sources: ['Động Phủ Luyện Đan', 'Rương Bí Cảnh', 'Boss Thế Giới']
     },
     pill_tay_tuy: {
-      id: 'pill_tay_tuy', name: 'Cửu Khiếu Tẩy Tủy Đan', type: 'pill', compGain: 3, fullHeal: true,
+      id: 'pill_tay_tuy', name: 'Cửu Khiếu Tẩy Tủy Đan', type: 'pill', icon: '🧬', compGain: 3, fullHeal: true,
       desc: 'Tẩy rửa kinh mạch, tẩy bỏ phàm cốt: Hồi phục 100% HP, MP và tăng vĩnh viễn +3% Ngộ Tính!',
       price: 2500,
       howToGet: '🧪 Luyện đan Thượng phẩm | 🏯 Đổi tại Tông Môn (800 Cống Hiến) | 📦 Rương Bí Cảnh Boss',
       sources: ['Động Phủ Luyện Đan', 'Tông Môn', 'Rương Bí Cảnh']
     },
     pill_trucco: {
-      id: 'pill_trucco', name: 'Trúc Cơ Đan', type: 'pill', isBreakthrough: true, breakBonus: 0.35,
+      id: 'pill_trucco', name: 'Trúc Cơ Đan', type: 'pill', icon: '🧱', isBreakthrough: true, breakBonus: 0.35,
       desc: 'Bảo vật đột phá Trúc Cơ Kỳ, tăng 35% tỷ lệ đột phá thành công khi sử dụng.',
       price: 300,
       howToGet: '🧪 Luyện đan (4 Thanh U + 2 Hỏa Viêm + 1 Tử Tinh Khoáng) | 🎁 Thưởng thăng Ngoại Môn Đệ Tử | 📦 Mở Rương Bí Cảnh',
       sources: ['Động Phủ Luyện Đan', 'Tông Môn', 'Rương Bí Cảnh']
     },
     pill_kimdan: {
-      id: 'pill_kimdan', name: 'Kim Đan Hóa Thần Hoàn', type: 'pill', isBreakthrough: true, breakBonus: 0.30,
+      id: 'pill_kimdan', name: 'Kim Đan Hóa Thần Hoàn', type: 'pill', icon: '🌕', isBreakthrough: true, breakBonus: 0.30,
       desc: 'Tăng 30% tỷ lệ đột phá Kim Đan Kỳ thành công.',
       price: 1000,
       howToGet: '🧪 Luyện đan (3 Hỏa Viêm + 2 Bách Niên + 2 Tử Tinh Khoáng) | 🎁 Thưởng Chân Truyền Đệ Tử | 📦 Rương Cổ',
       sources: ['Động Phủ Luyện Đan', 'Tông Môn', 'Rương Bí Cảnh']
     },
     pill_ngungan: {
-      id: 'pill_ngungan', name: 'Ngưng Anh Đan', type: 'pill', isBreakthrough: true, breakBonus: 0.25,
+      id: 'pill_ngungan', name: 'Ngưng Anh Đan', type: 'pill', icon: '👶', isBreakthrough: true, breakBonus: 0.25,
       desc: 'Phá đan thành anh, tăng 25% tỷ lệ đột phá Nguyên Anh Kỳ.',
       price: 3500,
       howToGet: '🧪 Luyện đan (3 Long Huyết + 1 Cửu Chuyển + 2 Thiên Ngoại Vẫn Thiết) | 🏯 Trưởng Lão Tông Môn',
       sources: ['Động Phủ Luyện Đan', 'Tông Môn', 'Rương Bí Cảnh']
     },
     pill_hoathan: {
-      id: 'pill_hoathan', name: 'Hóa Thần Đan', type: 'pill', isBreakthrough: true, breakBonus: 0.20,
+      id: 'pill_hoathan', name: 'Hóa Thần Đan', type: 'pill', icon: '🌌', isBreakthrough: true, breakBonus: 0.20,
       desc: 'Tăng 20% tỷ lệ đột phá Hóa Thần Kỳ.',
       price: 10000,
       howToGet: '🧪 Luyện đan (3 Cửu Chuyển + 1 Thiên Kiếm + 1 Hỗn Độn Thần Thiết) | 👑 Diệt Boss Thần Thú',
       sources: ['Động Phủ Luyện Đan', 'Boss Thế Giới']
     },
     pill_huthien: {
-      id: 'pill_huthien', name: 'Hư Thiên Đan', type: 'pill', isBreakthrough: true, breakBonus: 0.20,
+      id: 'pill_huthien', name: 'Hư Thiên Đan', type: 'pill', icon: '🕳️', isBreakthrough: true, breakBonus: 0.20,
       desc: 'Tăng 20% tỷ lệ đột phá Luyện Hư Kỳ.',
       price: 25000,
       howToGet: '📦 Rương Thiên Cơ Chí Bảo | 👑 Bí cảnh tầng 5 Boss rơi',
       sources: ['Rương Thiên Cơ', 'Boss Bí Cảnh']
     },
     pill_hopnguyen: {
-      id: 'pill_hopnguyen', name: 'Hợp Nguyên Đan', type: 'pill', isBreakthrough: true, breakBonus: 0.18,
+      id: 'pill_hopnguyen', name: 'Hợp Nguyên Đan', type: 'pill', icon: '☯️', isBreakthrough: true, breakBonus: 0.18,
       desc: 'Tăng 18% tỷ lệ đột phá Hợp Thể Kỳ.',
       price: 60000,
       howToGet: '📦 Rương Thiên Cơ Chí Bảo | 👑 Kỳ Ngộ Thần Tiên',
       sources: ['Rương Thiên Cơ', 'Kỳ Ngộ']
     },
     pill_cankhon: {
-      id: 'pill_cankhon', name: 'Càn Khôn Đan', type: 'pill', isBreakthrough: true, breakBonus: 0.15,
+      id: 'pill_cankhon', name: 'Càn Khôn Đan', type: 'pill', icon: '🪐', isBreakthrough: true, breakBonus: 0.15,
       desc: 'Tăng 15% tỷ lệ đột phá Đại Thừa Kỳ.',
       price: 150000,
       howToGet: '👑 Bí Cảnh Cực Hạn | 🌀 Kim Thủ Chỉ Thần Cấp',
       sources: ['Boss Bí Cảnh', 'Kim Thủ Chỉ']
     },
     pill_dokiep: {
-      id: 'pill_dokiep', name: 'Cửu Thiên Độ Kiếp Đan', type: 'pill', isBreakthrough: true, breakBonus: 0.15,
+      id: 'pill_dokiep', name: 'Cửu Thiên Độ Kiếp Đan', type: 'pill', icon: '🌩️', isBreakthrough: true, breakBonus: 0.15,
       desc: 'Tăng 15% tỷ lệ đột phá Độ Kiếp Kỳ phi thăng tiên giới.',
       price: 400000,
       howToGet: '👑 Đỉnh Phong Thiên Đạo | 📦 Thiên Cơ Chí Bảo Hạp',
       sources: ['Rương Thiên Cơ', 'Thiên Đạo']
     },
     pill_daotam: {
-      id: 'pill_daotam', name: 'Đạo Tâm Đan', type: 'pill', breakBonus: 0.20,
+      id: 'pill_daotam', name: 'Đạo Tâm Đan', type: 'pill', icon: '🤍', breakBonus: 0.20,
       desc: 'Thanh tẩy tâm ma, tăng thêm 20% tỷ lệ đột phá cho mọi cảnh giới.',
       price: 800,
       howToGet: '🧪 Luyện đan (3 Bách Niên + 1 Long Huyết + 1 Vẫn Thiết) | 🏪 Phường Thị (800 Linh Thạch)',
       sources: ['Động Phủ Luyện Đan', 'Phường Thị']
     },
     pill_tho_nguyen: {
-      id: 'pill_tho_nguyen', name: 'Cửu Chuyển Thọ Nguyên Đan', type: 'pill', lifespanGain: 50,
+      id: 'pill_tho_nguyen', name: 'Cửu Chuyển Thọ Nguyên Đan', type: 'pill', icon: '⏳', lifespanGain: 50,
       desc: 'Tăng thêm 50 năm thọ nguyên cho nhân vật.',
       price: 1500,
       howToGet: '🧪 Luyện đan (2 Bách Niên + 1 Cửu Chuyển + 2 Tử Tinh Khoáng) | 🎁 Điểm Danh Kim Thủ Chỉ',
@@ -1694,102 +1704,148 @@
     },
 
     // ==========================================
-    // 5. VẬT PHẨM SỬ DỤNG: BÙA CHÚ (PHÙ TRIỆN)
+    // 5. VẬT PHẨM SỬ DỤNG: BÙA CHÚ CHIẾN ĐẤU & KỲ MÔN
     // ==========================================
     talisman_don_dia: {
-      id: 'talisman_don_dia', name: 'Độn Địa Phù', type: 'talisman',
-      desc: 'Phù triện cổ truyền ngưng tụ thổ độn thuật. Dùng trong chiến đấu giúp đào thoát 100% thành công không mất mát!',
+      id: 'talisman_don_dia', name: 'Độn Địa Phù', type: 'talisman', icon: '💨',
+      desc: 'Phù triện cổ truyền ngưng tụ thổ độn thuật. Trong chiến đấu đào thoát 100% không mất mát; ngoài chiến đấu hồi 30% HP & MP về động phủ.',
       price: 120,
       howToGet: '🏪 Mua tại Phường Thị (120 Linh Thạch) | 🏯 Đổi tại Tông Môn (40 Cống Hiến) | 🧪 Luyện Phù',
       sources: ['Phường Thị', 'Tông Môn', 'Rương Trữ Vật']
     },
     talisman_kim_cuong: {
-      id: 'talisman_kim_cuong', name: 'Kim Cương Hộ Thể Phù', type: 'talisman', shieldAmount: 800,
-      desc: 'Hóa thành kim quang lộng lẫy, tạo Hộ Thuẫn hấp thu 800 sát thương trong trận đấu.',
+      id: 'talisman_kim_cuong', name: 'Kim Cương Hộ Thể Phù', type: 'talisman', icon: '🛡️', shieldAmount: 800,
+      desc: 'Hóa thành kim quang lộng lẫy, tạo Hộ Thuẫn hấp thu 800 sát thương trong trận đấu (hoặc hồi 40% HP ngoài map).',
       price: 180,
       howToGet: '🏪 Mua tại Phường Thị (180 Linh Thạch) | 🏯 Tông Môn Đan Đỉnh | 📦 Rương Bí Cảnh',
       sources: ['Phường Thị', 'Tông Môn', 'Rương Bí Cảnh']
     },
     talisman_dan_loi: {
-      id: 'talisman_dan_loi', name: 'Cửu Thiên Dẫn Lôi Phù', type: 'talisman', dmg: 1500, stunChance: 0.5,
-      desc: 'Triệu hoán Cửu Thiên Thần Lôi oanh kích kẻ địch, gây 1500 sát thương Lôi và 50% làm Tê Liệt 1 hiệp.',
+      id: 'talisman_dan_loi', name: 'Cửu Thiên Dẫn Lôi Phù', type: 'talisman', icon: '⚡', dmg: 1500, stunChance: 0.6,
+      desc: 'Triệu hoán Cửu Thiên Thần Lôi oanh kích, gây 1500 sát thương Lôi và 60% làm Tê Liệt (Stun) đối thủ 1 hiệp.',
       price: 250,
       howToGet: '⚔️ Rớt từ Huyết Dực Thần Điêu | 🏪 Phường Thị (250 Linh Thạch) | 📦 Rương Bí Cảnh',
       sources: ['Vạn Yêu Sơn Mạch', 'Huyết Dực Thần Điêu', 'Phường Thị']
     },
     talisman_liet_hoa: {
-      id: 'talisman_liet_hoa', name: 'Tam Muội Chân Hỏa Phù', type: 'talisman', dmg: 1200, burnTurns: 3,
-      desc: 'Phóng chân hỏa thiêu rụi mục tiêu, gây 1200 sát thương và thiêu đốt đối thủ 3 hiệp liên tiếp.',
+      id: 'talisman_liet_hoa', name: 'Tam Muội Chân Hỏa Phù', type: 'talisman', icon: '🔥', dmg: 1200, burnTurns: 3,
+      desc: 'Phóng chân hỏa thiêu rụi mục tiêu, gây 1200 sát thương và thiêu đốt (Burn) đối thủ 3 hiệp liên tiếp.',
       price: 220,
       howToGet: '⚔️ Rớt từ Xích Diễm Hổ | 🏪 Phường Thị | 🏯 Tông Môn Đan Đỉnh',
       sources: ['Vạn Yêu Sơn Mạch', 'Xích Diễm Hổ', 'Phường Thị']
     },
+    talisman_bang_phong: {
+      id: 'talisman_bang_phong', name: 'Hàn Băng Phong Ma Phù', type: 'talisman', icon: '🧊', dmg: 800, freezeTurn: 1,
+      desc: 'Ngưng kết hàn khí cực độ, gây 800 sát thương Băng, Đóng Băng đối thủ 1 hiệp và trừ 50% thanh tốc độ hành động!',
+      price: 240,
+      howToGet: '🧪 Luyện Phù (1 Huyền Băng + 1 Thanh Đồng + 1 Yêu Đan Nhị Giai) | 🏪 Phường Thị',
+      sources: ['Động Phủ Luyện Đan', 'Phường Thị']
+    },
     talisman_than_hanh: {
-      id: 'talisman_than_hanh', name: 'Thần Hành Biến Ảo Phù', type: 'talisman', speedBuff: 0.5, dodgeBuff: 0.3,
-      desc: 'Tăng 50% Thân Pháp và 30% Tỷ lệ Né Đòn trong 4 hiệp đấu kế tiếp.',
+      id: 'talisman_than_hanh', name: 'Thần Hành Biến Ảo Phù', type: 'talisman', icon: '🌪️', speedBuff: 0.5, dodgeBuff: 0.3,
+      desc: 'Trong trận tăng 50% Thân Pháp & 30% Né Đòn trong 4 hiệp; ngoài map tăng vĩnh viễn +5 Thân Pháp!',
       price: 160,
       howToGet: '🏪 Mua tại Phường Thị (160 Linh Thạch) | 🌿 Kỳ ngộ Bí Cảnh | 📦 Rương Trữ Vật',
       sources: ['Phường Thị', 'Kỳ Ngộ']
     },
+    talisman_an_than: {
+      id: 'talisman_an_than', name: 'Hư Không Ẩn Thân Phù', type: 'talisman', icon: '👻', dodgeBuff: 1.0,
+      desc: 'Hòa mình vào hư không, nhận 100% Né Đòn trong 2 hiệp đấu; ngoài map giúp chuyến du ngoạn kế tiếp 100% gặp kỳ ngộ!',
+      price: 200,
+      howToGet: '🧪 Luyện Phù (1 U Hồn + 1 Huyền Thiết + 1 Thần Điêu Lông Vũ) | 🏪 Phường Thị',
+      sources: ['Động Phủ Luyện Đan', 'Phường Thị']
+    },
+    talisman_thien_nhan: {
+      id: 'talisman_thien_nhan', name: 'Thiên Nhãn Phá Giáp Phù', type: 'talisman', icon: '👁️', critBonus: 0.35,
+      desc: 'Khai mở thiên nhãn nhìn thấu tử huyệt: Đòn tấn công kế tiếp nhận +35% Bạo Kích và Bỏ qua 100% Giáp đối thủ!',
+      price: 300,
+      howToGet: '🧪 Luyện Phù (1 Thiên Kiếm Thảo + 1 Tử Tinh + 1 Yêu Đan Tam Giai) | 🏯 Tông Môn',
+      sources: ['Động Phủ Luyện Đan', 'Tông Môn']
+    },
 
     // ==========================================
-    // 6. VẬT PHẨM SỬ DỤNG: LINH TRÀ & RƯƠNG BẢO
+    // 6. LINH TRÀ, RƯƠNG BẢO, TÀNG BẢO ĐỒ & THẦN THÚ
     // ==========================================
     tea_ngo_dao: {
-      id: 'tea_ngo_dao', name: 'Ngộ Đạo Cổ Trà', type: 'tea', teaDuration: 60,
+      id: 'tea_ngo_dao', name: 'Ngộ Đạo Cổ Trà', type: 'tea', icon: '🍵', teaDuration: 60,
       desc: 'Nhấp một ngụm trà tiên, tâm cảnh đạt Thiên Nhân Hợp Nhất: Tăng gấp đôi (+100%) tốc độ tích lũy Tu Vi trong 60 giây!',
       price: 350,
       howToGet: '🍵 Pha chế từ Ngộ Đạo Cổ Trà Diệp | 🍵 Kỳ Ngộ Trà Tiên | 🏪 Phường Thị',
       sources: ['Thượng Cổ Vực Thẳm', 'Kỳ Ngộ', 'Phường Thị']
     },
     chest_tu_tru_vat: {
-      id: 'chest_tu_tru_vat', name: 'Túi Trữ Vật Vô Chủ', type: 'chest',
+      id: 'chest_tu_tru_vat', name: 'Túi Trữ Vật Vô Chủ', type: 'chest', icon: '🎒',
       desc: 'Túi gấm càn khôn của tu sĩ bỏ mạng nơi hoang dã. Mở ra nhận 50 - 200 Linh Thạch và 1-3 nguyên liệu ngẫu nhiên.',
       price: 100,
       howToGet: '⚔️ Rớt khi diệt Yêu thú (Lang, Trư, Xà) | 🧭 Du ngoạn lịch luyện',
       sources: ['Linh Sơn Ngoại Vi', 'Vạn Yêu Sơn Mạch', 'Trảm Quái']
     },
     chest_bi_canh: {
-      id: 'chest_bi_canh', name: 'Bảo Rương Bí Cảnh Cổ Đại', type: 'chest',
+      id: 'chest_bi_canh', name: 'Bảo Rương Bí Cảnh Cổ Đại', type: 'chest', icon: '📦',
       desc: 'Rương cổ bọc đồng trong di tích. Mở ra nhận 300 - 800 Linh Thạch, đan dược quý và trang bị Huyền Giai.',
       price: 450,
       howToGet: '🧭 Vượt phòng Bảo Rương trong Bí Cảnh Roguelike | ⚔️ Diệt Tinh Anh Quái Bí Cảnh',
       sources: ['Bí Cảnh Roguelike', 'Tinh Anh Quái']
     },
     chest_thien_co: {
-      id: 'chest_thien_co', name: 'Thiên Cơ Chí Bảo Hạp', type: 'chest',
+      id: 'chest_thien_co', name: 'Thiên Cơ Chí Bảo Hạp', type: 'chest', icon: '🎁',
       desc: 'Hộp ngọc cửu sắc phong ấn. Mở ra nhận 1500 - 4000 Linh Thạch, Đan Dược Đột Phá hoặc Pháp Bảo Thiên Giai!',
       price: 2000,
       howToGet: '👑 Tiêu diệt Boss Thượng Cổ Vực Thẳm | 🌀 Kim Thủ Chỉ Điểm Danh Năm thứ 20',
       sources: ['Boss Thế Giới', 'Kim Thủ Chỉ']
     },
+    map_tang_bao: {
+      id: 'map_tang_bao', name: 'Tàng Bảo Đồ Thượng Cổ', type: 'treasure_map', icon: '🗺️',
+      desc: 'Cổ đồ da cừu ghi dấu lối vào Tiên Phủ Cổ Xưa. Mở ra lập tức khai quật 500-1500 Linh Thạch, dược thảo quý và rương báu!',
+      price: 600,
+      howToGet: '⚔️ Rớt từ Tinh Anh / Boss Bí Cảnh & Thế Giới | 🏪 Phường Thị (600 Linh Thạch)',
+      sources: ['Bí Cảnh Roguelike', 'Phường Thị', 'Boss Thế Giới']
+    },
+    tome_cong_phap_tan_thien: {
+      id: 'tome_cong_phap_tan_thien', name: 'Thái Cổ Kiếm Ý Tàn Quyển', type: 'secret_tome', icon: '📜',
+      desc: 'Mảnh da dê ghi chép kiếm ý tàn thiên viễn cổ. Tham ngộ tăng vĩnh viễn +15 Công Kích và +5 Thân Pháp!',
+      price: 1800,
+      howToGet: '📦 Rương Bí Cảnh Cổ Đại | 🏯 Đổi tại Tàng Kinh Các Tông Môn | 👑 Boss Thế Giới',
+      sources: ['Rương Bí Cảnh', 'Tông Môn', 'Boss Thế Giới']
+    },
+    pet_linh_thu_noan: {
+      id: 'pet_linh_thu_noan', name: 'Thái Cổ Linh Thú Noãn', type: 'pet_egg', icon: '🥚',
+      desc: 'Trứng thần thú thái cổ phong ấn linh khí. Truyền 100 Linh Lực để ấp nở Linh Thú Hộ Mệnh đồng hành và trợ chiến!',
+      price: 2500,
+      howToGet: '📦 Rương Bí Cảnh Tầng 5 | 👑 Thái Cổ Bích Giao Long | 🌀 Kim Thủ Chỉ',
+      sources: ['Rương Bí Cảnh', 'Boss Thế Giới', 'Kim Thủ Chỉ']
+    },
 
     // ==========================================
-    // 7. TRANG BỊ: VŨ KHÍ
+    // 7. TRANG BỊ: VŨ KHÍ (CÓ ĐẶC TÍNH & THỐI LUYỆN)
     // ==========================================
     wpn_thanhphong: {
-      id: 'wpn_thanhphong', name: 'Thanh Phong Kiếm', type: 'weapon', atk: 45, crit: 0.05,
+      id: 'wpn_thanhphong', name: 'Thanh Phong Kiếm', type: 'weapon', icon: '🗡️', atk: 45, crit: 0.05,
+      trait: 'Ngự Phong: Tăng +15% Thân Pháp và +5% Né đòn khi lâm trận',
       desc: 'Kiếm sắc bén gió lướt, rèn từ Huyền Thiết và nanh vuốt yêu thú.',
       price: 150,
       howToGet: '🔨 Rèn tại Lò Rèn Động Phủ (4 Huyền Thiết Tinh + 2 Thanh U Thảo) | 🏪 Phường Thị (150 Linh Thạch)',
       sources: ['Lò Rèn Động Phủ', 'Phường Thị']
     },
     wpn_xichtieu: {
-      id: 'wpn_xichtieu', name: 'Xích Tiêu Kiếm', type: 'weapon', atk: 260, crit: 0.1,
+      id: 'wpn_xichtieu', name: 'Xích Tiêu Kiếm', type: 'weapon', icon: '⚔️', atk: 260, crit: 0.1,
+      trait: 'Liệt Diễm: Đòn đánh 35% gây Thiêu Đốt thiêu rụi kinh mạch đối thủ',
       desc: 'Thân kiếm đỏ rực như lửa, chém ra kiếm khí thiêu rụi kinh mạch đối phương.',
       price: 1200,
       howToGet: '🔨 Rèn tại Lò Rèn (4 Tử Tinh Khoáng + 3 Hỏa Viêm Thảo) | 📦 Mở Rương Bí Cảnh Cổ',
       sources: ['Lò Rèn Động Phủ', 'Rương Bí Cảnh']
     },
     wpn_tramyeu: {
-      id: 'wpn_tramyeu', name: 'Trảm Yêu Cự Kiếm', type: 'weapon', atk: 1200, crit: 0.15,
+      id: 'wpn_tramyeu', name: 'Trảm Yêu Cự Kiếm', type: 'weapon', icon: '🪓', atk: 1200, crit: 0.15,
+      trait: 'Trảm Yêu: Tăng +30% sát thương lên yêu quái, 20% gây Chảy Máu',
       desc: 'Bảo kiếm trảm sát ngàn yêu ma, sát khí ngút trời khiến yêu tà khiếp vía.',
       price: 5000,
       howToGet: '🔨 Rèn tại Lò Rèn (4 Thiên Ngoại Vẫn Thiết + 3 Long Huyết Thảo) | 🏯 Tàng Bảo Các Tông Môn',
       sources: ['Lò Rèn Động Phủ', 'Tông Môn']
     },
     wpn_tienkiem: {
-      id: 'wpn_tienkiem', name: 'Bát Hoang Tiên Kiếm', type: 'weapon', atk: 8500, crit: 0.25,
+      id: 'wpn_tienkiem', name: 'Bát Hoang Tiên Kiếm', type: 'weapon', icon: '🔱', atk: 8500, crit: 0.25,
+      trait: 'Thiên Kiếm: Bộc phát Kiếm Khí Tiên Thiên, x2.5 sát thương Bạo Kích',
       desc: 'Tiên kiếm thượng cổ vô địch, một kiếm trảm toái hư không càn khôn.',
       price: 30000,
       howToGet: '🔨 Rèn Thần Khí (4 Hỗn Độn Thần Thiết + 2 Thái Ất Chân Kim) | 📦 Thiên Cơ Chí Bảo Hạp',
@@ -1797,31 +1853,35 @@
     },
 
     // ==========================================
-    // 8. TRANG BỊ: HỘ GIÁP
+    // 8. TRANG BỊ: HỘ GIÁP (CÓ ĐẶC TÍNH & THỐI LUYỆN)
     // ==========================================
     arm_huyenthiet: {
-      id: 'arm_huyenthiet', name: 'Huyền Thiết Giáp', type: 'armor', hp: 200, def: 35,
+      id: 'arm_huyenthiet', name: 'Huyền Thiết Giáp', type: 'armor', icon: '🥋', hp: 200, def: 35,
+      trait: 'Thiết Bích: Hóa giải giảm bớt 20 sát thương từ mọi đòn đánh',
       desc: 'Giáp sắt bền bỉ che chắn yếu huyệt, phòng ngự vững chắc trước móng vuốt dã thú.',
       price: 150,
       howToGet: '🔨 Rèn tại Lò Rèn (4 Huyền Thiết Tinh + 2 Nanh Trư) | 🏪 Phường Thị (150 Linh Thạch)',
       sources: ['Lò Rèn Động Phủ', 'Phường Thị']
     },
     arm_tinhvan: {
-      id: 'arm_tinhvan', name: 'Tinh Vân Đạo Bào', type: 'armor', hp: 1200, def: 180,
+      id: 'arm_tinhvan', name: 'Tinh Vân Đạo Bào', type: 'armor', icon: '👘', hp: 1200, def: 180,
+      trait: 'Tinh Thần: Mỗi hiệp hồi phục 4% Khí Huyết, giảm 15% ST Pháp thuật',
       desc: 'Dệt từ mây tía tinh tú ngàn năm kết hợp Xích Diễm Hổ Bì, giảm thiểu sát thương pháp thuật.',
       price: 1200,
       howToGet: '🔨 Rèn tại Lò Rèn (3 Tử Tinh Khoáng + 3 Bách Niên Dược + 2 Da Hổ) | 📦 Rương Bí Cảnh',
       sources: ['Lò Rèn Động Phủ', 'Rương Bí Cảnh']
     },
     arm_longlan: {
-      id: 'arm_longlan', name: 'Long Lân Bảo Giáp', type: 'armor', hp: 6000, def: 850,
+      id: 'arm_longlan', name: 'Long Lân Bảo Giáp', type: 'armor', icon: '🦺', hp: 6000, def: 850,
+      trait: 'Chân Long: Phản chấn 25% sát thương nhận lại cho kẻ tấn công',
       desc: 'Vảy rồng cổ đại kết thành hộ giáp, đao thương bất nhập, thủy hỏa bất hoại.',
       price: 6000,
       howToGet: '🔨 Rèn tại Lò Rèn (4 Thiên Ngoại Vẫn Thiết + 3 Long Lân Bích Giao) | 👑 Boss Thế Giới',
       sources: ['Lò Rèn Động Phủ', 'Thái Cổ Bích Giao Long']
     },
     arm_hondon: {
-      id: 'arm_hondon', name: 'Hỗn Độn Tiên Y', type: 'armor', hp: 35000, def: 4500,
+      id: 'arm_hondon', name: 'Hỗn Độn Tiên Y', type: 'armor', icon: '🥼', hp: 35000, def: 4500,
+      trait: 'Hỗn Độn Bất Diệt: Khi máu < 30%, bùng nổ Hộ Thuẫn 2000 điểm',
       desc: 'Đạo y bất hoại chống đỡ cửu thiên thần lôi kiếp số, thần thông bất diệt.',
       price: 40000,
       howToGet: '🔨 Rèn Thần Giáp (4 Hỗn Độn Thần Thiết + 3 Thần Hạch) | 📦 Thiên Cơ Chí Bảo Hạp',
@@ -1829,28 +1889,70 @@
     },
 
     // ==========================================
-    // 9. TRANG BỊ: PHÁP BẢO
+    // 9. TRANG BỊ: PHÁP BẢO (CÓ ĐẶC TÍNH & THỐI LUYỆN)
     // ==========================================
     art_guong: {
-      id: 'art_guong', name: 'Bát Quái Hộ Tâm Kính', type: 'artifact', hp: 300, def: 50, mp: 100,
+      id: 'art_guong', name: 'Bát Quái Hộ Tâm Kính', type: 'artifact', icon: '🪞', hp: 300, def: 50, mp: 100,
+      trait: 'Hộ Tâm Quang: Tăng 10% Kháng Bạo Kích, phản xạ ma khí',
       desc: 'Gương đồng hộ tâm soi tỏ tà ma, phản xạ một phần sát thương của yêu thú.',
       price: 300,
       howToGet: '🔨 Rèn Pháp Bảo (3 Thanh Đồng Cổ Tinh + 1 Huyền Thiết) | 🏪 Phường Thị (300 Linh Thạch)',
       sources: ['Lò Rèn Động Phủ', 'Phường Thị']
     },
     art_chuoi: {
-      id: 'art_chuoi', name: 'Bồ Đề Chuỗi Hạt', type: 'artifact', mp: 500, atk: 120,
+      id: 'art_chuoi', name: 'Bồ Đề Chuỗi Hạt', type: 'artifact', icon: '📿', mp: 500, atk: 120,
+      trait: 'Bồ Đề Tĩnh Tâm: Tăng 20% Tốc độ tu vi khi thiền định, hồi 10% MP sau chiến thắng',
       desc: 'Hạt bồ đề tĩnh tâm ngưng thần, uẩn dưỡng đan điền dồi dào linh lực.',
       price: 1500,
       howToGet: '🏯 Đổi tại Tàng Kinh Các Tông Môn | 📦 Rương Bí Cảnh Cổ Đại',
       sources: ['Tông Môn', 'Rương Bí Cảnh']
     },
     art_dinh: {
-      id: 'art_dinh', name: 'Sơn Hà Xã Tắc Đỉnh', type: 'artifact', hp: 8000, atk: 1500, def: 600,
+      id: 'art_dinh', name: 'Sơn Hà Xã Tắc Đỉnh', type: 'artifact', icon: '🏺', hp: 8000, atk: 1500, def: 600,
+      trait: 'Sơn Hà Trấn Khí: Kích hoạt gây choáng kẻ địch 1 hiệp và tăng 50% Giáp',
       desc: 'Thu nhỏ cảnh giới núi sông trấn áp càn khôn vạn dặm.',
       price: 12000,
       howToGet: '👑 Tiêu diệt Boss Thượng Cổ Vực Thẳm | 📦 Thiên Cơ Chí Bảo Hạp',
       sources: ['Boss Thế Giới', 'Rương Thiên Cơ']
+    }
+  };
+
+  const COMPANIONS = {
+    pet_thunder: {
+      id: 'pet_thunder',
+      name: 'Lôi Tích Thú',
+      icon: '⚡',
+      type: 'thunder',
+      desc: 'Linh thú thần lôi thái cổ, trong chiến đấu giáng sấm sét gây sát thương sấm sét cuồng bạo.',
+      combatProc: 'Lôi Đình Nhất Kích',
+      bonusStats: { atk: 35, crit: 0.05, spd: 3 }
+    },
+    pet_fire: {
+      id: 'pet_fire',
+      name: 'Xích Diễm Hỏa Hồ',
+      icon: '🔥',
+      type: 'fire',
+      desc: 'Linh hồ cửu vĩ thai nghén từ chân hỏa, phóng hỏa thiêu đốt địch thủ liên tục.',
+      combatProc: 'Liệt Diễm Thiêu Hồn',
+      bonusStats: { atk: 45, spd: 2 }
+    },
+    pet_turtle: {
+      id: 'pet_turtle',
+      name: 'Huyền Vũ Ấu Quy',
+      icon: '🛡️',
+      type: 'turtle',
+      desc: 'Huyết mạch thần thú Huyền Vũ, tạo hộ thuẫn bảo hộ chủ nhân khi vào trận.',
+      combatProc: 'Huyền Quy Hộ Thể',
+      bonusStats: { def: 60, hp: 500 }
+    },
+    pet_rabbit: {
+      id: 'pet_rabbit',
+      name: 'Bích Ngọc Tiên Thỏ',
+      icon: '🌸',
+      type: 'rabbit',
+      desc: 'Tiên thỏ ngậm tiên thảo tại cung trăng, trị liệu sinh cơ và tăng tốc độ tu vi.',
+      combatProc: 'Ngọc Thỏ Trị Liệu',
+      bonusStats: { hp: 300, mp: 100, spd: 5 }
     }
   };
 
@@ -2647,6 +2749,35 @@
       // 10. Sprite Nhân Vật Đả Tọa
       drawPixelSprite(ctx, SPRITES.playerMeditate, 272, 168 + floatY, 6);
 
+      // Linh Thú Hộ Mệnh đồng hành bên đài sen
+      if (this.systems && this.systems.player && this.systems.player.companion) {
+        const pet = this.systems.player.companion;
+        const petFloat = Math.sin(this.time * 0.08) * 3;
+        const petX = 396;
+        const petY = 222 + petFloat;
+
+        ctx.save();
+        // Vòng quang hoa dưới chân linh thú
+        ctx.fillStyle = pet.type === 'thunder' ? 'rgba(56, 189, 248, 0.35)' :
+                        pet.type === 'fire' ? 'rgba(239, 68, 68, 0.35)' :
+                        pet.type === 'turtle' ? 'rgba(52, 211, 153, 0.35)' : 'rgba(244, 114, 182, 0.35)';
+        ctx.beginPath();
+        ctx.ellipse(petX, petY + 14, 16, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Icon Linh Thú bay bổng
+        ctx.font = '24px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(pet.icon || '🐾', petX, petY);
+
+        // Danh hiệu / Tên linh thú nhỏ phía trên
+        ctx.font = '8px "Press Start 2P", monospace, sans-serif';
+        ctx.fillStyle = '#fde047';
+        ctx.fillText(pet.name, petX, petY - 16);
+        ctx.restore();
+      }
+
       // Kiếm Tu: Phi Kiếm Thần Khí Lơ Lửng Sau Lưng
       const isSword = this.systems && this.systems.player && this.systems.player.cultivationPath && this.systems.player.cultivationPath.id === 'kiem_tu';
       if (isSword) {
@@ -3394,6 +3525,11 @@
       this.renderer.setScene(SCENES.COMBAT);
       this.renderer.setStatusText(`⚔️ GIAO TRANH HUNG HIỂM: Đối đầu 【${this.monster.name}】!`);
 
+      if (this.player.companion && this.player.companion.id === 'pet_turtle') {
+        CombatStatusManager.applyStatus(this.playerCombat, 'shield', 500);
+        this.addLog(`🐢 Linh thú 【Huyền Vũ Ấu Quy】 bảo hộ, kích hoạt Hộ Thuẫn 500 điểm khi vào trận!`, 'golden');
+      }
+
       this.updateMonsterIntent();
       switchTab('tab-combat');
 
@@ -3446,6 +3582,14 @@
       if (this.playerCombat.skill2Cooldown > 0) this.playerCombat.skill2Cooldown--;
       if (this.playerCombat.artifactCooldown > 0) this.playerCombat.artifactCooldown--;
       if (this.playerCombat.berserkTurns > 0) this.playerCombat.berserkTurns--;
+      if (this.playerCombat.eagleEyeTurns > 0) this.playerCombat.eagleEyeTurns--;
+
+      // Đặc tính hộ giáp Tinh Vân Đạo Bào: Hồi phục 4% HP mỗi hiệp
+      if (this.player.equippedArmor && this.player.equippedArmor.id === 'arm_tinhvan') {
+        const regenArmor = Math.floor(this.playerCombat.maxHp * 0.04);
+        this.playerCombat.curHp = Math.min(this.playerCombat.maxHp, this.playerCombat.curHp + regenArmor);
+        this.renderer.addFloatingText(`+${regenArmor} Tinh Thần`, 170, 140, '#38bdf8');
+      }
 
       // Đặc tính bị động Thể Tu (Cửu Chuyển Kim Cốt) hồi 4% HP mỗi lượt
       if (this.player.cultivationPath && this.player.cultivationPath.id === 'the_tu') {
@@ -3595,6 +3739,9 @@
         if (this.playerCombat.berserkTurns > 0) {
           critRate += 0.25;
         }
+        if (this.playerCombat.eagleEyeTurns > 0) {
+          critRate += 0.35;
+        }
 
         const isCrit = Math.random() < critRate;
         const isPoisoned = this.monsterCombat.statusEffects.poison > 0;
@@ -3602,6 +3749,18 @@
 
         if (this.player.physique && this.player.physique.armorPen) {
           dmg += Math.floor(this.monster.def * 0.3);
+        }
+        if (this.playerCombat.eagleEyeTurns > 0) {
+          dmg += Math.floor(this.monster.def * 0.8);
+        }
+
+        // Đặc tính Vũ khí: Trảm Yêu Cự Kiếm (+30% ST lên yêu thú)
+        if (this.player.equippedWeapon && this.player.equippedWeapon.id === 'wpn_tramyeu') {
+          dmg = Math.floor(dmg * 1.3);
+          if (Math.random() < 0.25) {
+            CombatStatusManager.applyStatus(this.monsterCombat, 'bleed', 2);
+            this.addLog('🗡️ Trảm Yêu Cự Kiếm chém rách kinh mạch yêu quái, gây Xuất Huyết!', 'battle');
+          }
         }
 
         // Trừ vào Kim Thân / Khiên trước
@@ -3618,6 +3777,48 @@
           this.renderer.addFloatingText(isCrit ? `BẠO! -${actualDmg}` : `-${actualDmg}`, 440, 160, isCrit ? '#fbbf24' : '#ef4444', isCrit);
           this.addLog(`Đạo hữu vung kiếm xuất kích, gây cho 【${this.monster.name}】 ${actualDmg} sát thương!${isCrit ? ' (Bạo Kích!!)' : ''}`, isCrit ? 'crit' : 'normal');
           this.handleLifeSteal(actualDmg);
+        }
+
+        // Đặc tính Vũ khí: Xích Tiêu Kiếm (35% Thiêu Đốt)
+        if (this.player.equippedWeapon && this.player.equippedWeapon.id === 'wpn_xichtieu' && Math.random() < 0.35) {
+          CombatStatusManager.applyStatus(this.monsterCombat, 'burn', 3);
+          this.addLog('🔥 Chân hỏa từ Xích Tiêu Kiếm bùng cháy, thiêu đốt kinh mạch đối thủ 3 hiệp!', 'battle');
+        }
+
+        // Đặc tính Vũ khí: Vạn Kiếm Quy Tông (25% kích hoạt phi kiếm liên kích)
+        if (this.player.equippedWeapon && this.player.equippedWeapon.id === 'wpn_thienkiem' && Math.random() < 0.25) {
+          const extraDmg = Math.floor(this.player.totalAtk * 0.85);
+          this.monsterCombat.curHp = Math.max(0, this.monsterCombat.curHp - extraDmg);
+          this.renderer.addFloatingText(`VẠN KIẾM! -${extraDmg}`, 440, 130, '#fbbf24', true);
+          this.addLog(`⚡ Vạn Kiếm Quy Tông! Phi kiếm bổ sung oanh kích thêm ${extraDmg} sát thương!`, 'golden');
+        }
+
+        // Đặc tính Pháp Bảo: Sơn Hà Xã Tắc Đỉnh (20% Choáng)
+        if (this.player.equippedArtifact && this.player.equippedArtifact.id === 'art_dinh' && Math.random() < 0.20) {
+          CombatStatusManager.applyStatus(this.monsterCombat, 'stun', 1);
+          this.addLog('🏺 Sơn Hà Xã Tắc Đỉnh trấn áp càn khôn khiến đối thủ bị choáng 1 hiệp!', 'skill');
+        }
+
+        // Trợ chiến từ Linh Thú Hộ Mệnh
+        if (this.player.companion) {
+          if (this.player.companion.id === 'pet_thunder' && Math.random() < 0.6) {
+            const petDmg = Math.max(15, Math.floor(this.player.totalAtk * 0.35));
+            this.monsterCombat.curHp = Math.max(0, this.monsterCombat.curHp - petDmg);
+            this.renderer.spawnLightningSparks(440, 160);
+            this.renderer.addFloatingText(`⚡ LÔI THÚ -${petDmg}`, 440, 120, '#facc15');
+            this.addLog(`⚡ Linh thú 【Lôi Tích Thú】 gầm vang, phóng sét đánh bồi ${petDmg} sát thương!`, 'golden');
+          } else if (this.player.companion.id === 'pet_fire' && Math.random() < 0.6) {
+            const petDmg = Math.max(10, Math.floor(this.player.totalAtk * 0.25));
+            this.monsterCombat.curHp = Math.max(0, this.monsterCombat.curHp - petDmg);
+            CombatStatusManager.applyStatus(this.monsterCombat, 'burn', 2);
+            this.renderer.addFloatingText(`🔥 HỎA HỒ -${petDmg}`, 440, 120, '#ef4444');
+            this.addLog(`🔥 Linh thú 【Xích Diễm Hỏa Hồ】 phun chân hỏa thiêu đốt gây ${petDmg} sát thương!`, 'golden');
+          } else if (this.player.companion.id === 'pet_rabbit' && Math.random() < 0.7) {
+            const heal = Math.max(25, Math.floor(this.playerCombat.maxHp * 0.08));
+            this.playerCombat.curHp = Math.min(this.playerCombat.maxHp, this.playerCombat.curHp + heal);
+            this.renderer.addFloatingText(`🌸 TIÊN THỎ +${heal}`, 170, 130, '#f472b6');
+            this.addLog(`🌸 Linh thú 【Bích Ngọc Tiên Thỏ】 tụ linh sinh cơ hồi phục ${heal} Khí Huyết cho chủ nhân!`, 'heal');
+          }
         }
 
         // Pháp Tu nội tại: 30% gây Tê Liệt
@@ -3847,15 +4048,89 @@
       } else if (pillId === 'pill_ngung_than') {
         const heal = Math.floor(this.playerCombat.maxHp * 0.25 * healMult);
         this.playerCombat.curHp = Math.min(this.playerCombat.maxHp, this.playerCombat.curHp + heal);
-        this.playerCombat.statuses = [];
+        CombatStatusManager.cleanse(this.playerCombat);
         this.renderer.addFloatingText(`THANH TÂM`, 170, 160, '#38bdf8');
         this.addLog(`Đạo hữu nuốt vào Thanh Tâm Ngưng Thần Đan, hóa giải toàn bộ hiệu ứng xấu và hồi phục ${heal} Khí Huyết!`, 'heal');
       } else if (pillId === 'pill_bao_khi') {
-        this.addPlayerStatus({ id: 'berserk', name: 'Cuồng Bạo', icon: '🔥', duration: 5, atkBonus: 0.35 });
+        this.playerCombat.berserkTurns = 5;
         this.renderer.addFloatingText(`BẠO KHÍ +35%`, 170, 160, '#ef4444', true);
-        this.addLog(`Đạo hữu nuốt vào Bạo Khí Cuồng Đan, đan điền cuộn trào tăng 35% Công Kích trong 5 hiệp!`, 'golden');
+        this.addLog(`Đạo hữu nuốt vào Bạo Khí Cuồng Đan, đan điền cuộn trào tăng 35% Công Kích & Bạo Kích trong 5 hiệp!`, 'golden');
       }
       this.updateCombatUI();
+      this.isProcessingTurn = false;
+    }
+
+    playerUseTalisman(talismanId) {
+      if (!this.isPlayerTurn || this.isProcessingTurn) return;
+      const count = (this.player.inventory && this.player.inventory[talismanId]) || 0;
+      if (count <= 0) {
+        this.addLog(`Trong túi không có phù lục này!`, 'warning');
+        return;
+      }
+
+      this.player.inventory[talismanId]--;
+      this.isPlayerTurn = false;
+      this.isProcessingTurn = true;
+      this.updateCombatButtons(false);
+
+      const actionsGrid = document.querySelector('.combat-actions-grid');
+      if (actionsGrid) actionsGrid.classList.remove('turn-active');
+
+      const picker = document.getElementById('combat-item-picker');
+      if (picker) picker.classList.add('hidden');
+
+      sound.playBreakthrough();
+      const item = ITEMS[talismanId] || { name: 'Phù Lục' };
+
+      if (talismanId === 'talisman_dan_loi') {
+        const dmg = Math.floor(this.player.totalAtk * 2.5 + 150);
+        const shieldRes = CombatStatusManager.absorbDamage(this.monsterCombat, dmg, this.renderer, 440, 140);
+        const actualDmg = shieldRes.remainingDmg;
+        this.monsterCombat.curHp = Math.max(0, this.monsterCombat.curHp - actualDmg);
+        this.renderer.spawnLightningSparks(440, 160);
+        this.renderer.addFloatingText(`LÔI PHÙ -${actualDmg}`, 440, 140, '#facc15', true);
+        this.addLog(`⚡ Đạo hữu kích hoạt 【${item.name}】! Cửu thiên cuồng lôi oanh kích ${actualDmg} sát thương sấm sét!`, 'golden');
+        if (Math.random() < 0.5) {
+          CombatStatusManager.applyStatus(this.monsterCombat, 'stun', 1);
+          this.addLog(`Kình lôi tê dại khiến 【${this.monster.name}】 bị tê liệt 1 hiệp!`, 'skill');
+        }
+      } else if (talismanId === 'talisman_liet_hoa') {
+        const dmg = Math.floor(this.player.totalAtk * 1.8);
+        const shieldRes = CombatStatusManager.absorbDamage(this.monsterCombat, dmg, this.renderer, 440, 140);
+        const actualDmg = shieldRes.remainingDmg;
+        this.monsterCombat.curHp = Math.max(0, this.monsterCombat.curHp - actualDmg);
+        CombatStatusManager.applyStatus(this.monsterCombat, 'burn', 3);
+        this.renderer.addFloatingText(`HỎA PHÙ -${actualDmg}`, 440, 140, '#ef4444', true);
+        this.addLog(`🔥 Đạo hữu ném ra 【${item.name}】! Chân hỏa thiêu rụi ${actualDmg} sát thương và gây Thiêu Đốt 3 hiệp!`, 'golden');
+      } else if (talismanId === 'talisman_bang_phong') {
+        const dmg = Math.floor(this.player.totalAtk * 1.2);
+        const shieldRes = CombatStatusManager.absorbDamage(this.monsterCombat, dmg, this.renderer, 440, 140);
+        const actualDmg = shieldRes.remainingDmg;
+        this.monsterCombat.curHp = Math.max(0, this.monsterCombat.curHp - actualDmg);
+        CombatStatusManager.applyStatus(this.monsterCombat, 'stun', 2);
+        this.renderer.addFloatingText(`BĂNG PHONG -${actualDmg}`, 440, 140, '#38bdf8', true);
+        this.addLog(`❄️ Đạo hữu phóng thích 【${item.name}】! Hàn khí ngàn năm đóng băng 【${this.monster.name}】 2 hiệp!`, 'heal');
+      } else if (talismanId === 'talisman_kim_cuong') {
+        const shieldVal = 800;
+        CombatStatusManager.applyStatus(this.playerCombat, 'shield', shieldVal);
+        this.renderer.addFloatingText(`KIM CƯƠNG +${shieldVal}`, 170, 160, '#fbbf24', true);
+        this.addLog(`🛡️ Đạo hữu tế xuất 【${item.name}】! Kim quang rực rỡ tạo ${shieldVal} Hộ Thuẫn bảo hộ!`, 'golden');
+      } else if (talismanId === 'talisman_an_than') {
+        this.playerCombat.dodge100 = true;
+        this.renderer.addFloatingText(`ẨN THÂN!`, 170, 160, '#c084fc', true);
+        this.addLog(`👻 Đạo hữu dán lên 【${item.name}】! Thân ảnh hòa vào hư không, chắc chắn né tránh đòn công kế tiếp của địch thủ!`, 'golden');
+      } else if (talismanId === 'talisman_thien_nhan') {
+        this.playerCombat.eagleEyeTurns = 3;
+        this.renderer.addFloatingText(`THIÊN NHÃN!`, 170, 160, '#fbbf24', true);
+        this.addLog(`👁️ Khai mở 【${item.name}】! Nhìn thấu kinh mạch đối thủ: +35% Bạo Kích & Xuyên Giáp trong 3 hiệp!`, 'golden');
+      } else if (talismanId === 'talisman_don_dia') {
+        this.addLog(`💨 Đạo hữu kích hoạt 【Độn Địa Phù】, thổ độn ngàn dặm lập tức thoát ly sinh tử chiến 100%!`, 'golden');
+        this.endCombat(false, true);
+        return;
+      }
+
+      this.updateCombatUI();
+      if (this.checkCombatOver()) return;
       this.isProcessingTurn = false;
     }
 
@@ -3925,6 +4200,16 @@
         }
 
         // 2. Tính tỷ lệ Né Đòn của Đạo Hữu
+        if (this.playerCombat.dodge100) {
+          this.playerCombat.dodge100 = false;
+          this.renderer.addFloatingText('ẨN THÂN NÉ ĐÒN!', 190, 160, '#c084fc', true);
+          this.addLog(`👻 Nhờ Ẩn Thân Tiên Phù, đạo hữu né tránh hoàn toàn đòn đánh của 【${this.monster.name}】!`, 'heal');
+          this.updateMonsterIntent();
+          this.updateCombatUI();
+          this.isProcessingTurn = false;
+          return;
+        }
+
         const pSpd = this.player.totalSpd || 15;
         const monSpd = this.monster.spd || 15;
         const playerRealm = this.player.realmIndex || 0;
@@ -4003,16 +4288,29 @@
           CombatStatusManager.applyStatus(this.playerCombat, 'bleed', 2);
         }
 
-        // Phản đòn thể chất
+        // Phản đòn thể chất & Long Lân Bảo Giáp
         let totalReflect = (this.player.physique && this.player.physique.reflectBonus) || 0;
         if (this.player.cultivationPath && this.player.cultivationPath.id === 'the_tu') {
           totalReflect += 0.15;
+        }
+        if (this.player.equippedArmor && this.player.equippedArmor.id === 'arm_longlan') {
+          totalReflect += 0.25;
         }
         if (totalReflect > 0 && actualDmg > 0) {
           const reflectDmg = Math.max(1, Math.floor(actualDmg * totalReflect));
           this.monsterCombat.curHp = Math.max(0, this.monsterCombat.curHp - reflectDmg);
           this.renderer.addFloatingText(`PHẢN! -${reflectDmg}`, 440, 170, '#f97316');
-          this.addLog(`Thể phách cứng như sắt thép! Đạo hữu phản chấn lại ${reflectDmg} sát thương!`, 'normal');
+          this.addLog(`Thể phách cương mãnh & Long Lân phản chấn lại ${reflectDmg} sát thương cho đối thủ!`, 'normal');
+        }
+
+        // Hộ giáp Hỗn Độn Tiên Y: Kích hoạt Hộ Thuẫn khẩn cấp khi HP <= 30%
+        if (this.player.equippedArmor && this.player.equippedArmor.id === 'arm_hondon' && !this.playerCombat.hondonShieldUsed) {
+          if (this.playerCombat.curHp > 0 && (this.playerCombat.curHp / this.playerCombat.maxHp) <= 0.3) {
+            this.playerCombat.hondonShieldUsed = true;
+            CombatStatusManager.applyStatus(this.playerCombat, 'shield', 2000);
+            this.renderer.addFloatingText('HỖN ĐỘN TIÊN THUẪN +2000', 190, 140, '#c084fc', true);
+            this.addLog('🥼 Hỗn Độn Tiên Y bùng nổ chân nguyên hộ thể, ngưng tụ 2000 Hộ Thuẫn cứu mạng!', 'golden');
+          }
         }
 
         // Kim Thủ Chỉ: Bất Tử Chi Khu
@@ -4074,6 +4372,12 @@
       this.player.spiritStones = (this.player.spiritStones || 0) + stoneGain;
       this.addLog(`Thu hoạch: +${expGain} Tu Vi, +${stoneGain} Linh Thạch.`, 'loot');
 
+      if (this.player.equippedArtifact && this.player.equippedArtifact.id === 'art_chuoi') {
+        const mpRestored = Math.floor(this.player.maxMp * 0.1);
+        this.player.curMp = Math.min(this.player.maxMp, this.player.curMp + mpRestored);
+        this.addLog(`📿 Bồ Đề Chuỗi Hạt ngưng thần tĩnh tâm, hồi phục ${mpRestored} Linh Lực sau trận chiến!`, 'heal');
+      }
+
       let droppedItems = [];
       if (this.monster.drops) {
         this.monster.drops.forEach(drop => {
@@ -4131,6 +4435,10 @@
       if (this.combatInterval) clearInterval(this.combatInterval);
       this.updateCombatButtons(false);
 
+      // Trận chiến đã kết thúc về mặt gameplay, cho phép người chơi rời màn
+      // hình combat ngay cả khi modal kết quả vẫn đang chờ tự đóng.
+      if (document.body) document.body.classList.add('combat-result-ready');
+
       const overlay = document.getElementById('combat-result-overlay');
       const titleEl = document.getElementById('combat-result-title');
       const bodyEl = document.getElementById('combat-result-body');
@@ -4173,6 +4481,8 @@
       const overlay = document.getElementById('combat-result-overlay');
       if (overlay) overlay.classList.add('hidden');
 
+      if (document.body) document.body.classList.remove('combat-result-ready');
+
       const isVictory = won !== null ? won : (this.monsterCombat.curHp <= 0);
       this.endCombat(isVictory, false);
     }
@@ -4199,7 +4509,7 @@
         this.addLog(`[Tông Môn] Tích lũy chiến tích trừ yêu: ${Math.min(3, this.player.sectPatrolKills)}/3 yêu thú!`, 'system');
       }
 
-      document.body.classList.remove('combat-active-mode');
+      document.body.classList.remove('combat-active-mode', 'combat-result-ready');
       const headerEl = document.getElementById('combat-active-header');
       if (headerEl) headerEl.classList.add('hidden');
 
@@ -4375,9 +4685,16 @@
 
       if (btnPill) {
         const pInv = this.player.inventory || {};
-        const pillCount = (pInv.pill_hoixuan || 0) + (pInv.pill_quy_nguyen || 0) + (pInv.pill_ngung_than || 0) + (pInv.pill_bao_khi || 0);
+        const pillCount = (pInv.pill_hoixuan || 0) + (pInv.pill_quy_nguyen || 0) + (pInv.pill_ngung_than || 0) + (pInv.pill_bao_khi || 0) + (pInv.pill_tulinh || 0);
         const canUsePill = enabled && pillCount > 0;
         btnPill.disabled = !canUsePill;
+      }
+
+      const btnTalisman = document.getElementById('btn-combat-talisman');
+      if (btnTalisman) {
+        const pInv = this.player.inventory || {};
+        const talismanCount = (pInv.talisman_dan_loi || 0) + (pInv.talisman_liet_hoa || 0) + (pInv.talisman_bang_phong || 0) + (pInv.talisman_kim_cuong || 0) + (pInv.talisman_an_than || 0) + (pInv.talisman_thien_nhan || 0) + (pInv.talisman_don_dia || 0);
+        btnTalisman.disabled = !enabled || talismanCount === 0;
       }
 
       if (btnFlee) btnFlee.disabled = !enabled;
@@ -4589,25 +4906,31 @@
       }
 
       const pathBonus = (p.cultivationPath && p.cultivationPath.bonus) || {};
-      const wpnAtk = (p.equippedWeapon && p.equippedWeapon.atk) || 0;
-      const armHp = (p.equippedArmor && p.equippedArmor.hp) || 0;
-      const armDef = (p.equippedArmor && p.equippedArmor.def) || 0;
-      const artHp = (p.equippedArtifact && p.equippedArtifact.hp) || 0;
-      const artMp = (p.equippedArtifact && p.equippedArtifact.mp) || 0;
-      const artAtk = (p.equippedArtifact && p.equippedArtifact.atk) || 0;
-      const artDef = (p.equippedArtifact && p.equippedArtifact.def) || 0;
+      const compBonus = (p.companion && p.companion.bonusStats) || {};
 
-      p.maxHp = Math.floor((base.hp + (pathBonus.hp || 0) + armHp + artHp + (p.bonusHp || 0)) * (1 + phyHp));
-      p.maxMp = Math.floor((base.mp + (pathBonus.mp || 0) + artMp + (p.bonusMp || 0)) * (1 + ((p.spiritualRoot && p.spiritualRoot.mpMod) || 0)));
-      p.totalAtk = Math.floor((base.atk + (pathBonus.atk || 0) + wpnAtk + artAtk + (p.bonusAtk || 0)) * (1 + phyAtk) * ((p.spiritualRoot && p.spiritualRoot.dmgMod) || 1));
-      p.totalDef = Math.floor((base.def + (pathBonus.def || 0) + armDef + artDef + (p.bonusDef || 0)) * (1 + phyDef));
+      const wpnRefine = (p.equippedWeapon && p.equippedWeapon.refineLevel) || 0;
+      const armRefine = (p.equippedArmor && p.equippedArmor.refineLevel) || 0;
+      const artRefine = (p.equippedArtifact && p.equippedArtifact.refineLevel) || 0;
+
+      const wpnAtk = Math.floor(((p.equippedWeapon && p.equippedWeapon.atk) || 0) * (1 + wpnRefine * 0.15));
+      const armHp = Math.floor(((p.equippedArmor && p.equippedArmor.hp) || 0) * (1 + armRefine * 0.15));
+      const armDef = Math.floor(((p.equippedArmor && p.equippedArmor.def) || 0) * (1 + armRefine * 0.15));
+      const artHp = Math.floor(((p.equippedArtifact && p.equippedArtifact.hp) || 0) * (1 + artRefine * 0.15));
+      const artMp = Math.floor(((p.equippedArtifact && p.equippedArtifact.mp) || 0) * (1 + artRefine * 0.15));
+      const artAtk = Math.floor(((p.equippedArtifact && p.equippedArtifact.atk) || 0) * (1 + artRefine * 0.15));
+      const artDef = Math.floor(((p.equippedArtifact && p.equippedArtifact.def) || 0) * (1 + artRefine * 0.15));
+
+      p.maxHp = Math.floor((base.hp + (pathBonus.hp || 0) + (compBonus.hp || 0) + armHp + artHp + (p.bonusHp || 0)) * (1 + phyHp));
+      p.maxMp = Math.floor((base.mp + (pathBonus.mp || 0) + (compBonus.mp || 0) + artMp + (p.bonusMp || 0)) * (1 + ((p.spiritualRoot && p.spiritualRoot.mpMod) || 0)));
+      p.totalAtk = Math.floor((base.atk + (pathBonus.atk || 0) + (compBonus.atk || 0) + wpnAtk + artAtk + (p.bonusAtk || 0)) * (1 + phyAtk) * ((p.spiritualRoot && p.spiritualRoot.dmgMod) || 1));
+      p.totalDef = Math.floor((base.def + (pathBonus.def || 0) + (compBonus.def || 0) + armDef + artDef + (p.bonusDef || 0)) * (1 + phyDef));
 
       let spdMod = 1.0;
       if (p.cheatPerk && p.cheatPerk.id === 'escape_master') spdMod += 0.5;
       if (p.spiritualRoot && p.spiritualRoot.spdMod) spdMod += p.spiritualRoot.spdMod;
-      p.totalSpd = Math.floor((base.spd + (p.bonusSpd || 0)) * spdMod);
+      p.totalSpd = Math.floor((base.spd + (compBonus.spd || 0) + (p.bonusSpd || 0)) * spdMod);
 
-      p.totalCrit = 0.05 + ((pathBonus.crit || 0)) + ((p.spiritualRoot && p.spiritualRoot.critMod) || 0) + ((p.physique && p.physique.critBonus) || 0) + ((p.equippedWeapon && p.equippedWeapon.crit) || 0) + (p.bonusCrit || 0);
+      p.totalCrit = 0.05 + ((pathBonus.crit || 0)) + ((p.spiritualRoot && p.spiritualRoot.critMod) || 0) + ((p.physique && p.physique.critBonus) || 0) + ((p.equippedWeapon && p.equippedWeapon.crit) || 0) + ((compBonus.crit || 0)) + (p.bonusCrit || 0);
       p.totalCritDmg = 0.5 + (pathBonus.critDmg || 0);
       p.maxLifespan = base.lifespan + (p.bonusLifespan || 0);
 
@@ -4945,22 +5268,25 @@
       else if (price > 50) { rarity = 'Hoàng Giai'; rarityColor = '#34d399'; }
 
       // Icon & Loại
-      let icon = '💎';
+      const icon = item.icon || '💎';
       let typeName = 'Kỳ Trân Dị Bảo';
-      if (item.type === 'pill') { icon = '💊'; typeName = 'Đan Dược'; }
-      else if (item.type === 'weapon') { icon = '🗡️'; typeName = 'Binh Khí'; }
-      else if (item.type === 'armor') { icon = '🛡️'; typeName = 'Hộ Giáp'; }
-      else if (item.type === 'artifact') { icon = '🔮'; typeName = 'Pháp Bảo'; }
-      else if (item.type === 'herb') { icon = '🌿'; typeName = 'Linh Dược'; }
-      else if (item.type === 'ore') { icon = '⛏️'; typeName = 'Khoáng Thạch'; }
-      else if (item.type === 'monster_mat') { icon = '🦴'; typeName = 'Dị Bảo Yêu Thú'; }
-      else if (item.type === 'talisman') { icon = '📜'; typeName = 'Phù Lục'; }
-      else if (item.type === 'tea') { icon = '🍵'; typeName = 'Linh Trà'; }
-      else if (item.type === 'chest') { icon = '🎁'; typeName = 'Bảo Hạp'; }
+      if (item.type === 'pill') typeName = 'Đan Dược';
+      else if (item.type === 'weapon') typeName = 'Binh Khí';
+      else if (item.type === 'armor') typeName = 'Hộ Giáp';
+      else if (item.type === 'artifact') typeName = 'Pháp Bảo';
+      else if (item.type === 'herb') typeName = 'Linh Dược';
+      else if (item.type === 'ore') typeName = 'Khoáng Thạch';
+      else if (item.type === 'monster_mat') typeName = 'Dị Bảo Yêu Thú';
+      else if (item.type === 'talisman') typeName = 'Phù Lục';
+      else if (item.type === 'tea') typeName = 'Linh Trà';
+      else if (item.type === 'chest') typeName = 'Bảo Hạp';
+      else if (item.type === 'treasure_map') typeName = 'Cổ Đồ Tầm Bảo';
+      else if (item.type === 'secret_tome') typeName = 'Tàn Quyển Bí Tịch';
+      else if (item.type === 'pet_egg') typeName = 'Linh Thú Noãn';
 
       if (iconEl) iconEl.textContent = icon;
       if (nameEl) {
-        nameEl.textContent = item.name;
+        nameEl.textContent = `${item.name}${item.refineLevel ? ' +' + item.refineLevel : ''}`;
         nameEl.style.color = rarityColor;
       }
       if (rarityEl) {
@@ -4979,6 +5305,9 @@
       // Thuộc tính
       if (statsList) {
         statsList.innerHTML = '';
+        if (item.trait) statsList.innerHTML += `<div class="item-stat-badge text-gold">✨ Đặc Tính: ${item.trait}</div>`;
+        if (item.rawEffectDesc) statsList.innerHTML += `<div class="item-stat-badge text-emerald">🍃 Dược Lực Nuốt Trực Tiếp: ${item.rawEffectDesc}</div>`;
+        if (item.refineLevel) statsList.innerHTML += `<div class="item-stat-badge text-gold">🔨 Thối Luyện Cấp: +${item.refineLevel} (+${item.refineLevel * 15}% Chỉ số)</div>`;
         if (item.atk) statsList.innerHTML += `<div class="item-stat-badge text-red">⚔️ Công Kích: +${item.atk}</div>`;
         if (item.def) statsList.innerHTML += `<div class="item-stat-badge text-cyan">🛡️ Phòng Ngự: +${item.def}</div>`;
         if (item.hp) statsList.innerHTML += `<div class="item-stat-badge text-red">🩸 Khí Huyết: +${item.hp} HP</div>`;
@@ -5063,10 +5392,33 @@
       if (btnClose) btnClose.onclick = closeModal;
       if (btnCloseX) btnCloseX.onclick = closeModal;
 
+      const btnRefine = document.getElementById('btn-item-action-refine');
+      if (btnRefine) {
+        if (item.type === 'weapon' || item.type === 'armor' || item.type === 'artifact') {
+          btnRefine.style.display = 'inline-block';
+          const curLvl = item.refineLevel || 0;
+          const nextLvl = curLvl + 1;
+          const stoneCost = nextLvl * 200;
+          btnRefine.textContent = `🔨 Thối Luyện (+${nextLvl} • ${stoneCost} đá)`;
+          btnRefine.onclick = () => {
+            this.refineEquipment(item.id, source);
+          };
+        } else {
+          btnRefine.style.display = 'none';
+        }
+      }
+
       if (source === 'inventory') {
         if (item.type === 'pill') {
           btnPrimary.style.display = 'inline-block';
           btnPrimary.textContent = '💊 Nuốt Dược';
+          btnPrimary.onclick = () => {
+            this.useInventoryItem(item.id);
+            closeModal();
+          };
+        } else if (item.type === 'herb') {
+          btnPrimary.style.display = 'inline-block';
+          btnPrimary.textContent = '🍃 Nuốt Thảo Dược';
           btnPrimary.onclick = () => {
             this.useInventoryItem(item.id);
             closeModal();
@@ -5088,6 +5440,27 @@
         } else if (item.type === 'talisman') {
           btnPrimary.style.display = 'inline-block';
           btnPrimary.textContent = '📜 Kích Hoạt Phù';
+          btnPrimary.onclick = () => {
+            this.useInventoryItem(item.id);
+            closeModal();
+          };
+        } else if (item.type === 'treasure_map') {
+          btnPrimary.style.display = 'inline-block';
+          btnPrimary.textContent = '🗺️ Tầm Bảo Thám Hiểm';
+          btnPrimary.onclick = () => {
+            this.useInventoryItem(item.id);
+            closeModal();
+          };
+        } else if (item.type === 'secret_tome') {
+          btnPrimary.style.display = 'inline-block';
+          btnPrimary.textContent = '📜 Lĩnh Ngộ Bí Tịch';
+          btnPrimary.onclick = () => {
+            this.useInventoryItem(item.id);
+            closeModal();
+          };
+        } else if (item.type === 'pet_egg') {
+          btnPrimary.style.display = 'inline-block';
+          btnPrimary.textContent = '🥚 Ấp Trứng (100 MP)';
           btnPrimary.onclick = () => {
             this.useInventoryItem(item.id);
             closeModal();
@@ -5120,7 +5493,8 @@
         btnSell.style.display = 'none';
       } else if (source === 'compendium') {
         const owned = (p.inventory && p.inventory[item.id]) || 0;
-        if (owned > 0 && (item.type === 'pill' || item.type === 'tea' || item.type === 'chest' || item.type === 'talisman' || item.type === 'weapon' || item.type === 'armor' || item.type === 'artifact')) {
+        const canUse = item.type === 'pill' || item.type === 'herb' || item.type === 'tea' || item.type === 'chest' || item.type === 'talisman' || item.type === 'treasure_map' || item.type === 'secret_tome' || item.type === 'pet_egg' || item.type === 'weapon' || item.type === 'armor' || item.type === 'artifact';
+        if (owned > 0 && canUse) {
           btnPrimary.style.display = 'inline-block';
           btnPrimary.textContent = (item.type === 'weapon' || item.type === 'armor' || item.type === 'artifact') ? '⚔️ Trang Bị' : 'Sử Dụng';
           btnPrimary.onclick = () => {
@@ -5143,6 +5517,72 @@
       }
 
       modal.classList.remove('hidden');
+    }
+
+    refineEquipment(itemId, source) {
+      const p = this.player;
+      if (!p) return;
+      let item = ITEMS[itemId];
+      let isEquipped = false;
+      let slot = null;
+
+      if (source && source.startsWith('equipped_')) {
+        slot = source.replace('equipped_', '');
+        if (slot === 'weapon') item = p.equippedWeapon;
+        if (slot === 'armor') item = p.equippedArmor;
+        if (slot === 'artifact') item = p.equippedArtifact;
+        isEquipped = true;
+      } else {
+        if (!p.inventory[itemId] || p.inventory[itemId] <= 0) return;
+        if (item.type !== 'weapon' && item.type !== 'armor' && item.type !== 'artifact') return;
+      }
+
+      if (!item) return;
+
+      const curLevel = item.refineLevel || 0;
+      const nextLevel = curLevel + 1;
+      const stoneCost = nextLevel * 200;
+
+      let reqOre = 'ore_huyenthiet';
+      let oreName = 'Huyền Thiết Khoáng';
+      if (curLevel >= 9) { reqOre = 'ore_thai_at'; oreName = 'Thái Ất Tinh Kim'; }
+      else if (curLevel >= 6) { reqOre = 'ore_tutinh'; oreName = 'Tử Tinh Khoáng'; }
+      else if (curLevel >= 3) { reqOre = 'ore_dong_tinh'; oreName = 'Thanh Đồng Cổ Tinh'; }
+
+      const reqOreCount = 2;
+      const ownedOre = (p.inventory && p.inventory[reqOre]) || 0;
+
+      if ((p.spiritStones || 0) < stoneCost) {
+        this.addLog(`Thối luyện thất bại: Cần ${stoneCost} Linh Thạch (Hiện có: ${p.spiritStones || 0})!`, 'warning');
+        return;
+      }
+      if (ownedOre < reqOreCount) {
+        this.addLog(`Thối luyện thất bại: Cần ${reqOreCount}x ${oreName} để thối luyện cấp +${nextLevel}!`, 'warning');
+        return;
+      }
+
+      p.spiritStones -= stoneCost;
+      p.inventory[reqOre] -= reqOreCount;
+
+      let successRate = 1.0;
+      if (curLevel >= 9) successRate = 0.4;
+      else if (curLevel >= 6) successRate = 0.6;
+      else if (curLevel >= 3) successRate = 0.8;
+
+      if (Math.random() <= successRate) {
+        item.refineLevel = nextLevel;
+        sound.playBreakthrough();
+        this.renderer.addFloatingText(`THỐI LUYỆN +${nextLevel}!`, 320, 160, '#facc15', true);
+        this.addLog(`🔥 Thối luyện thành công 【${item.name}】 lên +${nextLevel}! Uy lực tăng thêm 15%!`, 'golden');
+      } else {
+        sound.playHurt();
+        this.renderer.addFloatingText(`THẤT BẠI!`, 320, 160, '#ef4444');
+        this.addLog(`💥 Lửa lò bùng nổ, thối luyện 【${item.name}】 lên +${nextLevel} thất bại! Tiêu hao linh thạch và khoáng thạch.`, 'danger');
+      }
+
+      this.recalculatePlayerStats();
+      this.updateUI();
+      this.showItemDetail(item.id, source);
     }
 
     unequipItem(slot) {
@@ -6548,10 +6988,117 @@
           sound.playBreakthrough();
           this.renderer.addFloatingText('THÂN PHÁP +5!', 320, 160, '#38bdf8', true);
           this.addLog(`⚡ Kích hoạt 【Thần Hành Biến Ảo Phù】! Tốc độ kinh mạch tăng tiến, Thân Pháp vĩnh viễn +5!`, 'golden');
-        } else if (itemId === 'talisman_dan_loi' || itemId === 'talisman_liet_hoa') {
-          this.addLog(`⚡ 【${item.name}】 ẩn chứa uy lực sát phạt cuồng bạo, hãy kích hoạt trong chiến đấu với yêu thú hoặc đối thủ!`, 'warning');
+        } else if (itemId === 'talisman_dan_loi' || itemId === 'talisman_liet_hoa' || itemId === 'talisman_bang_phong' || itemId === 'talisman_an_than' || itemId === 'talisman_thien_nhan') {
+          this.addLog(`⚡ 【${item.name}】 ẩn chứa uy lực sát phạt hoặc thần thông hộ thể, hãy kích hoạt trong chiến đấu với yêu thú hoặc đối thủ!`, 'warning');
           return;
         }
+      } else if (item.type === 'herb') {
+        p.inventory[itemId]--;
+        sound.playHeal();
+        if (itemId === 'herb_linhchi') {
+          const heal = Math.floor(p.maxHp * 0.2);
+          p.curHp = Math.min(p.maxHp, p.curHp + heal);
+          p.exp += 35;
+          this.renderer.addFloatingText(`+${heal} HP | +35 Tu Vi`, 320, 160, '#34d399');
+          this.addLog(`Nuốt vào Linh Chi Thảo, khí huyết hồi phục ${heal} và nạp +35 Tu Vi!`, 'heal');
+        } else if (itemId === 'herb_thanh_u') {
+          const mana = Math.floor(p.maxMp * 0.25);
+          p.curMp = Math.min(p.maxMp, p.curMp + mana);
+          this.renderer.addFloatingText(`+${mana} MP`, 320, 160, '#38bdf8');
+          this.addLog(`Nuốt vào Thanh U Thảo, linh lực hồi phục ${mana}!`, 'heal');
+        } else if (itemId === 'herb_u_hon') {
+          p.bonusSpd = (p.bonusSpd || 0) + 2;
+          this.recalculatePlayerStats();
+          this.renderer.addFloatingText(`THÂN PHÁP +2!`, 320, 160, '#38bdf8', true);
+          this.addLog(`Nuốt vào U Hồn Thảo! Âm khí kích thích kinh mạch, Thân Pháp vĩnh viễn +2!`, 'golden');
+        } else if (itemId === 'herb_hoaviem') {
+          p.bonusAtk = (p.bonusAtk || 0) + 3;
+          this.recalculatePlayerStats();
+          this.renderer.addFloatingText(`CÔNG KÍCH +3!`, 320, 160, '#ef4444', true);
+          this.addLog(`Nuốt vào Hỏa Viêm Thảo! Dương hỏa rèn đúc đan điền, Công Kích vĩnh viễn +3!`, 'golden');
+        } else if (itemId === 'herb_bachnien') {
+          p.curHp = Math.min(p.maxHp, p.curHp + Math.floor(p.maxHp * 0.6));
+          p.curMp = Math.min(p.maxMp, p.curMp + Math.floor(p.maxMp * 0.6));
+          p.exp += 150;
+          this.renderer.addFloatingText(`+60% HP/MP | +150 Tu Vi`, 320, 160, '#fbbf24', true);
+          this.addLog(`Nuốt vào Bách Niên Linh Dược! Uẩn dưỡng kinh mạch, hồi 60% HP & MP, nạp +150 Tu Vi!`, 'golden');
+        } else if (itemId === 'herb_huyen_bang') {
+          p.bonusDef = (p.bonusDef || 0) + 3;
+          p.curMp = Math.min(p.maxMp, p.curMp + Math.floor(p.maxMp * 0.4));
+          this.recalculatePlayerStats();
+          this.renderer.addFloatingText(`PHÒNG NGỰ +3!`, 320, 160, '#38bdf8', true);
+          this.addLog(`Nuốt vào Huyền Băng Linh Thảo! Băng phách bảo hộ thể xác, Phòng Ngự vĩnh viễn +3!`, 'golden');
+        } else if (itemId === 'herb_longhuyet') {
+          p.bonusHp = (p.bonusHp || 0) + 100;
+          p.bonusAtk = (p.bonusAtk || 0) + 5;
+          p.curHp = p.maxHp;
+          this.recalculatePlayerStats();
+          this.renderer.addFloatingText(`LONG HUYẾT THỐNG THỂ!`, 320, 160, '#ef4444', true);
+          this.addLog(`Nuốt vào Long Huyết Thảo! Chân long huyết mạch bùng nổ: Vĩnh viễn +100 Max HP, +5 Công Kích!`, 'golden');
+        } else if (itemId === 'herb_cuuchuyen') {
+          p.curHp = p.maxHp;
+          p.curMp = p.maxMp;
+          p.exp += 800;
+          this.renderer.addFloatingText(`CỬU CHUYỂN TIÊN KHÍ!`, 320, 160, '#f472b6', true);
+          this.addLog(`Nuốt vào Cửu Chuyển Tiên Thảo! Cửu sắc hào quang bao phủ, hồi phục 100% HP & MP, nạp +800 Tu Vi!`, 'golden');
+        } else if (itemId === 'herb_thienkiem') {
+          p.bonusAtk = (p.bonusAtk || 0) + 15;
+          p.bonusCrit = (p.bonusCrit || 0) + 0.01;
+          this.recalculatePlayerStats();
+          this.renderer.addFloatingText(`KIẾM KHÍ THÔNG MINH!`, 320, 160, '#fbbf24', true);
+          this.addLog(`Nuốt vào Thiên Kiếm Thảo! Vô biên kiếm khí tẩm nhuần linh căn: Vĩnh viễn +15 Công Kích, +1% Bạo Kích!`, 'golden');
+        } else if (itemId === 'herb_ngo_dao_diep') {
+          p.exp += 350;
+          p.teaBuffUntil = Date.now() + 30000;
+          this.renderer.addFloatingText(`NGỘ ĐẠO 30s!`, 320, 160, '#facc15', true);
+          this.addLog(`Nhai nuốt Ngộ Đạo Cổ Trà Diệp! Cảm ngộ thiên đạo: +350 Tu Vi và x2 tốc độ tu vi trong 30 giây!`, 'golden');
+        } else {
+          p.curHp = Math.min(p.maxHp, p.curHp + Math.floor(p.maxHp * 0.15));
+          p.exp += 20;
+          this.addLog(`Nuốt vào 【${item.name}】, hồi phục 15% Khí Huyết và tăng +20 Tu Vi!`, 'heal');
+        }
+      } else if (item.type === 'treasure_map') {
+        p.inventory[itemId]--;
+        sound.playLoot();
+        const stones = 500 + Math.floor(Math.random() * 1001);
+        p.spiritStones = (p.spiritStones || 0) + stones;
+        const possibleDrops = ['herb_bachnien', 'herb_longhuyet', 'ore_tutinh', 'ore_thai_at', 'core_yeu_dan_3', 'pill_tay_tuy'];
+        const drop1 = possibleDrops[Math.floor(Math.random() * possibleDrops.length)];
+        const drop2 = possibleDrops[Math.floor(Math.random() * possibleDrops.length)];
+        p.inventory[drop1] = (p.inventory[drop1] || 0) + 1;
+        p.inventory[drop2] = (p.inventory[drop2] || 0) + 1;
+
+        let extraMsg = '';
+        if (Math.random() < 0.4) {
+          p.inventory['chest_bi_canh'] = (p.inventory['chest_bi_canh'] || 0) + 1;
+          extraMsg = ' và phát hiện 1 Bảo Rương Bí Cảnh Cổ Đại!';
+        }
+        this.renderer.addFloatingText(`TIÊN PHỦ KHAI QUẬT!`, 320, 160, '#fbbf24', true);
+        this.addLog(`🗺️ Giải mã 【${item.name}】! Khai quật động phủ cổ xưa nhận +${stones} Linh Thạch, ${ITEMS[drop1].name} x1, ${ITEMS[drop2].name} x1${extraMsg}!`, 'golden');
+      } else if (item.type === 'secret_tome') {
+        p.inventory[itemId]--;
+        p.bonusAtk = (p.bonusAtk || 0) + 15;
+        p.bonusSpd = (p.bonusSpd || 0) + 5;
+        this.recalculatePlayerStats();
+        sound.playBreakthrough();
+        this.renderer.addFloatingText(`KIẾM Ý ĐẠI THÀNH!`, 320, 160, '#fbbf24', true);
+        this.addLog(`📜 Tham ngộ thành công 【${item.name}】! Kiếm ý viễn cổ nhập thể: Vĩnh viễn +15 Công Kích, +5 Thân Pháp!`, 'golden');
+      } else if (item.type === 'pet_egg') {
+        if ((p.curMp || 0) < 100) {
+          this.addLog(`Ấp trứng thất bại: Cần tối thiểu 100 Linh Lực để rót vào linh quả noãn (Hiện có: ${p.curMp || 0})!`, 'warning');
+          return;
+        }
+        p.curMp -= 100;
+        p.inventory[itemId]--;
+
+        const petKeys = ['pet_thunder', 'pet_fire', 'pet_turtle', 'pet_rabbit'];
+        const chosenKey = petKeys[Math.floor(Math.random() * petKeys.length)];
+        p.companion = COMPANIONS[chosenKey];
+
+        this.recalculatePlayerStats();
+        sound.playBreakthrough();
+        this.renderer.addFloatingText(`LINH THÚ NỞ VỎ!`, 320, 160, '#facc15', true);
+        this.addLog(`🥚 Rót 100 Linh Lực vào Thái Cổ Linh Thú Noãn! Vỏ trứng rạn nứt, một con 【${p.companion.name} ${p.companion.icon}】 chui ra nhận đạo hữu làm chủ!`, 'golden');
       } else if (item.type === 'chest') {
         p.inventory[itemId]--;
         sound.playLoot();
@@ -6819,9 +7366,20 @@
       if (charAge) charAge.textContent = `${p.age} / ${p.maxLifespan} tuổi (Tháng ${p.month})`;
       if (charStones) charStones.textContent = p.spiritStones || 0;
 
-      if (charGearWpn) charGearWpn.textContent = p.equippedWeapon ? `${p.equippedWeapon.name} (+${p.equippedWeapon.atk} Công)` : 'Chưa có';
-      if (charGearArm) charGearArm.textContent = p.equippedArmor ? `${p.equippedArmor.name} (+${p.equippedArmor.def} Thủ)` : 'Chưa có';
-      if (charGearArt) charGearArt.textContent = p.equippedArtifact ? `${p.equippedArtifact.name}` : 'Chưa có';
+      if (charGearWpn) charGearWpn.innerHTML = p.equippedWeapon ? `<span class="item-icon-tag">${p.equippedWeapon.icon || '🗡️'}</span>${p.equippedWeapon.name}${p.equippedWeapon.refineLevel ? ' +' + p.equippedWeapon.refineLevel : ''} (+${Math.floor(p.equippedWeapon.atk * (1 + (p.equippedWeapon.refineLevel || 0) * 0.15))} Công)` : 'Chưa có';
+      if (charGearArm) charGearArm.innerHTML = p.equippedArmor ? `<span class="item-icon-tag">${p.equippedArmor.icon || '🛡️'}</span>${p.equippedArmor.name}${p.equippedArmor.refineLevel ? ' +' + p.equippedArmor.refineLevel : ''} (+${Math.floor(p.equippedArmor.def * (1 + (p.equippedArmor.refineLevel || 0) * 0.15))} Thủ)` : 'Chưa có';
+      if (charGearArt) charGearArt.innerHTML = p.equippedArtifact ? `<span class="item-icon-tag">${p.equippedArtifact.icon || '🔮'}</span>${p.equippedArtifact.name}${p.equippedArtifact.refineLevel ? ' +' + p.equippedArtifact.refineLevel : ''}` : 'Chưa có';
+
+      const compPill = document.getElementById('companion-stat-pill');
+      const compVal = document.getElementById('companion-stat-val');
+      if (compPill && compVal) {
+        if (p.companion) {
+          compPill.style.display = 'flex';
+          compVal.textContent = `${p.companion.name} ${p.companion.icon}`;
+        } else {
+          compPill.style.display = 'none';
+        }
+      }
 
       // ================= CẬP NHẬT HUD MOBILE =================
       const mobName = document.getElementById('mobile-player-name');
@@ -6959,7 +7517,7 @@
       if (filter === 'usable') {
         invKeys = invKeys.filter(k => {
           const t = ITEMS[k]?.type;
-          return t === 'pill' || t === 'talisman' || t === 'tea' || t === 'chest';
+          return t === 'pill' || t === 'talisman' || t === 'tea' || t === 'chest' || t === 'herb' || t === 'treasure_map' || t === 'secret_tome' || t === 'pet_egg';
         });
       } else if (filter === 'material') {
         invKeys = invKeys.filter(k => {
@@ -6980,12 +7538,18 @@
           const item = ITEMS[k];
           if (!item) return;
 
-          const isUsable = item.type === 'pill' || item.type === 'talisman' || item.type === 'tea' || item.type === 'chest';
+          const isUsable = item.type === 'pill' || item.type === 'talisman' || item.type === 'tea' || item.type === 'chest' || item.type === 'herb' || item.type === 'treasure_map' || item.type === 'secret_tome' || item.type === 'pet_egg';
           const isEquip = item.type === 'weapon' || item.type === 'armor' || item.type === 'artifact';
           let actionLabel = 'Bán';
           let actionClass = 'pixel-btn small-btn btn-use';
           if (isUsable) {
-            actionLabel = item.type === 'chest' ? 'Mở' : (item.type === 'talisman' ? 'Phù' : 'Dùng');
+            if (item.type === 'chest') actionLabel = 'Mở';
+            else if (item.type === 'talisman') actionLabel = 'Phù';
+            else if (item.type === 'herb') actionLabel = 'Nuốt';
+            else if (item.type === 'treasure_map') actionLabel = 'Tầm bảo';
+            else if (item.type === 'secret_tome') actionLabel = 'Lĩnh ngộ';
+            else if (item.type === 'pet_egg') actionLabel = 'Ấp trứng';
+            else actionLabel = 'Dùng';
             actionClass = 'pixel-btn small-btn btn-use primary-btn';
           } else if (isEquip) {
             actionLabel = 'Trang bị';
@@ -6995,7 +7559,7 @@
           const itemCard = document.createElement('div');
           itemCard.className = 'inventory-card pixel-box';
           itemCard.innerHTML = `
-            <div class="item-name" style="cursor: pointer;" title="Bấm để xem chi tiết">${item.name} <span class="item-count">x${p.inventory[k]}</span></div>
+            <div class="item-name" style="cursor: pointer;" title="Bấm để xem chi tiết"><span class="item-icon-tag">${item.icon || '💎'}</span>${item.name}${item.refineLevel ? '<span class="refine-badge">+' + item.refineLevel + '</span>' : ''} <span class="item-count">x${p.inventory[k]}</span></div>
             <div class="item-desc">${item.desc}</div>
             <div class="item-actions" style="display: flex; gap: 6px; margin-top: 6px;">
               <button class="pixel-btn small-btn btn-inspect" style="background: rgba(30, 41, 59, 0.7);">🔍 Chi Tiết</button>
@@ -7030,9 +7594,9 @@
       const armEl = document.getElementById('equip-armor');
       const artEl = document.getElementById('equip-artifact');
 
-      if (wpnEl) wpnEl.textContent = p.equippedWeapon ? `${p.equippedWeapon.name} (+${p.equippedWeapon.atk} Công)` : 'Chưa có';
-      if (armEl) armEl.textContent = p.equippedArmor ? `${p.equippedArmor.name} (+${p.equippedArmor.def} Thủ, +${p.equippedArmor.hp} HP)` : 'Chưa có';
-      if (artEl) artEl.textContent = p.equippedArtifact ? `${p.equippedArtifact.name}` : 'Chưa có';
+      if (wpnEl) wpnEl.innerHTML = p.equippedWeapon ? `<span class="item-icon-tag">${p.equippedWeapon.icon || '🗡️'}</span>${p.equippedWeapon.name}${p.equippedWeapon.refineLevel ? ' +' + p.equippedWeapon.refineLevel : ''} (+${Math.floor(p.equippedWeapon.atk * (1 + (p.equippedWeapon.refineLevel || 0) * 0.15))} Công)` : 'Chưa có';
+      if (armEl) armEl.innerHTML = p.equippedArmor ? `<span class="item-icon-tag">${p.equippedArmor.icon || '🛡️'}</span>${p.equippedArmor.name}${p.equippedArmor.refineLevel ? ' +' + p.equippedArmor.refineLevel : ''} (+${Math.floor(p.equippedArmor.def * (1 + (p.equippedArmor.refineLevel || 0) * 0.15))} Thủ, +${Math.floor(p.equippedArmor.hp * (1 + (p.equippedArmor.refineLevel || 0) * 0.15))} HP)` : 'Chưa có';
+      if (artEl) artEl.innerHTML = p.equippedArtifact ? `<span class="item-icon-tag">${p.equippedArtifact.icon || '🔮'}</span>${p.equippedArtifact.name}${p.equippedArtifact.refineLevel ? ' +' + p.equippedArtifact.refineLevel : ''}` : 'Chưa có';
     }
 
     renderCompendiumUI() {
@@ -7093,18 +7657,21 @@
         else if (price > 250) rarityColor = '#38bdf8';
         else if (price > 50) rarityColor = '#34d399';
 
-        let icon = '💎';
+        const icon = item.icon || '💎';
         let typeName = 'Bảo Vật';
-        if (item.type === 'pill') { icon = '💊'; typeName = 'Đan Dược'; }
-        else if (item.type === 'weapon') { icon = '🗡️'; typeName = 'Binh Khí'; }
-        else if (item.type === 'armor') { icon = '🛡️'; typeName = 'Hộ Giáp'; }
-        else if (item.type === 'artifact') { icon = '🔮'; typeName = 'Pháp Bảo'; }
-        else if (item.type === 'herb') { icon = '🌿'; typeName = 'Linh Dược'; }
-        else if (item.type === 'ore') { icon = '⛏️'; typeName = 'Khoáng Thạch'; }
-        else if (item.type === 'monster_mat') { icon = '🦴'; typeName = 'Dị Bảo Thú'; }
-        else if (item.type === 'talisman') { icon = '📜'; typeName = 'Phù Lục'; }
-        else if (item.type === 'tea') { icon = '🍵'; typeName = 'Linh Trà'; }
-        else if (item.type === 'chest') { icon = '🎁'; typeName = 'Bảo Hạp'; }
+        if (item.type === 'pill') typeName = 'Đan Dược';
+        else if (item.type === 'weapon') typeName = 'Binh Khí';
+        else if (item.type === 'armor') typeName = 'Hộ Giáp';
+        else if (item.type === 'artifact') typeName = 'Pháp Bảo';
+        else if (item.type === 'herb') typeName = 'Linh Dược';
+        else if (item.type === 'ore') typeName = 'Khoáng Thạch';
+        else if (item.type === 'monster_mat') typeName = 'Dị Bảo Thú';
+        else if (item.type === 'talisman') typeName = 'Phù Lục';
+        else if (item.type === 'tea') typeName = 'Linh Trà';
+        else if (item.type === 'chest') typeName = 'Bảo Hạp';
+        else if (item.type === 'treasure_map') typeName = 'Cổ Đồ Tầm Bảo';
+        else if (item.type === 'secret_tome') typeName = 'Tàn Quyển Bí Tịch';
+        else if (item.type === 'pet_egg') typeName = 'Linh Thú Noãn';
 
         const card = document.createElement('div');
         card.className = `compendium-card ${hasOwned ? '' : 'locked'}`;
@@ -7123,6 +7690,8 @@
               </div>
             </div>
             <div class="compendium-card-desc">${item.desc}</div>
+            ${item.trait ? `<div class="comp-trait-badge">✨ ${item.trait}</div>` : ''}
+            ${item.rawEffectDesc ? `<div class="item-stat-badge text-emerald" style="margin-top: 4px; font-size: 0.75rem;">🍃 ${item.rawEffectDesc}</div>` : ''}
             <div class="compendium-card-source">
               <strong>🧭 Cách kiếm:</strong> ${item.howToGet || 'Khám phá Tiên Giới, Phường Thị, Bí Cảnh'}
             </div>
@@ -7671,7 +8240,7 @@
         const card = document.createElement('div');
         card.className = 'market-card pixel-box';
         card.innerHTML = `
-          <div class="item-name" style="cursor: pointer;" title="Bấm để xem chi tiết">${item.name}</div>
+          <div class="item-name" style="cursor: pointer;" title="Bấm để xem chi tiết">${item.icon ? `<span class="item-icon-tag">${item.icon}</span> ` : ''}${item.name}</div>
           <div class="item-desc">${item.desc}</div>
           <div class="item-price" style="color: var(--text-gold);">💰 Giá: ${item.price} Linh Thạch</div>
           <div class="item-actions" style="display: flex; gap: 6px; margin-top: 6px;">
@@ -7791,6 +8360,24 @@
   };
 
   function switchTab(tabId) {
+    const resultOverlay = document.getElementById('combat-result-overlay');
+    const hasCombatResult = resultOverlay && !resultOverlay.classList.contains('hidden');
+
+    // Khi đã có kết quả, đóng trận chiến trước khi chuyển tab. Điều này tránh
+    // việc click tab đúng lúc modal kết quả đang hiện bị bỏ qua và màn hình bị
+    // giữ lại ở canvas combat.
+    if (activeCombatEngine && activeCombatEngine.inCombat && tabId !== 'tab-combat' && hasCombatResult) {
+      activeCombatEngine.closeResultAndEnd();
+    }
+
+    // Tự đồng bộ lại lớp hiển thị nếu một luồng kết thúc combat trước đó bị
+    // ngắt giữa chừng, nhưng trạng thái engine đã là không còn chiến đấu.
+    if (activeCombatEngine && !activeCombatEngine.inCombat && document.body.classList.contains('combat-active-mode')) {
+      document.body.classList.remove('combat-active-mode', 'combat-result-ready');
+      const headerEl = document.getElementById('combat-active-header');
+      if (headerEl) headerEl.classList.add('hidden');
+    }
+
     if (activeCombatEngine && activeCombatEngine.inCombat && tabId !== 'tab-combat') {
       if (activeGameSystems) activeGameSystems.addLog('⚠️ Đang trong sinh tử chiến! Thần thức tập trung, không thể rời trận!', 'warning');
       sound.playHurt();
@@ -7843,9 +8430,10 @@
       }
     }
   }
-  window.switchTab = switchTab;
+  if (typeof window !== 'undefined') window.switchTab = switchTab;
 
-  document.addEventListener('DOMContentLoaded', () => {
+  if (typeof document !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', () => {
     const mainCanvas = document.getElementById('main-canvas');
     const renderer = new PixelRenderer(mainCanvas);
     const systems = new GameSystems(renderer, addLog);
@@ -7888,7 +8476,8 @@
     }
 
     setupUIEvents(systems, combatEngine, renderer);
-  });
+    });
+  }
 
   function setupUIEvents(systems, combatEngine, renderer) {
     document.addEventListener('click', event => {
@@ -8071,16 +8660,59 @@
     const btnCombatSpeed = document.getElementById('btn-combat-speed');
     const btnCloseResult = document.getElementById('btn-combat-close-result');
 
+    const btnTalisman = document.getElementById('btn-combat-talisman');
+
+    const picker = document.getElementById('combat-item-picker');
+    const openCombatPicker = (type) => {
+      if (!combatEngine.isPlayerTurn || combatEngine.isProcessingTurn) return;
+      if (!picker) return;
+      if (!picker.classList.contains('hidden') && picker.dataset.pickerType === type) {
+        picker.classList.add('hidden');
+        return;
+      }
+      picker.innerHTML = '';
+      picker.dataset.pickerType = type;
+      const pInv = systems.player?.inventory || {};
+
+      let itemKeys = [];
+      if (type === 'pill') {
+        itemKeys = ['pill_hoixuan', 'pill_tulinh', 'pill_quy_nguyen', 'pill_ngung_than', 'pill_bao_khi'].filter(k => (pInv[k] || 0) > 0);
+      } else if (type === 'talisman') {
+        itemKeys = ['talisman_dan_loi', 'talisman_liet_hoa', 'talisman_bang_phong', 'talisman_kim_cuong', 'talisman_an_than', 'talisman_thien_nhan', 'talisman_don_dia'].filter(k => (pInv[k] || 0) > 0);
+      }
+
+      if (itemKeys.length === 0) {
+        picker.innerHTML = `<span style="color: var(--text-dim); font-size: 11px;">Không có ${type === 'pill' ? 'đan dược' : 'phù lục'} phù hợp trong túi!</span>`;
+        picker.classList.remove('hidden');
+        setTimeout(() => picker.classList.add('hidden'), 2000);
+        return;
+      }
+
+      itemKeys.forEach(k => {
+        const item = ITEMS[k];
+        if (!item) return;
+        const btn = document.createElement('button');
+        btn.className = 'combat-item-pill-btn';
+        btn.innerHTML = `${item.icon || '💎'} ${item.name} <span class="pill-badge">x${pInv[k]}</span>`;
+        btn.onclick = () => {
+          picker.classList.add('hidden');
+          if (type === 'pill') {
+            combatEngine.playerUsePill(k);
+          } else {
+            combatEngine.playerUseTalisman(k);
+          }
+        };
+        picker.appendChild(btn);
+      });
+      picker.classList.remove('hidden');
+    };
+
     if (btnAttack) btnAttack.addEventListener('click', () => combatEngine.playerNormalAttack());
     if (btnSkill) btnSkill.addEventListener('click', () => combatEngine.playerCastSkill(0));
     if (btnSkill2) btnSkill2.addEventListener('click', () => combatEngine.playerCastSkill(1));
     if (btnArtifact) btnArtifact.addEventListener('click', () => combatEngine.playerUseArtifact());
-    if (btnPill) btnPill.addEventListener('click', () => {
-      const pInv = systems.player?.inventory || {};
-      const pillToUse = (pInv.pill_quy_nguyen > 0 && combatEngine.playerCombat.curHp < combatEngine.playerCombat.maxHp * 0.4) ? 'pill_quy_nguyen' :
-                        (pInv.pill_hoixuan > 0 ? 'pill_hoixuan' : (pInv.pill_ngung_than > 0 ? 'pill_ngung_than' : 'pill_bao_khi'));
-      combatEngine.playerUsePill(pillToUse);
-    });
+    if (btnPill) btnPill.addEventListener('click', () => openCombatPicker('pill'));
+    if (btnTalisman) btnTalisman.addEventListener('click', () => openCombatPicker('talisman'));
     if (btnFlee) btnFlee.addEventListener('click', () => combatEngine.playerFlee());
 
     if (btnAutoCombat) btnAutoCombat.addEventListener('click', () => combatEngine.toggleAutoCombat());
@@ -8118,7 +8750,7 @@
 
       // 1. Phím tắt chiến đấu khi đang trong trận
       if (combatEngine && combatEngine.inCombat) {
-        if (['1', '2', '3', '4', '5'].includes(e.key) || e.key === 'e' || e.key === 'E') {
+        if (['1', '2', '3', '4', '5', '6'].includes(e.key) || e.key === 'e' || e.key === 'E' || e.key === 't' || e.key === 'T') {
           e.preventDefault();
           if (!combatEngine.isPlayerTurn || combatEngine.isProcessingTurn) return;
 
@@ -8126,12 +8758,8 @@
           else if (e.key === '2') combatEngine.playerCastSkill(0);
           else if (e.key === 'e' || e.key === 'E') combatEngine.playerCastSkill(1);
           else if (e.key === '3') combatEngine.playerUseArtifact();
-          else if (e.key === '4') {
-            const pInv = systems.player?.inventory || {};
-            const pillToUse = (pInv.pill_quy_nguyen > 0 && combatEngine.playerCombat.curHp < combatEngine.playerCombat.maxHp * 0.4) ? 'pill_quy_nguyen' :
-                              (pInv.pill_hoixuan > 0 ? 'pill_hoixuan' : (pInv.pill_ngung_than > 0 ? 'pill_ngung_than' : 'pill_bao_khi'));
-            combatEngine.playerUsePill(pillToUse);
-          }
+          else if (e.key === '4') openCombatPicker('pill');
+          else if (e.key === 't' || e.key === 'T' || e.key === '6') openCombatPicker('talisman');
           else if (e.key === '5') combatEngine.playerFlee();
           return;
         } else if (e.key === 'a' || e.key === 'A') {
@@ -8688,6 +9316,7 @@
       WORLD_REGIONS,
       MONSTERS,
       ITEMS,
+      COMPANIONS,
       REALMS,
       SCENES
     };

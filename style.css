@@ -1393,6 +1393,11 @@ body.combat-active-mode .tab-nav-bar {
   display: none !important;
 }
 
+/* Đã có kết quả trận đấu thì cho phép người chơi rời màn hình combat. */
+body.combat-result-ready .tab-nav-bar {
+  display: grid !important;
+}
+
 body.combat-active-mode #combat-active-header {
   display: none !important;
 }
@@ -1644,10 +1649,10 @@ body.combat-active-mode #tab-combat {
 .status-stun   { background: rgba(234, 179, 8, 0.25);   color: #fde047; border: 1px solid #eab308; }
 .status-defend { background: rgba(52, 211, 153, 0.25);  color: #6ee7b7; border: 1px solid #10b981; }
 
-/* 3. Bảng 5 Nút Hành Động Chiến Đấu (1 Hàng Ngang Thoáng Đãng) */
+/* 3. Bảng Nút Hành Động Chiến Đấu (1 Hàng Ngang Thoáng Đãng) */
 .combat-actions-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(7, 1fr);
   gap: 6px;
   width: 100%;
 }
@@ -1727,6 +1732,92 @@ body.combat-active-mode #tab-combat {
   border-color: #f87171;
   border-bottom-color: #b91c1c;
   color: #fca5a5;
+}
+
+.combat-btn-talisman {
+  background: linear-gradient(180deg, #451a03 0%, #290e02 100%) !important;
+  border-color: #f59e0b !important;
+  border-bottom-color: #b45309 !important;
+  color: #fef3c7 !important;
+}
+
+/* Combat In-Battle Item Picker */
+.combat-item-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid #c89b3c;
+  padding: 8px 10px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  z-index: 20;
+}
+
+.combat-item-picker.hidden {
+  display: none;
+}
+
+.combat-item-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  font-size: 11px;
+  background: #1e293b;
+  border: 1px solid #475569;
+  border-radius: 3px;
+  color: #f1f5f9;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.combat-item-pill-btn:hover {
+  background: #334155;
+  border-color: #facc15;
+  color: #fef08a;
+  transform: translateY(-1px);
+}
+
+.combat-item-pill-btn .pill-badge {
+  background: #0f172a;
+  color: #38bdf8;
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-weight: 700;
+  font-size: 10px;
+}
+
+.item-icon-tag {
+  display: inline-block;
+  margin-right: 4px;
+  font-size: 1.1em;
+  vertical-align: middle;
+}
+
+.refine-badge {
+  display: inline-block;
+  background: #854d0e;
+  color: #fef08a;
+  border: 1px solid #eab308;
+  border-radius: 2px;
+  padding: 0 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+.comp-trait-badge {
+  display: inline-block;
+  background: rgba(234, 179, 8, 0.15);
+  color: #fde047;
+  border: 1px solid rgba(234, 179, 8, 0.4);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  margin-top: 4px;
 }
 
 .rage-fill {
@@ -3036,6 +3127,10 @@ body.combat-active-mode #tab-combat {
     padding: 3px 4px calc(3px + env(safe-area-inset-bottom, 0px));
     margin: 0;
     border-radius: 0;
+  }
+
+  body.combat-result-ready .tab-nav-bar {
+    display: flex !important;
   }
 
   .tab-nav-bar .tab-btn {

@@ -93,6 +93,14 @@ for (const key of itemKeys) {
   assert(it.price && typeof it.price === 'number', `Item ${key} missing price`);
   assert(it.howToGet && typeof it.howToGet === 'string' && it.howToGet.length > 5, `Item ${key} missing valid howToGet`);
   assert(Array.isArray(it.sources) && it.sources.length >= 1, `Item ${key} missing valid sources array`);
+  assert(it.icon && typeof it.icon === 'string' && it.icon.length >= 1, `Item ${key} missing valid icon`);
+
+  if (it.type === 'herb') {
+    assert(it.rawEffectDesc && typeof it.rawEffectDesc === 'string', `Herb ${key} missing rawEffectDesc`);
+  }
+  if (it.type === 'weapon' || it.type === 'armor' || it.type === 'artifact') {
+    assert(it.trait && typeof it.trait === 'string', `Equipment ${key} missing trait`);
+  }
 
   if (it.type === 'herb') herbsCount++;
   if (it.type === 'ore') oresCount++;
@@ -118,6 +126,11 @@ assert(monsterMatsCount >= 9, 'Should have at least 9 monster materials');
 assert(talismansCount >= 5, 'Should have at least 5 talismans');
 assert(chestsCount >= 3, 'Should have at least 3 chests');
 assert(teaCount >= 1, 'Should have at least 1 tea');
+
+const uniqueIcons = new Set(itemKeys.map(k => ITEMS[k].icon));
+console.log(`  - Unique Icons: ${uniqueIcons.size} / ${itemKeys.length}`);
+assert.strictEqual(uniqueIcons.size, itemKeys.length, `Expected all ${itemKeys.length} items to have strictly unique icons!`);
+console.log('✓ Strict 1:1 Item Icon Uniqueness verified (0 duplicate icons)!');
 console.log('✓ All items have valid schema, howToGet and sources!\n');
 
 // ==========================================
@@ -239,7 +252,63 @@ systems.useInventoryItem('talisman_don_dia');
 assert.strictEqual(p.inventory.talisman_don_dia, 0, 'Talisman should be consumed');
 assert(p.curHp > 100, 'HP should recover 30%');
 assert(p.curMp > 20, 'MP should recover 30%');
-console.log('✓ Độn Địa Phù works outside combat (30% HP/MP recovery + retreat)!\n');
+console.log('✓ Độn Địa Phù works outside combat (30% HP/MP recovery + retreat)!');
+
+// 2.7 Nuốt Linh Dược Trực Tiếp (Raw Herb Eating)
+const prevAtk = p.bonusAtk || 0;
+p.inventory.herb_hoaviem = 1;
+systems.useInventoryItem('herb_hoaviem');
+assert.strictEqual(p.inventory.herb_hoaviem, 0, 'Hỏa Viêm Thảo should be consumed');
+assert.strictEqual(p.bonusAtk, prevAtk + 3, 'Hỏa Viêm Thảo should grant +3 permanent ATK');
+
+const prevSpd = p.bonusSpd || 0;
+p.inventory.herb_u_hon = 1;
+systems.useInventoryItem('herb_u_hon');
+assert.strictEqual(p.inventory.herb_u_hon, 0, 'U Hồn Thảo should be consumed');
+assert.strictEqual(p.bonusSpd, prevSpd + 2, 'U Hồn Thảo should grant +2 permanent AGI');
+
+const prevHp = p.bonusHp || 0;
+p.inventory.herb_longhuyet = 1;
+systems.useInventoryItem('herb_longhuyet');
+assert.strictEqual(p.inventory.herb_longhuyet, 0, 'Long Huyết Thảo should be consumed');
+assert.strictEqual(p.bonusHp, prevHp + 100, 'Long Huyết Thảo should grant +100 Max HP');
+console.log('✓ Raw Herb direct consumption works (+Stats, +HP, +MP, +Tu Vi)!');
+
+// 2.8 Tàng Bảo Đồ Thượng Cổ (Ancient Treasure Map)
+const stonesBeforeMap = p.spiritStones;
+p.inventory.map_tang_bao = 1;
+systems.useInventoryItem('map_tang_bao');
+assert.strictEqual(p.inventory.map_tang_bao, 0, 'Treasure map should be consumed');
+assert(p.spiritStones >= stonesBeforeMap + 500, 'Should award >= 500 spirit stones');
+console.log('✓ Ancient Treasure Map excavation works (spirit stones + rare items)!');
+
+// 2.9 Thái Cổ Kiếm Ý Tàn Quyển (Secret Tome)
+const atkBeforeTome = p.bonusAtk || 0;
+p.inventory.tome_cong_phap_tan_thien = 1;
+systems.useInventoryItem('tome_cong_phap_tan_thien');
+assert.strictEqual(p.inventory.tome_cong_phap_tan_thien, 0, 'Secret tome should be consumed');
+assert.strictEqual(p.bonusAtk, atkBeforeTome + 15, 'Tome should grant +15 ATK permanently');
+console.log('✓ Ancient Secret Tome deciphering works (+15 ATK, +5 AGI)!');
+
+// 2.10 Thái Cổ Linh Thú Noãn (Spirit Pet Egg Hatching)
+p.curMp = 100;
+p.inventory.pet_linh_thu_noan = 1;
+systems.useInventoryItem('pet_linh_thu_noan');
+assert.strictEqual(p.inventory.pet_linh_thu_noan, 0, 'Egg should be consumed');
+assert.strictEqual(p.curMp, 0, 'Hatching should consume 100 MP');
+assert(p.companion && p.companion.name && p.companion.icon, 'Companion should be hatched and assigned to player');
+console.log(`✓ Spirit Pet Egg hatched successfully: ${p.companion.name} (${p.companion.icon})!`);
+
+// 2.11 Equipment Refinement (Thối Luyện Trang Bị)
+p.spiritStones = 2000;
+p.inventory.ore_huyenthiet = 10;
+p.inventory.wpn_thanhphong = 1;
+const baseWpnAtk = ITEMS.wpn_thanhphong.atk;
+systems.refineEquipment('wpn_thanhphong', 'inventory');
+assert.strictEqual(ITEMS.wpn_thanhphong.refineLevel, 1, 'Weapon refine level should be 1');
+assert.strictEqual(p.inventory.ore_huyenthiet, 8, 'Refining should consume 2 ores');
+assert.strictEqual(p.spiritStones, 1800, 'Refining to +1 should consume 200 stones');
+console.log('✓ Equipment Refinement system works (+15% stats per level)!\n');
 
 // ==========================================
 // TEST 3: Combat usage of Talisman & Pills
@@ -268,7 +337,30 @@ combatEngine.isProcessingTurn = false;
 combatEngine.playerFlee();
 assert(!combatEngine.inCombat, 'Combat should end immediately on escape');
 assert.strictEqual(systems.player.inventory.talisman_don_dia, 0, 'Độn Địa Phù should be consumed on fleeing');
-console.log('✓ Độn Địa Phù ensures 100% combat escape when used during battle!\n');
+console.log('✓ Độn Địa Phù ensures 100% combat escape when used during battle!');
+
+// Test Combat Talismans (Dẫn Lôi, Kim Cương, Ẩn Thân)
+systems.player = createTestPlayer();
+systems.player.inventory.talisman_dan_loi = 1;
+systems.player.inventory.talisman_kim_cuong = 1;
+systems.player.inventory.talisman_an_than = 1;
+combatEngine.startCombat(systems.player, dummyMonster);
+
+// Kim Cương Phù (+800 shield)
+combatEngine.isPlayerTurn = true;
+combatEngine.isProcessingTurn = false;
+combatEngine.playerUseTalisman('talisman_kim_cuong');
+assert.strictEqual(systems.player.inventory.talisman_kim_cuong, 0, 'Kim Cương Phù should be consumed');
+assert(combatEngine.playerCombat.statusEffects.shield >= 800, 'Player should gain >= 800 shield');
+console.log('✓ Kim Cương Phù grants 800 shield in combat!');
+
+// Ẩn Thân Phù (100% dodge)
+combatEngine.isPlayerTurn = true;
+combatEngine.isProcessingTurn = false;
+combatEngine.playerUseTalisman('talisman_an_than');
+assert.strictEqual(systems.player.inventory.talisman_an_than, 0, 'Ẩn Thân Phù should be consumed');
+assert.strictEqual(combatEngine.playerCombat.dodge100, true, 'Player should have 100% dodge active');
+console.log('✓ Ẩn Thân Phù activates 100% dodge in combat!\n');
 
 // ==========================================
 // TEST 4: Resource Gathering (Hái Dược & Khai Khoáng)

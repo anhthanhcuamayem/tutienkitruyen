@@ -293,6 +293,10 @@
                   <span class="pill-label">🧠 Lĩnh Ngộ:</span>
                   <span id="char-cult-rate" class="pill-val text-purple">1.00x</span>
                 </div>
+                <div id="companion-stat-pill" class="sanctum-stat-pill" style="display: none;">
+                  <span class="pill-label">🐾 Linh Thú:</span>
+                  <span id="companion-stat-val" class="pill-val text-gold">Chưa có</span>
+                </div>
               </div>
 
               <!-- Hàng nút hành động Đả Tọa 3D -->
@@ -787,6 +791,9 @@
             </div>
           </div>
 
+          <!-- Bộ Chọn Nhanh Đan Dược & Phù Lục Trong Trận -->
+          <div id="combat-item-picker" class="combat-item-picker hidden"></div>
+
           <!-- Bảng Nút Lựa Chọn Chiến Đấu Pixel 3D -->
           <div class="combat-actions-grid">
             <button id="btn-combat-attack" class="pixel-btn btn-3d combat-btn-attack" disabled>
@@ -807,7 +814,11 @@
             </button>
             <button id="btn-combat-pill" class="pixel-btn btn-3d combat-btn-pill" disabled>
               <span class="combat-key-badge">4</span>
-              <span id="combat-pill-label">🧪 Hồi Xuân</span>
+              <span id="combat-pill-label">🧪 Nuốt Đan</span>
+            </button>
+            <button id="btn-combat-talisman" class="pixel-btn btn-3d combat-btn-talisman" disabled>
+              <span class="combat-key-badge">T</span>
+              <span id="combat-talisman-label">📜 Phù Lục</span>
             </button>
             <button id="btn-combat-flee" class="pixel-btn btn-3d combat-btn-flee" disabled>
               <span class="combat-key-badge">5</span>
@@ -1064,6 +1075,7 @@
       </div>
       <div id="item-detail-actions" class="modal-footer">
         <button id="btn-item-action-primary" class="pixel-btn primary-btn btn-3d">Sử Dụng</button>
+        <button id="btn-item-action-refine" class="pixel-btn btn-3d" style="display: none; background: #854d0e; border-color: #eab308; color: #fef08a;">🔨 Thối Luyện (+15%)</button>
         <button id="btn-item-action-sell" class="pixel-btn btn-3d">Bán Vật Phẩm</button>
         <button id="btn-close-item-detail" class="pixel-btn btn-3d">Đóng (ESC)</button>
       </div>
