@@ -9857,12 +9857,41 @@
       drawPixelSprite(mctx, SPRITES.playerMeditate, 0, 0, 2);
     }
 
+    let creationFlowInitialized = false;
+    const creationModal = document.getElementById('creation-modal');
+
+    const showCreationForAuthenticatedPlayer = () => {
+      if (systems.player || !window.neonAuth?.getUser()) return;
+      document.body.classList.remove('auth-required');
+      if (creationModal) creationModal.classList.remove('hidden');
+      if (!creationFlowInitialized) {
+        initCreationModal(systems);
+        creationFlowInitialized = true;
+      }
+    };
+
+    const requireAuthForNewPlayer = () => {
+      document.body.classList.add('auth-required');
+      if (creationModal) creationModal.classList.add('hidden');
+      window.neonAuth?.open();
+    };
+
+    window.addEventListener('neon-auth-change', event => {
+      if (event.detail?.user && !systems.player) {
+        showCreationForAuthenticatedPlayer();
+      } else if (!event.detail?.user && !systems.player) {
+        requireAuthForNewPlayer();
+      }
+    });
+
     const hasSave = systems.loadFromLocalStorage();
     if (hasSave) {
-      document.getElementById('creation-modal').classList.add('hidden');
+      creationModal?.classList.add('hidden');
       systems.updateUI();
+    } else if (window.neonAuth?.getUser()) {
+      showCreationForAuthenticatedPlayer();
     } else {
-      initCreationModal(systems);
+      requireAuthForNewPlayer();
     }
 
     setupUIEvents(systems, combatEngine, renderer);

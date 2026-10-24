@@ -66,6 +66,18 @@ body {
   display: none !important;
 }
 
+/* Người chơi mới phải đăng nhập trước khi tạo nhân vật/bắt đầu game. */
+body.auth-required .game-container {
+  pointer-events: none;
+  opacity: 0.32;
+  filter: saturate(0.55);
+}
+
+body.auth-required .game-header .header-actions > *:not(#btn-account) {
+  pointer-events: none;
+  opacity: 0.35;
+}
+
 /* ================= NEON AUTH ================= */
 .auth-account-btn {
   color: var(--text-cyan);
