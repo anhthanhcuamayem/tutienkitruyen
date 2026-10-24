@@ -264,6 +264,129 @@ body.auth-required .game-header .header-actions > *:not(#btn-account) {
   word-break: break-all;
 }
 
+/* ================= CHIÊU THỨC PANEL ================= */
+.skill-panel {
+  padding: 14px;
+}
+
+.skill-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.skill-panel-header h3 {
+  color: var(--text-gold);
+}
+
+.skill-panel-header p {
+  color: var(--text-dim);
+  margin-top: 4px;
+  font-size: 11px;
+}
+
+.skill-panel-summary {
+  color: var(--text-emerald);
+  border: 1px solid var(--border-jade);
+  background: rgba(5, 150, 105, 0.12);
+  padding: 6px 9px;
+  white-space: nowrap;
+  font-size: 11px;
+}
+
+.skill-slot-guide {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+  color: var(--text-dim);
+  font-size: 11px;
+}
+
+.skill-slot-guide span {
+  border: 1px solid var(--border-dark);
+  background: rgba(15, 23, 42, 0.7);
+  padding: 5px 8px;
+}
+
+.skill-slot-guide strong {
+  color: var(--text-gold);
+}
+
+.skill-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.skill-card {
+  border: 1px solid var(--border-bronze);
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(8, 12, 22, 0.95));
+  padding: 11px;
+}
+
+.skill-card.equipped {
+  border-color: var(--border-gold);
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.14);
+}
+
+.skill-card-title-row,
+.skill-card-meta,
+.skill-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.skill-card-title {
+  color: var(--text-gold-light);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.skill-card-level {
+  color: var(--text-purple);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.skill-card-desc {
+  min-height: 38px;
+  margin: 7px 0;
+  color: var(--text-dim);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.skill-card-meta {
+  justify-content: flex-start;
+  color: var(--text-cyan);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.skill-card-actions {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.skill-card-actions .pixel-btn {
+  flex: 1;
+  min-width: 92px;
+  font-size: 10px;
+}
+
+.skill-equipped-badge {
+  color: var(--text-emerald);
+  font-size: 10px;
+  font-weight: 700;
+}
+
 @media (max-width: 768px) {
   .auth-account-btn {
     min-width: 34px;
@@ -271,6 +394,14 @@ body.auth-required .game-header .header-actions > *:not(#btn-account) {
 
   .auth-content {
     padding: 14px;
+  }
+
+  .skill-panel {
+    padding: 10px;
+  }
+
+  .skill-list {
+    grid-template-columns: 1fr;
   }
 }
 

@@ -5033,8 +5033,8 @@
 
     executeAutoTurn() {
       if (!this.isPlayerTurn || this.isProcessingTurn) return;
-      const skill = (this.player.skills && this.player.skills[0]) || this.player.activeSkill;
-      const skill2 = this.player.skills && this.player.skills[1];
+      const skill = this.systems?.getEnhancedSkill((this.player.skills && this.player.skills[0]) || this.player.activeSkill) || ((this.player.skills && this.player.skills[0]) || this.player.activeSkill);
+      const skill2 = this.systems?.getEnhancedSkill(this.player.skills && this.player.skills[1]) || (this.player.skills && this.player.skills[1]);
       const art = this.player.equippedArtifact;
       const pillCount = (this.player.inventory && this.player.inventory.pill_hoixuan) || 0;
 
@@ -5232,7 +5232,8 @@
     playerCastSkill(skillIndex = 0) {
       if (!this.isPlayerTurn || this.isProcessingTurn) return;
       const skills = this.player.skills || (this.player.activeSkill ? [this.player.activeSkill] : []);
-      const skill = skills[skillIndex] || this.player.activeSkill;
+      const baseSkill = skills[skillIndex] || this.player.activeSkill;
+      const skill = this.systems?.getEnhancedSkill(baseSkill) || baseSkill;
       if (!skill) return;
 
       const cdField = skillIndex === 1 ? 'skill2Cooldown' : 'skillCooldown';
@@ -6019,23 +6020,24 @@
       const pillLabel = document.getElementById('combat-pill-label');
       if (pillLabel) pillLabel.textContent = `🧪 Hồi Xuân (${pillCount > 0 ? `x${pillCount}` : 'Hết'})`;
 
-      const skill = (this.player.skills && this.player.skills[0]) || this.player.activeSkill;
+      const baseSkill = (this.player.skills && this.player.skills[0]) || this.player.activeSkill;
+      const skill = this.systems?.getEnhancedSkill(baseSkill) || baseSkill;
       const skillLabel = document.getElementById('combat-skill-label');
       if (skillLabel) {
         if (skill) {
           const cd = this.playerCombat.skillCooldown > 0 ? ` [${this.playerCombat.skillCooldown}]` : '';
-          skillLabel.textContent = `⚡ ${skill.name}${cd}`;
+          skillLabel.textContent = `⚡ ${skill.name} Lv.${skill.level || 1}${cd}`;
         } else {
           skillLabel.textContent = `⚡ Chưa Có`;
         }
       }
 
-      const skill2 = this.player.skills && this.player.skills[1];
+      const skill2 = this.systems?.getEnhancedSkill(this.player.skills && this.player.skills[1]) || (this.player.skills && this.player.skills[1]);
       const skill2Label = document.getElementById('combat-skill2-label');
       if (skill2Label) {
         if (skill2) {
           const cd2 = this.playerCombat.skill2Cooldown > 0 ? ` [${this.playerCombat.skill2Cooldown}]` : '';
-          skill2Label.textContent = `🔥 ${skill2.name}${cd2}`;
+          skill2Label.textContent = `🔥 ${skill2.name} Lv.${skill2.level || 1}${cd2}`;
         } else {
           skill2Label.textContent = `🔥 Tuyệt Kỹ 2`;
         }
@@ -6064,13 +6066,14 @@
       if (btnAttack) btnAttack.disabled = !enabled;
 
       if (btnSkill) {
-        const skill = (this.player.skills && this.player.skills[0]) || this.player.activeSkill;
+        const baseSkill = (this.player.skills && this.player.skills[0]) || this.player.activeSkill;
+        const skill = this.systems?.getEnhancedSkill(baseSkill) || baseSkill;
         const canUseSkill = enabled && skill && this.playerCombat.skillCooldown === 0 && this.playerCombat.curMp >= skill.mpCost;
         btnSkill.disabled = !canUseSkill;
       }
 
       if (btnSkill2) {
-        const skill2 = this.player.skills && this.player.skills[1];
+        const skill2 = this.systems?.getEnhancedSkill(this.player.skills && this.player.skills[1]) || (this.player.skills && this.player.skills[1]);
         const canUseSkill2 = enabled && skill2 && this.playerCombat.skill2Cooldown === 0 && this.playerCombat.curMp >= skill2.mpCost;
         btnSkill2.disabled = !canUseSkill2;
       }
@@ -6166,6 +6169,21 @@
         }
       }
       if (!p.activeSkill) p.activeSkill = p.skills[0];
+      if (!p.skillLevels || typeof p.skillLevels !== 'object' || Array.isArray(p.skillLevels)) p.skillLevels = {};
+      p.skills.forEach(skill => {
+        if (!skill || !skill.id) return;
+        const level = Number(p.skillLevels[skill.id]);
+        p.skillLevels[skill.id] = Number.isFinite(level) ? Math.max(1, Math.min(5, Math.floor(level))) : 1;
+      });
+      if (!Array.isArray(p.knownSkills) || p.knownSkills.length === 0) {
+        p.knownSkills = JSON.parse(JSON.stringify(p.skills));
+      } else {
+        p.skills.forEach(skill => {
+          if (skill && skill.id && !p.knownSkills.some(known => known && known.id === skill.id)) {
+            p.knownSkills.push(JSON.parse(JSON.stringify(skill)));
+          }
+        });
+      }
       if (p.sectContribTotal === undefined) p.sectContribTotal = p.sectContrib || 0;
       if (p.sectPatrolKills === undefined) p.sectPatrolKills = 0;
       if (!p.sectManualsBought) p.sectManualsBought = [];
@@ -6176,6 +6194,127 @@
       if (!p.inventory) p.inventory = {};
       if (p.dungeonState === undefined) p.dungeonState = null;
       return p;
+    }
+
+    getSkillLevel(skill) {
+      if (!skill || !skill.id || !this.player) return 1;
+      if (!this.player.skillLevels || typeof this.player.skillLevels !== 'object') this.player.skillLevels = {};
+      const level = Number(this.player.skillLevels[skill.id]);
+      return Number.isFinite(level) ? Math.max(1, Math.min(5, Math.floor(level))) : 1;
+    }
+
+    getEnhancedSkill(skill) {
+      if (!skill) return skill;
+      const level = this.getSkillLevel(skill);
+      const rank = level - 1;
+      const enhanced = { ...skill, level };
+      enhanced.mpCost = Math.max(5, Math.ceil((skill.mpCost || 0) * (1 - rank * 0.03)));
+      enhanced.dmgMult = Number(((skill.dmgMult || 1) * (1 + rank * 0.12)).toFixed(2));
+      ['burnChance', 'stunChance', 'bleedChance', 'poisonChance'].forEach(key => {
+        if (skill[key]) enhanced[key] = Math.min(1, Number((skill[key] + rank * 0.04).toFixed(2)));
+      });
+      if (skill.healPercent) enhanced.healPercent = Number((skill.healPercent + rank * 0.03).toFixed(2));
+      if (skill.shieldPercentMp) enhanced.shieldPercentMp = Number((skill.shieldPercentMp + rank * 0.08).toFixed(2));
+      if (skill.shieldPercentHp) enhanced.shieldPercentHp = Number((skill.shieldPercentHp + rank * 0.05).toFixed(2));
+      if (skill.lifeStealPercent) enhanced.lifeStealPercent = Number((skill.lifeStealPercent + rank * 0.04).toFixed(2));
+      return enhanced;
+    }
+
+    equipSkill(skillId, slot) {
+      const p = this.player;
+      if (!p || !Array.isArray(p.knownSkills)) return;
+      const targetSlot = Number(slot);
+      if (targetSlot !== 0 && targetSlot !== 1) return;
+      const known = p.knownSkills.find(skill => skill && skill.id === skillId);
+      if (!known) return;
+
+      const currentSlot = (p.skills || []).findIndex(skill => skill && skill.id === skillId);
+      if (currentSlot >= 0 && currentSlot !== targetSlot) {
+        const oldTargetSkill = p.skills[targetSlot];
+        p.skills[targetSlot] = p.skills[currentSlot];
+        p.skills[currentSlot] = oldTargetSkill;
+      } else {
+        p.skills[targetSlot] = JSON.parse(JSON.stringify(known));
+      }
+      p.activeSkill = p.skills[0] || p.activeSkill;
+      this.normalizePlayerState(p);
+      this.saveToLocalStorage();
+      this.updateUI();
+      this.addLog(`⚔️ Đã tu chỉnh 【${known.name}】 vào ô kỹ năng ${targetSlot + 1}.`, 'skill');
+    }
+
+    upgradeSkill(skillId) {
+      const p = this.player;
+      if (!p || !Array.isArray(p.knownSkills)) return;
+      const skill = p.knownSkills.find(item => item && item.id === skillId);
+      if (!skill) return;
+      const currentLevel = this.getSkillLevel(skill);
+      if (currentLevel >= 5) {
+        this.addLog(`【${skill.name}】 đã đạt tối đa cấp 5!`, 'warning');
+        return;
+      }
+
+      const cost = 250 * currentLevel;
+      if ((p.spiritStones || 0) < cost) {
+        this.addLog(`Linh Thạch không đủ để nâng 【${skill.name}】 (cần ${cost}, hiện có ${p.spiritStones || 0})!`, 'warning');
+        return;
+      }
+
+      p.spiritStones -= cost;
+      p.skillLevels[skill.id] = currentLevel + 1;
+      sound.playBreakthrough();
+      this.addLog(`⚔️ 【${skill.name}】 đột phá lên cấp ${currentLevel + 1}! Sát thương và hiệu quả chiêu thức tăng.`, 'golden');
+      this.saveToLocalStorage();
+      this.updateUI();
+    }
+
+    renderSkillsUI() {
+      const p = this.player;
+      const list = document.getElementById('skill-list');
+      const summary = document.getElementById('skill-panel-summary');
+      if (!p || !list) return;
+      this.normalizePlayerState(p);
+      const knownSkills = p.knownSkills || p.skills || [];
+      const equipped = p.skills || [];
+      const escapeText = value => String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[char]));
+
+      if (summary) {
+        summary.textContent = `Ô 1: ${equipped[0]?.name || 'Trống'} • Ô 2: ${equipped[1]?.name || 'Trống'}`;
+      }
+      list.innerHTML = '';
+      knownSkills.forEach(skill => {
+        if (!skill) return;
+        const level = this.getSkillLevel(skill);
+        const enhanced = this.getEnhancedSkill(skill);
+        const equippedSlot = equipped.findIndex(item => item && item.id === skill.id);
+        const card = document.createElement('div');
+        card.className = `skill-card${equippedSlot >= 0 ? ' equipped' : ''}`;
+        card.innerHTML = `
+          <div class="skill-card-title-row">
+            <span class="skill-card-title">${escapeText(skill.name)}</span>
+            <span class="skill-card-level">Cấp ${level}/5</span>
+          </div>
+          <div class="skill-card-desc">${escapeText(skill.desc || 'Một môn công pháp chưa rõ lai lịch.')}</div>
+          <div class="skill-card-meta">
+            <span>MP ${enhanced.mpCost}</span>
+            <span>•</span>
+            <span>倍率 x${enhanced.dmgMult}</span>
+          </div>
+          <div class="skill-card-actions">
+            ${equippedSlot >= 0 ? `<span class="skill-equipped-badge">✅ Đang ở ô ${equippedSlot + 1}</span>` : ''}
+            <button type="button" class="pixel-btn small-btn" data-skill-slot="0">Gắn ô 1</button>
+            <button type="button" class="pixel-btn small-btn" data-skill-slot="1">Gắn ô 2</button>
+            <button type="button" class="pixel-btn small-btn primary-btn" data-skill-upgrade ${level >= 5 ? 'disabled' : ''}>${level >= 5 ? '✅ Đã tối đa' : `Nâng cấp (${250 * level} 🪙)`}</button>
+          </div>
+        `;
+        card.querySelectorAll('[data-skill-slot]').forEach(button => {
+          button.addEventListener('click', () => this.equipSkill(skill.id, button.dataset.skillSlot));
+        });
+        card.querySelector('[data-skill-upgrade]')?.addEventListener('click', () => this.upgradeSkill(skill.id));
+        list.appendChild(card);
+      });
     }
 
     migrateSaveData(rawData) {
@@ -6244,6 +6383,8 @@
         worldMetTravelers: [],
         worldEncounterRewardClaimed: false,
         skillMastery: 1,
+        skillLevels: Object.fromEntries((path.skills || [path.startSkill]).map(skill => [skill.id, 1])),
+        knownSkills: path.skills ? JSON.parse(JSON.stringify(path.skills)) : [path.startSkill],
 
         bonusHp: 0, bonusMp: 0, bonusAtk: 0, bonusDef: 0, bonusSpd: 0,
 
@@ -8301,11 +8442,17 @@
       }
       if (man.skill) {
         if (!p.skills) p.skills = [p.activeSkill];
-        if (p.skills.length < 2) {
-          p.skills.push(man.skill);
-        } else {
-          p.skills[1] = man.skill;
+        if (!p.knownSkills) p.knownSkills = [];
+        if (!p.knownSkills.some(skill => skill && skill.id === man.skill.id)) {
+          p.knownSkills.push(JSON.parse(JSON.stringify(man.skill)));
         }
+        if (p.skills.length < 2) {
+          p.skills.push(JSON.parse(JSON.stringify(man.skill)));
+        } else {
+          p.skills[1] = JSON.parse(JSON.stringify(man.skill));
+        }
+        if (!p.skillLevels) p.skillLevels = {};
+        p.skillLevels[man.skill.id] = p.skillLevels[man.skill.id] || 1;
         effects.push(`Tuyệt kỹ: 【${man.skill.name}】`);
       }
 
@@ -8855,6 +9002,7 @@
       this.renderOpenWorldUI();
       this.renderCheatUI();
       this.renderForgeUI();
+      this.renderSkillsUI();
     }
 
     gatherRegionalResources() {
@@ -9837,6 +9985,7 @@
     });
     activeCombatEngine = combatEngine;
     window.activeCombatEngine = combatEngine;
+    combatEngine.setSystems(systems);
     systems.setCombatEngine(combatEngine);
 
     const avatarCanvas = document.getElementById('avatar-canvas');
