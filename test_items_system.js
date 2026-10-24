@@ -305,7 +305,8 @@ p.inventory.ore_huyenthiet = 10;
 p.inventory.wpn_thanhphong = 1;
 const baseWpnAtk = ITEMS.wpn_thanhphong.atk;
 systems.refineEquipment('wpn_thanhphong', 'inventory');
-assert.strictEqual(ITEMS.wpn_thanhphong.refineLevel, 1, 'Weapon refine level should be 1');
+assert.strictEqual(p.equippedWeapon.refineLevel, 1, 'Equipped weapon refine level should be 1');
+assert.strictEqual(ITEMS.wpn_thanhphong.refineLevel, undefined, 'Global ITEMS object must not be mutated');
 assert.strictEqual(p.inventory.ore_huyenthiet, 8, 'Refining should consume 2 ores');
 assert.strictEqual(p.spiritStones, 1800, 'Refining to +1 should consume 200 stones');
 console.log('✓ Equipment Refinement system works (+15% stats per level)!\n');
@@ -410,6 +411,48 @@ assert.strictEqual(usableKeys.length, 2, 'Should have 2 usables (pill_hoixuan, t
 assert.strictEqual(matKeys.length, 3, 'Should have 3 materials (herb_linhchi, ore_huyenthiet, mat_lang_nanh)');
 assert.strictEqual(equipKeys.length, 1, 'Should have 1 equipment (wpn_thanhphong)');
 console.log('✓ Category filters correctly partition inventory into Usable, Materials, and Equipment!\n');
+
+// ==========================================
+// TEST 6: Dao Foundation Trauma (-2% on defeat & healing)
+// ==========================================
+console.log('6. Testing Dao Foundation Trauma (-2% Exp Speed on Defeat & Pill Healing)...');
+const traumaPlayer = createTestPlayer();
+systems.player = traumaPlayer;
+traumaPlayer.daoTrauma = 0;
+traumaPlayer.spiritStones = 1000;
+traumaPlayer.maxHp = 500;
+traumaPlayer.curHp = 500;
+
+// Simulate defeat in combat engine
+const testCombat = new CombatEngine(mockRenderer, addLog);
+systems.setCombatEngine(testCombat);
+testCombat.player = traumaPlayer;
+testCombat.playerCombat = { curHp: 0, maxHp: 500, curMp: 100, maxMp: 100 };
+testCombat.monster = { id: 'boss_test', name: 'Thí Luyện Ma Thú', exp: 100, stone: 100 };
+testCombat.monsterCombat = { curHp: 300, maxHp: 300 };
+
+// 6.1 First defeat
+testCombat.handleDefeat();
+assert.strictEqual(traumaPlayer.daoTrauma, 0.02, 'First defeat should inflict 0.02 (2%) dao trauma');
+assert.strictEqual(traumaPlayer.curHp, 100, 'Player HP should be preserved at 20% max HP (100 HP)');
+assert.strictEqual(traumaPlayer.spiritStones, 900, 'Spirit stones should decrease by 10%');
+
+// 6.2 Second defeat (stacks)
+testCombat.handleDefeat();
+assert.strictEqual(traumaPlayer.daoTrauma, 0.04, 'Second defeat should stack to 0.04 (4%) dao trauma');
+
+// 6.3 Heal 1 stage with Ngũ Hành Quy Nguyên Đan
+traumaPlayer.inventory.pill_quy_nguyen = 1;
+systems.useInventoryItem('pill_quy_nguyen');
+assert.strictEqual(traumaPlayer.daoTrauma, 0.02, 'Ngũ Hành Quy Nguyên Đan should heal 1 stage of dao trauma (back to 0.02)');
+assert.strictEqual(traumaPlayer.curHp, 500, 'Quy Nguyên Đan should fully heal HP to max');
+
+// 6.4 Cleanse all trauma with Cửu Khiếu Tẩy Tủy Đan
+traumaPlayer.inventory.pill_tay_tuy = 1;
+systems.useInventoryItem('pill_tay_tuy');
+assert.strictEqual(traumaPlayer.daoTrauma, 0, 'Cửu Khiếu Tẩy Tủy Đan should fully cleanse all dao trauma');
+
+console.log('✓ Dao Foundation Trauma (-2% per loss, 20% HP floor, Quy Nguyên & Tẩy Tủy healing) verified!\n');
 
 console.log('====================================================');
 console.log('🎉 ALL ITEM SYSTEM TESTS PASSED SUCCESSFULLY (100%)!');

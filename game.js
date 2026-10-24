@@ -2993,14 +2993,14 @@
     },
     pill_quy_nguyen: {
       id: 'pill_quy_nguyen', name: 'Ngũ Hành Quy Nguyên Đan', type: 'pill', icon: '🌀', healPercent: 1.0, mpPercent: 1.0,
-      desc: 'Linh dược bảo mệnh cực phẩm, lập tức hồi phục đầy 100% Khí Huyết và 100% Linh Lực.',
+      desc: 'Linh dược bảo mệnh cực phẩm: Lập tức hồi phục 100% Khí Huyết, 100% Linh Lực và chữa lành 1 tầng Đạo Cơ Trọng Thương (+2% tốc độ tu vi).',
       price: 800,
       howToGet: '🧪 Luyện đan (2 Bách Niên Dược + 1 Long Huyết Thảo + 1 Yêu Đan Tam Giai) | 📦 Rương Bí Cảnh',
       sources: ['Động Phủ Luyện Đan', 'Rương Bí Cảnh', 'Boss Thế Giới']
     },
     pill_tay_tuy: {
       id: 'pill_tay_tuy', name: 'Cửu Khiếu Tẩy Tủy Đan', type: 'pill', icon: '🧬', compGain: 3, fullHeal: true,
-      desc: 'Tẩy rửa kinh mạch, tẩy bỏ phàm cốt: Hồi phục 100% HP, MP và tăng vĩnh viễn +3% Ngộ Tính!',
+      desc: 'Tẩy rửa kinh mạch, tẩy bỏ phàm cốt: Hồi phục 100% HP, MP, tăng vĩnh viễn +3% Ngộ Tính và triệt để chữa lành toàn bộ tổn hại Đạo Cơ!',
       price: 2500,
       howToGet: '🧪 Luyện đan Thượng phẩm | 🏯 Đổi tại Tông Môn (800 Cống Hiến) | 📦 Rương Bí Cảnh Boss',
       sources: ['Động Phủ Luyện Đan', 'Tông Môn', 'Rương Bí Cảnh']
@@ -5845,8 +5845,17 @@
       this.playerCombat.curHp = recoveryHp;
       this.player.curHp = recoveryHp;
 
+      // Trọng thương đạo cơ: giảm vĩnh viễn 2% tốc độ tu luyện (tối đa -50%)
+      const oldTrauma = this.player.daoTrauma || 0;
+      this.player.daoTrauma = Math.min(0.50, Math.round((oldTrauma + 0.02) * 100) / 100);
+      const currentTraumaPct = Math.round(this.player.daoTrauma * 100);
+
+      this.renderer.addFloatingText('ĐẠO CƠ -2% TU VI!', 320, 160, '#ef4444', true);
+      this.addLog(`⚡【ĐẠO CƠ TRỌNG THƯƠNG】 Kinh mạch tổn hại nặng! Tốc độ hấp thu tu vi bị giảm vĩnh viễn 2% (Hiện tổn hại: -${currentTraumaPct}%)! Có thể uống Ngũ Hành Quy Nguyên Đan hoặc Cửu Khiếu Tẩy Tủy Đan để chữa lành.`, 'danger');
+
       this.showResultModal(false, {
-        monsterName: this.monster.name
+        monsterName: this.monster.name,
+        traumaPct: currentTraumaPct
       });
     }
 
@@ -5878,7 +5887,10 @@
         } else {
           bodyEl.innerHTML = `
             <div style="margin-bottom: 6px;">Đạo hữu trọng thương trước hung uy của 【${data.monsterName}】!</div>
-            <div style="color: #f87171;">Tổn thất 10% Linh Thạch, bảo tồn 20% Khí Huyết tạm lui!</div>
+            <div style="color: #f87171; line-height: 1.5;">
+              <div>• Tổn thất 10% Linh Thạch, bảo tồn 20% Khí Huyết tạm lui!</div>
+              <div style="color: #fb923c; font-weight: bold; margin-top: 3px;">• ⚡ Đạo Cơ Trọng Thương: Tốc độ tu vi -2% (Tổng: -${data.traumaPct || 2}%)!</div>
+            </div>
           `;
         }
       }
@@ -6204,6 +6216,7 @@
       p.spiritStones = finiteInt(p.spiritStones, 0);
       p.curHp = finiteInt(p.curHp, 1);
       p.curMp = finiteInt(p.curMp, 0);
+      p.daoTrauma = finiteNumber(p.daoTrauma, 0, 0, 0.5);
       if (!p.inventory || typeof p.inventory !== 'object' || Array.isArray(p.inventory)) p.inventory = {};
       Object.keys(p.inventory).forEach(id => { p.inventory[id] = finiteInt(p.inventory[id], 0); });
       if (!p.signedRegions || typeof p.signedRegions !== 'object' || Array.isArray(p.signedRegions)) p.signedRegions = {};
@@ -6489,7 +6502,8 @@
         sectManualsBought: [],
         bonusCrit: 0,
         bonusLifeSteal: 0,
-        isInjured: false
+        isInjured: false,
+        daoTrauma: 0
       };
 
       this.recalculatePlayerStats();
@@ -6605,6 +6619,11 @@
 
       if (p.teaBuffUntil && Date.now() < p.teaBuffUntil) {
         expGain *= 2;
+      }
+
+      if (p.daoTrauma && p.daoTrauma > 0) {
+        const traumaMod = Math.max(0.5, 1 - Math.min(0.5, p.daoTrauma));
+        expGain *= traumaMod;
       }
 
       this.addCultivationExp(Math.max(1, Math.floor(expGain)));
@@ -8648,18 +8667,28 @@
           p.comprehension = Math.round((p.comprehension || 100) + (item.compGain || 3));
           p.curHp = p.maxHp;
           p.curMp = p.maxMp;
+          let healTraumaText = '';
+          if (p.daoTrauma && p.daoTrauma > 0) {
+            p.daoTrauma = 0;
+            healTraumaText = ' Triệt để chữa lành toàn bộ rạn nứt Đạo Cơ!';
+          }
           p.inventory[itemId]--;
           this.recalculatePlayerStats();
           sound.playBreakthrough();
           this.renderer.addFloatingText(`NGỘ TÍNH +${item.compGain || 3}%!`, 320, 160, '#fbbf24', true);
-          this.addLog(`✨ Uống 【${item.name}】! Tẩy kinh phạt tủy, Ngộ Tính tăng vĩnh viễn +${item.compGain || 3}%, Khí Huyết và Linh Lực hồi phục 100%!`, 'golden');
+          this.addLog(`✨ Uống 【${item.name}】! Tẩy kinh phạt tủy, Ngộ Tính tăng vĩnh viễn +${item.compGain || 3}%, Khí Huyết và Linh Lực hồi phục 100%!${healTraumaText}`, 'golden');
         } else if (itemId === 'pill_quy_nguyen') {
           p.curHp = p.maxHp;
           p.curMp = p.maxMp;
+          let healTraumaText = '';
+          if (p.daoTrauma && p.daoTrauma > 0) {
+            p.daoTrauma = Math.max(0, Math.round((p.daoTrauma - 0.02) * 100) / 100);
+            healTraumaText = ` Phục hồi 1 tầng Đạo Cơ (Còn tổn hại: -${Math.round(p.daoTrauma * 100)}% tu vi).`;
+          }
           p.inventory[itemId]--;
           sound.playHeal();
           this.renderer.addFloatingText('QUY NGUYÊN 100%!', 320, 160, '#34d399', true);
-          this.addLog(`🌀 Uống 【${item.name}】! Ngũ hành lưu chuyển, toàn bộ Khí Huyết và Linh Lực lập tức hồi phục 100%!`, 'heal');
+          this.addLog(`🌀 Uống 【${item.name}】! Ngũ hành lưu chuyển, toàn bộ Khí Huyết và Linh Lực lập tức hồi phục 100%!${healTraumaText}`, 'heal');
         } else if (itemId === 'pill_ngung_than' || item.cleanseDebuff) {
           p.curHp = Math.min(p.maxHp, p.curHp + Math.floor(p.maxHp * (item.healPercent || 0.25)));
           p.inventory[itemId]--;
@@ -9161,11 +9190,19 @@
       if (p.physique && p.physique.expBonus) expGainRate *= (1 + p.physique.expBonus);
       if (p.cheatCore && p.cheatCore.id === 'proficiency') expGainRate *= 1.25;
       if (p.teaBuffUntil && Date.now() < p.teaBuffUntil) expGainRate *= 2;
+      if (p.daoTrauma && p.daoTrauma > 0) {
+        const traumaMod = Math.max(0.5, 1 - Math.min(0.5, p.daoTrauma));
+        expGainRate *= traumaMod;
+      }
       const actualExpSec = Math.max(1, Math.floor(expGainRate));
 
       if (meridianSpeedText) {
         const teaActive = p.teaBuffUntil && Date.now() < p.teaBuffUntil;
-        meridianSpeedText.textContent = `Tốc độ: +${actualExpSec} Tu Vi/giây` + (teaActive ? ' 🔥 (x2 Trà Tiên)' : '');
+        const traumaPct = p.daoTrauma ? Math.round(p.daoTrauma * 100) : 0;
+        let speedLabel = `Tốc độ: +${actualExpSec} Tu Vi/giây`;
+        if (teaActive) speedLabel += ' 🔥 (x2 Trà Tiên)';
+        if (traumaPct > 0) speedLabel += ` <span style="color: #f87171; font-size: 11px;">(⚡ -${traumaPct}% Trọng Thương)</span>`;
+        meridianSpeedText.innerHTML = speedLabel;
       }
       if (dongphuArrayLevel) dongphuArrayLevel.textContent = `Tụ Linh Trận Bậc ${Math.min(9, Math.floor(p.realmIndex / 3) + 1)}`;
       if (dongphuQiDensity) dongphuQiDensity.textContent = `Nồng Đậm ${100 + p.realmIndex * 15}%`;
