@@ -948,7 +948,6 @@
     <div class="modal-window" style="max-width: 380px;">
       <div class="modal-header">⚙️ Cài Đặt & Thần Thức</div>
       <div class="modal-body" style="gap: 10px;">
-        <button id="btn-mobile-account" class="pixel-btn auth-account-btn btn-3d" style="min-height: 44px; width: 100%;">☯️ Tiên Môn Ký Danh (Tài Khoản)</button>
         <button id="btn-mobile-save" class="pixel-btn primary-btn btn-3d" style="min-height: 44px; width: 100%;">💾 Lưu Game (Thần Thức)</button>
         <button id="btn-mobile-sound-toggle" class="pixel-btn btn-3d" style="min-height: 44px; width: 100%;">🔊 Âm Thanh: BẬT</button>
         <button id="btn-mobile-reset-char" class="pixel-btn btn-danger btn-3d" style="min-height: 44px; width: 100%;">🔄 Tán Công Luân Hồi (Xóa)</button>
@@ -1105,167 +1104,62 @@
     </div>
   </div>
 
-  <!-- ================= MODAL: TÀI KHOẢN NEON AUTH (TIÊN MÔN KÝ DANH) ================= -->
+  <!-- ================= MODAL: TÀI KHOẢN NEON AUTH ================= -->
   <div id="auth-modal" class="modal-overlay hidden">
     <div class="modal-window auth-window" role="dialog" aria-modal="true" aria-labelledby="auth-title">
-      <!-- Decorative Ornaments -->
-      <div class="panel-ornament-tl"></div>
-      <div class="panel-ornament-tr"></div>
-      <div class="panel-ornament-bl"></div>
-      <div class="panel-ornament-br"></div>
-
-      <!-- Xianxia Header -->
       <div class="modal-header auth-modal-header">
-        <div class="auth-header-left">
-          <span class="auth-header-emblem">☯️</span>
-          <div class="auth-header-titles">
-            <span id="auth-title" class="auth-title-text">TIÊN MÔN KÝ DANH</span>
-            <span class="auth-subtitle-text">Khắc Ấn Bản Mệnh &bull; Bảo Toàn Tu Vi Cửu Trọng</span>
-          </div>
-        </div>
-        <button id="btn-auth-close" class="modal-close-btn auth-close-btn" type="button" title="Đóng bảng Ký Danh">&times;</button>
+        <span id="auth-title">☯️ TÀI KHOẢN ĐẠO HỮU</span>
+        <button id="btn-auth-close" class="modal-close-btn" type="button" title="Đóng">&times;</button>
       </div>
 
-      <!-- Logged-Out View -->
       <div id="auth-logged-out" class="auth-content">
-        <!-- Chế độ Đăng nhập / Đăng ký -->
+        <div class="auth-intro">Đăng nhập để bảo vệ nhân vật và sử dụng tài khoản trên nhiều thiết bị.</div>
+
         <div class="auth-mode-tabs" role="tablist" aria-label="Chế độ tài khoản">
-          <button id="btn-auth-signin-mode" class="auth-mode-btn active" type="button">
-            <span class="auth-tab-icon">⛩️</span> Nhập Đạo (Đăng Nhập)
-          </button>
-          <button id="btn-auth-signup-mode" class="auth-mode-btn" type="button">
-            <span class="auth-tab-icon">📜</span> Khởi Đạo (Đăng Ký)
-          </button>
+          <button id="btn-auth-signin-mode" class="auth-mode-btn active" type="button">Đăng nhập</button>
+          <button id="btn-auth-signup-mode" class="auth-mode-btn" type="button">Đăng ký</button>
         </div>
 
-        <!-- Dải Phúc Lợi Tiên Môn -->
-        <div class="auth-benefits-strip">
-          <span class="benefit-item">☁️ Lưu Đám Mây</span>
-          <span class="benefit-sep">✦</span>
-          <span class="benefit-item">🛡️ Chống Mất Tu Vi</span>
-          <span class="benefit-sep">✦</span>
-          <span class="benefit-item">🎁 Quà Khởi Đầu</span>
-        </div>
-
-        <!-- Biểu mẫu Thông tin -->
         <form id="auth-form" class="auth-form">
-          <!-- Tên Đạo Hiệu (Chỉ hiện khi Đăng Ký) -->
-          <div id="auth-name-field" class="auth-field-group hidden">
-            <label for="auth-name" class="auth-label">
-              <span class="auth-label-icon">🏷️</span> Đạo Hiệu / Pháp Danh
-            </label>
-            <div class="auth-input-wrapper">
-              <input id="auth-name" type="text" autocomplete="name" maxlength="40" placeholder="Ví dụ: Hàn Lập, Tiêu Viêm, Vô Danh...">
-            </div>
-            <span class="auth-field-hint">Tên sẽ được khắc vào Tiên Đạo Bảng & bản mệnh ngọc bài.</span>
-          </div>
-
-          <!-- Email -->
-          <div class="auth-field-group">
-            <label for="auth-email" class="auth-label">
-              <span class="auth-label-icon">✉️</span> Tiên Hạc Thư (Email)
-            </label>
-            <div class="auth-input-wrapper">
-              <input id="auth-email" type="email" autocomplete="email" required placeholder="dao-huu@tien-mon.vn">
-            </div>
-          </div>
-
-          <!-- Mật khẩu + Nút Ẩn/Hiện -->
-          <div class="auth-field-group">
-            <label for="auth-password" class="auth-label">
-              <span class="auth-label-icon">🔐</span> Khóa Hồn Thần Ấn (Mật Khẩu)
-            </label>
-            <div class="auth-input-wrapper auth-pwd-wrapper">
-              <input id="auth-password" type="password" autocomplete="current-password" minlength="8" required placeholder="Ít nhất 8 ký tự hộ mệnh...">
-              <button id="btn-auth-toggle-pwd" type="button" class="auth-pwd-toggle" title="Ẩn/Hiện mật khẩu" aria-label="Ẩn/Hiện mật khẩu">
-                <span id="auth-pwd-icon">👁️</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Nút Đăng Nhập / Đăng Ký -->
-          <button id="btn-auth-submit" class="pixel-btn primary-btn btn-3d auth-submit-btn" type="submit">
-            ⛩️ Nhập Đạo Vào Tiên Giới
-          </button>
+          <label id="auth-name-field" class="auth-field hidden">
+            <span>Tên hiển thị</span>
+            <input id="auth-name" type="text" autocomplete="name" maxlength="80" placeholder="Tên đạo hữu">
+          </label>
+          <label class="auth-field">
+            <span>Email</span>
+            <input id="auth-email" type="email" autocomplete="email" required placeholder="dao-huu@example.com">
+          </label>
+          <label class="auth-field">
+            <span>Mật khẩu</span>
+            <input id="auth-password" type="password" autocomplete="current-password" minlength="8" required placeholder="Ít nhất 8 ký tự">
+          </label>
+          <button id="btn-auth-submit" class="pixel-btn primary-btn auth-submit-btn" type="submit">Đăng nhập</button>
         </form>
 
-        <!-- Phân cách Khách / Tiêu Dao -->
-        <div class="auth-divider">
-          <span class="auth-divider-line"></span>
-          <span class="auth-divider-badge">HOẶC TIÊU DAO DU NGOẠN</span>
-          <span class="auth-divider-line"></span>
-        </div>
-
-        <!-- Nút Chơi Ngay (Bản Khách / Cục Bộ) -->
-        <button id="btn-auth-guest" class="pixel-btn auth-guest-btn btn-3d" type="button">
-          🎮 Trải Nghiệm Khách (Bỏ Qua & Chơi Ngay)
-        </button>
-        <div class="auth-guest-note">
-          ⚡ Lưu cục bộ trên trình duyệt &bull; Không cần đăng ký &bull; Có thể liên kết tài khoản sau
-        </div>
-
-        <!-- Khu vực Xác Minh OTP Email -->
         <div id="auth-verify-section" class="auth-verify-section hidden">
-          <div class="auth-verify-header">
-            <span class="auth-verify-icon">📨</span>
-            <div class="auth-verify-title">THIÊN THƯ XÁC MINH CHÂN NGÔN</div>
-          </div>
-          <div class="auth-verify-help">
-            Mật chỉ đã được truyền về hạc thư của đạo hữu. Nhập chân ngôn (OTP) để hoàn tất:
-          </div>
+          <div class="auth-verify-title">📨 XÁC MINH EMAIL</div>
+          <div class="auth-verify-help">Nhập mã đã được gửi đến email để hoàn tất đăng ký.</div>
           <div class="auth-verify-row">
-            <input id="auth-otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="Nhập mã OTP...">
-            <button id="btn-auth-verify" class="pixel-btn primary-btn btn-3d" type="button">✨ Xác Thực</button>
+            <input id="auth-otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="Mã xác minh">
+            <button id="btn-auth-verify" class="pixel-btn primary-btn" type="button">Xác minh</button>
           </div>
         </div>
 
-        <!-- Thông Báo Trạng Thái -->
         <div id="auth-status" class="auth-status" role="status" aria-live="polite"></div>
-        <div class="auth-security-note">
-          🛡️ Bảo mật chuẩn Thần Cấp bởi Neon Auth &bull; Mật khẩu mã hóa bất khả xâm phạm
-        </div>
+        <div class="auth-note">Mật khẩu được xử lý bởi Neon Auth, không lưu trong game.js.</div>
       </div>
 
-      <!-- Logged-In View (Bản Mệnh Tiên Bài) -->
       <div id="auth-logged-in" class="auth-content hidden">
-        <div class="auth-profile-card">
-          <div class="auth-avatar-circle">
-            <span class="auth-avatar-glyph">🧘‍♂️</span>
-            <span class="auth-avatar-ring"></span>
-          </div>
-          <div class="auth-profile-details">
-            <div class="auth-badge-status">
-              <span class="status-dot-pulse"></span>
-              <span>ĐÃ NHẬP TIÊN MÔN</span>
-            </div>
-            <div id="auth-user-name" class="auth-user-name">Đạo Hữu Vô Danh</div>
-            <div id="auth-user-email" class="auth-user-email">chua-lien-ket@tien-mon.vn</div>
+        <div class="auth-user-card">
+          <div class="auth-user-icon">✨</div>
+          <div>
+            <div class="auth-user-label">Đã đăng nhập</div>
+            <div id="auth-user-name" class="auth-user-name">Đạo hữu</div>
+            <div id="auth-user-email" class="auth-user-email"></div>
           </div>
         </div>
-
-        <!-- Trạng Thái Đồng Bộ Đám Mây -->
-        <div class="auth-cloud-status-box">
-          <div class="auth-cloud-status-header">
-            <span>☁️ THIÊN ĐẠO ĐỒNG BỘ</span>
-            <span class="cloud-status-pill">Đang Liên Kết</span>
-          </div>
-          <div id="auth-session-status" class="auth-status-text">
-            Session Neon Auth đang hoạt động bảo toàn dữ liệu.
-          </div>
-          <div id="auth-char-summary" class="auth-char-summary hidden">
-            <!-- Tóm tắt nhân vật hiển thị tại đây -->
-          </div>
-        </div>
-
-        <!-- Thao Tác Tài Khoản -->
-        <div class="auth-profile-actions">
-          <button id="btn-auth-sync-cloud" class="pixel-btn auth-sync-btn btn-3d" type="button">
-            ☁️ Lưu Tiến Trình Lên Đám Mây
-          </button>
-          <button id="btn-auth-signout" class="pixel-btn auth-signout-btn btn-3d" type="button">
-            🚪 Tạm Biệt Tiên Môn (Đăng Xuất)
-          </button>
-        </div>
+        <div id="auth-session-status" class="auth-status success" role="status"></div>
+        <button id="btn-auth-signout" class="pixel-btn btn-danger auth-submit-btn" type="button">Đăng xuất</button>
       </div>
     </div>
   </div>
