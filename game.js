@@ -424,6 +424,1371 @@
     ctx.restore();
   }
 
+  // ==========================================================================
+  // 1.1 PROCEDURAL PIXEL SPRITES CHO TOÀN BỘ 73 VẬT PHẨM (CUSTOM HAND-DRAWN)
+  // ==========================================================================
+  const ITEM_PIXEL_SPRITES = {
+  // --- 1. DƯỢC THẢO (10) ---
+  herb_linhchi: {
+    w: 12, h: 12,
+    palette: { '.': null, 'R': '#ef4444', 'D': '#991b1b', 'W': '#ffffff', 'S': '#fef08a', 'B': '#ca8a04' },
+    data: [
+      "...RRRRR....",
+      "..RRWWRRRD..",
+      ".RRRRRRWWRD.",
+      "RRWWRRRRRRDD",
+      "RRRRRRWWRRDD",
+      ".DDDDDDDDDD.",
+      "....SSSS....",
+      "....SSSS....",
+      "....SSSS....",
+      "...BBSSBB...",
+      "..BBBBBBBB..",
+      "............"
+    ]
+  },
+  herb_thanh_u: {
+    w: 12, h: 12,
+    palette: { '.': null, 'G': '#22c55e', 'D': '#15803d', 'L': '#86efac', 'C': '#38bdf8', 'W': '#ffffff' },
+    data: [
+      "....LLG.....",
+      "...LGGGD....",
+      "...GGGGGD...",
+      "....DGD.....",
+      ".LLG.D.GLL..",
+      "LGGD.D.DGGL.",
+      "LGG.CWC.GGL.",
+      ".D.CWWC.DG..",
+      "...DCCD.D...",
+      "....DDD.....",
+      "....DDD.....",
+      ".....D......"
+    ]
+  },
+  herb_u_hon: {
+    w: 12, h: 12,
+    palette: { '.': null, 'P': '#a855f7', 'D': '#581c87', 'C': '#38bdf8', 'W': '#e0e7ff' },
+    data: [
+      "....W.......",
+      "...CWC......",
+      "...CPC...W..",
+      "..CPDP..CWC.",
+      "..PDPD..CPC.",
+      "...DP..CPDP.",
+      "....P..PDPD.",
+      "...DDP..DP..",
+      "....DD..PD..",
+      "....DDD.DD..",
+      ".....DDDD...",
+      "......DD...."
+    ]
+  },
+  herb_hoaviem: {
+    w: 12, h: 12,
+    palette: { '.': null, 'R': '#ef4444', 'O': '#f97316', 'Y': '#facc15', 'W': '#fef08a', 'G': '#16a34a' },
+    data: [
+      "....RO......",
+      "...RORYO....",
+      "..RORYWYO...",
+      "..ORWWYYO...",
+      "..OYWYYOR...",
+      "...OYYOR....",
+      "....ROR.....",
+      ".....G......",
+      "...GGG......",
+      "..G.GG.GG...",
+      "....GG.G....",
+      "....G......."
+    ]
+  },
+  herb_bachnien: {
+    w: 12, h: 12,
+    palette: { '.': null, 'P': '#f472b6', 'L': '#fbcfe8', 'D': '#db2777', 'Y': '#facc15', 'G': '#16a34a' },
+    data: [
+      "....LLP.....",
+      "...LPPPP....",
+      "..LPPYYPDD..",
+      "..PPYYYYPD..",
+      ".LPPYYPPDD..",
+      ".PPPPPDDDD..",
+      "..DDDDDDD...",
+      ".....G......",
+      "...GGG......",
+      "..GG.GG.G...",
+      ".....GG.....",
+      "......G....."
+    ]
+  },
+  herb_huyen_bang: {
+    w: 12, h: 12,
+    palette: { '.': null, 'C': '#38bdf8', 'L': '#bae6fd', 'W': '#ffffff', 'D': '#0284c7' },
+    data: [
+      ".....W......",
+      "....LWL.....",
+      "...CLWLC....",
+      "....LWL.....",
+      ".W..DCD..W..",
+      "LLLCDWDCLLL.",
+      ".W..DCD..W..",
+      "....LWL.....",
+      "...CLWLC....",
+      "....LWL.....",
+      ".....W......",
+      "............"
+    ]
+  },
+  herb_longhuyet: {
+    w: 12, h: 12,
+    palette: { '.': null, 'R': '#dc2626', 'D': '#7f1d1d', 'L': '#f87171', 'B': '#991b1b', 'G': '#15803d' },
+    data: [
+      ".....L......",
+      "....LRD.....",
+      "...LLRRD....",
+      "....LRD.....",
+      "..L..B..D...",
+      ".LLR.B.RRD..",
+      "..LRDBDRD...",
+      "...R.B.R....",
+      ".....B......",
+      "...GGBGG....",
+      "....GBG.....",
+      ".....G......"
+    ]
+  },
+  herb_cuuchuyen: {
+    w: 12, h: 12,
+    palette: { '.': null, 'Y': '#fbbf24', 'P': '#c084fc', 'R': '#f87171', 'C': '#38bdf8', 'W': '#ffffff', 'G': '#16a34a' },
+    data: [
+      "....R.C.....",
+      "...RWWYC....",
+      "..RRWWYYC...",
+      "..P.WW.P....",
+      ".PPWWWWPP...",
+      "..PWWWWP....",
+      "...GYYGG....",
+      "....GG......",
+      "...GGGG.....",
+      "..GG..GG....",
+      "............",
+      "............"
+    ]
+  },
+  herb_thienkiem: {
+    w: 12, h: 12,
+    palette: { '.': null, 'S': '#cbd5e1', 'W': '#f8fafc', 'G': '#22c55e', 'D': '#15803d', 'Y': '#eab308' },
+    data: [
+      ".....W......",
+      "....WSW.....",
+      "....WSW.....",
+      "...WSSSD....",
+      "...WSSSD....",
+      "...WSSSD....",
+      "..G.SSD.D...",
+      ".GG.SSD.GG..",
+      "GG..YYY..GG.",
+      "....DDD.....",
+      "....DDD.....",
+      ".....D......"
+    ]
+  },
+  herb_ngo_dao: {
+    w: 12, h: 12,
+    palette: { '.': null, 'G': '#15803d', 'L': '#4ade80', 'Y': '#facc15', 'W': '#fef08a', 'D': '#14532d' },
+    data: [
+      "......L.....",
+      ".....LLG....",
+      "....LLYLG...",
+      "...LLYLYLG..",
+      "..LLYYLYYLG.",
+      ".LLYWWYYLLGD",
+      ".LLYYLYYLLGD",
+      "..DDLYLLGGD.",
+      "...DDYLGGD..",
+      "....DDGGD...",
+      ".....DD.....",
+      "......D....."
+    ]
+  },
+
+  // --- 2. KHOÁNG THẠCH (7) ---
+  ore_huyenthiet: {
+    w: 12, h: 12,
+    palette: { '.': null, 'B': '#0f172a', 'D': '#334155', 'M': '#64748b', 'L': '#94a3b8', 'W': '#cbd5e1' },
+    data: [
+      "....LLM.....",
+      "...LWWWMM...",
+      "..LWWMMMMD..",
+      ".LWMDMMMMMD.",
+      ".WMMDDDDMBD.",
+      "LMMDDBBDMBBD",
+      "MMDDBBBBMBBD",
+      "MDDBBBBBBBD.",
+      ".DDBBBBBBBD.",
+      "..DBBBBBBD..",
+      "...DBBBD....",
+      "............"
+    ]
+  },
+  ore_dong_tinh: {
+    w: 12, h: 12,
+    palette: { '.': null, 'C': '#0d9488', 'L': '#2dd4bf', 'B': '#b45309', 'Y': '#d97706', 'D': '#78350f' },
+    data: [
+      "....YYB.....",
+      "...YYYYBD...",
+      "..YYLLYYBD..",
+      ".YYLLCYYYBD.",
+      ".YLCLLCYYBD.",
+      "YYCLLCYYBBD.",
+      "YCCLLYYYBBD.",
+      ".BCCCCYYBDD.",
+      "..BCCCCBDD..",
+      "...BBCCBD...",
+      "....BBD.....",
+      "............"
+    ]
+  },
+  ore_tutinh: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#f3e8ff', 'L': '#c084fc', 'P': '#9333ea', 'D': '#581c87', 'B': '#3b0764' },
+    data: [
+      "....W...W...",
+      "...LPL.LPL..",
+      "..LPPPLPPPD.",
+      "..LPPDLPDD..",
+      ".W.PPDLPPD..",
+      "LPL.PPLPPDD.",
+      "LPPPLPPPDDD.",
+      ".LPPDLPPDDB.",
+      "..PPDLPPDDB.",
+      "...DDBBDDB..",
+      "....DBBDB...",
+      ".....BBB...."
+    ]
+  },
+  ore_thienngoai: {
+    w: 12, h: 12,
+    palette: { '.': null, 'R': '#ef4444', 'O': '#f97316', 'Y': '#facc15', 'W': '#fef08a', 'D': '#334155', 'B': '#0f172a' },
+    data: [
+      "..R.........",
+      "...RO.......",
+      "....ROY.....",
+      ".....OWWDD..",
+      "...DDOYYWDD.",
+      "..DDROYYWDDB",
+      ".DDROOYYWDDB",
+      ".DROOYYWDDBB",
+      "..DROYYWDDB.",
+      "...DDBBDBB..",
+      "....DDDDD...",
+      "............"
+    ]
+  },
+  ore_huyettinh: {
+    w: 12, h: 12,
+    palette: { '.': null, 'L': '#f87171', 'R': '#dc2626', 'D': '#991b1b', 'B': '#450a0a', 'W': '#ffffff' },
+    data: [
+      "....WLR.....",
+      "...WLLRRD...",
+      "..WLLRRRDD..",
+      ".WLLRRRRRDD.",
+      "WLLRRRRRRDD.",
+      "LLRRRRRRRDDD",
+      ".LRRRRRRDDD.",
+      ".LRRRRRRDDB.",
+      "..RRRRRDDB..",
+      "...RRRDDBB..",
+      "....RDDDB...",
+      ".....BBB...."
+    ]
+  },
+  ore_thai_at: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#fef9c3', 'Y': '#facc15', 'O': '#d97706', 'D': '#92400e', 'B': '#451a03' },
+    data: [
+      "....WWY.....",
+      "...WWYYYO...",
+      "..WWYYYYYO..",
+      ".WWYYYYYYOD.",
+      "WWYYYYYYYODD",
+      "WYYYYYYYODDB",
+      ".YYYYYYODDB.",
+      ".YYYYYODDBB.",
+      "..YYYODDBB..",
+      "...YODDBB...",
+      "....ODDB....",
+      ".....BB....."
+    ]
+  },
+  ore_hondon: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#ffffff', 'P': '#c084fc', 'C': '#38bdf8', 'Y': '#fbbf24', 'D': '#475569', 'B': '#090d16' },
+    data: [
+      "....WPC.....",
+      "...WWPCDD...",
+      "..WPCPCYDD..",
+      ".WPCPCPCYD.",
+      "WCPCPCPCYDD.",
+      "PCPCYCYCDDDB",
+      ".CPCYCYDDBB.",
+      ".PCYCYDDBBB.",
+      "..YCYDDBBB..",
+      "...YDDBBBB..",
+      "....DDBBB...",
+      ".....BBB...."
+    ]
+  },
+
+  // --- 3. DỊ BẢO YÊU THÚ (13) ---
+  core_yeu_dan_1: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#ffffff', 'L': '#86efac', 'G': '#22c55e', 'D': '#15803d', 'B': '#14532d' },
+    data: [
+      "....LGG.....",
+      "...LWWGG....",
+      "..LWWGGGGD..",
+      ".LWWGGGGGGD.",
+      ".LGGGGGGGGD.",
+      "LGGGGGGGGGGD",
+      "GGGGGGGGGGDD",
+      ".GGGGGGGGDD.",
+      ".DGGGGGGDD..",
+      "..DGGGGDD...",
+      "...DDDDD....",
+      "............"
+    ]
+  },
+  core_yeu_dan_2: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#ffffff', 'L': '#7dd3fc', 'C': '#0ea5e9', 'D': '#0369a1', 'B': '#0c4a6e' },
+    data: [
+      "....LCC.....",
+      "...LWWCC....",
+      "..LWWCCCCD..",
+      ".LWWCCCCCCD.",
+      ".LCCCCCCCCD.",
+      "LCCCCCCCCCCD",
+      "CCCCCCCCCCDD",
+      ".CCCCCCCCDD.",
+      ".DCCCCCCDD..",
+      "..DCCCCDD...",
+      "...DDDDD....",
+      "............"
+    ]
+  },
+  core_yeu_dan_3: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#ffffff', 'L': '#fef08a', 'Y': '#eab308', 'D': '#a16207', 'B': '#713f12' },
+    data: [
+      "....LYY.....",
+      "...LWWYY....",
+      "..LWWYYYYD..",
+      ".LWWYYYYYYD.",
+      ".LYYYYYYYYD.",
+      "LYYYYYYYYYYD",
+      "YYYYYYYYYYDD",
+      ".YYYYYYYYDD.",
+      ".DYYYYYYDD..",
+      "..DYYYYDD...",
+      "...DDDDD....",
+      "............"
+    ]
+  },
+  core_yeu_dan_4: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#ffffff', 'L': '#d8b4fe', 'P': '#9333ea', 'D': '#6b21a8', 'B': '#3b0764' },
+    data: [
+      "....LPP.....",
+      "...LWWPP....",
+      "..LWWPPPPD..",
+      ".LWWPPPPCCD.",
+      ".LPPPPCCCCD.",
+      "LPPPPCCCCCCD",
+      "PPPPCCCCCCDD",
+      ".PPPPCCCCDD.",
+      ".DPPCCCCDD..",
+      "..DPCCCDD...",
+      "...DDDDD....",
+      "............"
+    ]
+  },
+  core_yeu_dan_5: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#ffffff', 'Y': '#fbbf24', 'O': '#ea580c', 'C': '#38bdf8', 'D': '#78350f' },
+    data: [
+      ".....W......",
+      "....CWC.....",
+      "...CYWYC....",
+      "..CYYWYYC...",
+      ".CYYW.WYYC..",
+      "WYYW...WYYW.",
+      ".CYYW.WYYC..",
+      "..CYYWYYC...",
+      "...CYWYC....",
+      "....CWC.....",
+      ".....W......",
+      "............"
+    ]
+  },
+  mat_lang_nanh: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#ffffff', 'S': '#e2e8f0', 'D': '#64748b', 'B': '#1e293b', 'R': '#dc2626' },
+    data: [
+      "....BBBD....",
+      "...BBDDD....",
+      "...BBDD.....",
+      "....WSD.....",
+      "....WSD.....",
+      "...WWSD.....",
+      "...WWSD.....",
+      "..WWWSD.....",
+      "..WWSDR.....",
+      "..WWSD......",
+      "...WD.......",
+      "....D......."
+    ]
+  },
+  mat_tru_nha: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#ffffff', 'S': '#cbd5e1', 'D': '#64748b', 'B': '#78350f' },
+    data: [
+      "W..........W",
+      "WS........SW",
+      "WSD......DSW",
+      ".WSD....DSW.",
+      ".WWSD..DSWW.",
+      "..WWSDDSWW..",
+      "...WWSSWW...",
+      "....WSSW....",
+      "...BBDDBB...",
+      "...BBDDBB...",
+      "....BBBB....",
+      "............"
+    ]
+  },
+  mat_xa_noc: {
+    w: 12, h: 12,
+    palette: { '.': null, 'G': '#22c55e', 'L': '#86efac', 'C': '#0f766e', 'W': '#ffffff', 'B': '#92400e' },
+    data: [
+      "....BB......",
+      "....BB......",
+      "...CCCC.....",
+      "..CW..CCD...",
+      ".CW....CCD..",
+      ".CG..L..GD..",
+      ".CGG.L.GGD..",
+      ".CLGGGGGGD..",
+      ".CGGGGGGGD..",
+      "..CGGGGGCD..",
+      "...DDDDDD...",
+      "............"
+    ]
+  },
+  mat_ho_bi: {
+    w: 12, h: 12,
+    palette: { '.': null, 'O': '#ea580c', 'Y': '#fbbf24', 'B': '#18181b', 'W': '#fef08a' },
+    data: [
+      "..YYYYYY....",
+      ".YOYBBOYY...",
+      "YOYB..BOYY..",
+      "YOYBB..BOYY.",
+      "YOY.BB..BOY.",
+      "YOY..BB.BOY.",
+      "YOY.BB..BOY.",
+      "YOYBB..BOYY.",
+      "YOYB..BOYY..",
+      ".YOYBBOYY...",
+      "..YYYYYY....",
+      "............"
+    ]
+  },
+  mat_hung_dam: {
+    w: 12, h: 12,
+    palette: { '.': null, 'R': '#b91c1c', 'D': '#7f1d1d', 'L': '#f87171', 'W': '#ffffff', 'B': '#450a0a' },
+    data: [
+      ".....D......",
+      "....DLD.....",
+      "...DLLRD....",
+      "..DLWLRRD...",
+      ".DLWWLRRRD..",
+      ".DLLLRRRRDD.",
+      "DLLLRRRRRRDD",
+      "DLLRRRRRRRDD",
+      ".DLRRRRRRDD.",
+      "..DRRRRRDD..",
+      "...DDDDDD...",
+      "............"
+    ]
+  },
+  mat_dieu_vu: {
+    w: 12, h: 12,
+    palette: { '.': null, 'R': '#ef4444', 'O': '#f97316', 'Y': '#fbbf24', 'D': '#991b1b', 'B': '#1e293b' },
+    data: [
+      ".......R....",
+      "......RRD...",
+      ".....RRRD...",
+      "....RRRDD...",
+      "...ORRRDD...",
+      "..OORRDDD...",
+      "..YOORDDD...",
+      ".YYOOBDD....",
+      ".YYOBDDD....",
+      "..YOBDD.....",
+      "...BDD......",
+      "....B......."
+    ]
+  },
+  mat_giao_lan: {
+    w: 12, h: 12,
+    palette: { '.': null, 'G': '#10b981', 'L': '#6ee7b7', 'D': '#047857', 'Y': '#facc15', 'W': '#ecfdf5' },
+    data: [
+      "....YYYY....",
+      "...YLLLLY...",
+      "..YLWWLLLY..",
+      ".YLWGGGGLLY.",
+      ".YLGGD.GGGY.",
+      "YLGGD...GGGY",
+      "YLGGD...GGGY",
+      ".YGGD...DGY.",
+      ".YGGD..DDGY.",
+      "..YGGDDDDY..",
+      "...YDDDDY...",
+      "....YYYY...."
+    ]
+  },
+  mat_hu_moc: {
+    w: 12, h: 12,
+    palette: { '.': null, 'B': '#78350f', 'D': '#451a03', 'Y': '#d97706', 'L': '#fde68a' },
+    data: [
+      "....BBBB....",
+      "..BBYYYYBB..",
+      ".BBYLLLLYBB.",
+      ".BYLBBLLLYB.",
+      "BYLBBYYLLYBD",
+      "BYLBYLLLYYBD",
+      "BYLBYLLLYYBD",
+      "BYLBBLLYYYBD",
+      ".BYLLYYYYBD.",
+      ".BBDYYYYBBD.",
+      "..BBDDDDBBD.",
+      "....DDDD...."
+    ]
+  },
+
+  // --- 4. ĐAN DƯỢC (17) ---
+  pill_hoixuan: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#ffffff', 'L': '#86efac', 'G': '#22c55e', 'D': '#15803d' },
+    data: [
+      "....GGGG....",
+      "..GGLLLLGG..",
+      ".GGLWWLLLLG.",
+      ".GGLWWLLLLG.",
+      "GGLLWWLLLLGG",
+      "GGLLWWLLLLGG",
+      "GGWWWWWWLLGG",
+      "GGWWWWWWLLGG",
+      ".GGLLWWLLLG.",
+      ".GGLLWWLLLG.",
+      "..GGDDDDGG..",
+      "....GGGG...."
+    ]
+  },
+  pill_tulinh: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#ffffff', 'L': '#7dd3fc', 'C': '#0284c7', 'D': '#0369a1' },
+    data: [
+      "....CCCC....",
+      "..CCLLLLCC..",
+      ".CCLLWLLLLC.",
+      ".CCLLWLLLLC.",
+      "CCLLWWLLLLCC",
+      "CCLLWWLLLLCC",
+      "CCLWWWWLLLCC",
+      "CCLWWWWLLLCC",
+      ".CCLLWWLLLC.",
+      ".CCDDLLLLLC.",
+      "..CCDDDDCC..",
+      "....CCCC...."
+    ]
+  },
+  pill_tukhi: {
+    w: 12, h: 12,
+    palette: { '.': null, 'R': '#ef4444', 'L': '#fca5a5', 'W': '#ffffff', 'S': '#cbd5e1', 'D': '#991b1b', 'B': '#64748b' },
+    data: [
+      ".....LLR....",
+      "....LLLRR...",
+      "...LLLRRRR..",
+      "..LLLRRRRRR.",
+      ".LLLRRRRRRD.",
+      ".LLRRRRRDDD.",
+      ".WWSSSSSBBB.",
+      "WWSSSSSSBBB.",
+      ".WWSSSSSBB..",
+      "..WWSSSSB...",
+      "...WWSSB....",
+      "....WSB....."
+    ]
+  },
+  pill_bao_khi: {
+    w: 12, h: 12,
+    palette: { '.': null, 'R': '#ef4444', 'O': '#f97316', 'Y': '#facc15', 'W': '#ffffff' },
+    data: [
+      "..R...O...R.",
+      "...R.OOO.R..",
+      "....OOOOO...",
+      "..OOWWWOOO..",
+      ".OOWWYYYWOO.",
+      "OOWYYYYYYWOO",
+      "OOWYYYYYYWOO",
+      ".OOWWYYYWOO.",
+      "..OOWWWOOO..",
+      "....OOOOO...",
+      "...R.OOO.R..",
+      "..R...O...R."
+    ]
+  },
+  pill_ngung_than: {
+    w: 12, h: 12,
+    palette: { '.': null, 'C': '#06b6d4', 'L': '#a5f3fc', 'W': '#ffffff', 'D': '#0891b2' },
+    data: [
+      "....CCCC....",
+      "..CCLLLLCC..",
+      ".CCLLWLLLLC.",
+      ".CCLWWWLLLC.",
+      "CCLW.W.WLLCC",
+      "CCLLWWWLLLLC",
+      "CCLLLWLLLLCC",
+      "CCLWWWWLLLCC",
+      ".CCLLLLLLLC.",
+      ".CCDDDDDDLC.",
+      "..CCDDDDCC..",
+      "....CCCC...."
+    ]
+  },
+  pill_quy_nguyen: {
+    w: 12, h: 12,
+    palette: { '.': null, 'R': '#ef4444', 'G': '#22c55e', 'B': '#3b82f6', 'Y': '#eab308', 'W': '#ffffff' },
+    data: [
+      "....RRRR....",
+      "..RRRRRRBB..",
+      ".RRRR..WWBB.",
+      ".RR..WW..BB.",
+      "YY..WWWW..BB",
+      "YY..WWWW..BB",
+      "YY..WW..GGGG",
+      "YYWW..GGGGGG",
+      ".YYWW..GGGG.",
+      ".YYYYGGGGGG.",
+      "..YYYYGGGG..",
+      "....GGGG...."
+    ]
+  },
+  pill_tay_tuy: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#ffffff', 'S': '#e2e8f0', 'C': '#38bdf8', 'D': '#94a3b8' },
+    data: [
+      "....SSSS....",
+      "..SSWWWWSS..",
+      ".SSW.CC.WSS.",
+      ".SS.CCCC.SS.",
+      "SSW..CC..WSS",
+      "SSW.CCCC.WSS",
+      "SSW.CCCC.WSS",
+      "SSW..CC..WSS",
+      ".SS.CCCC.SS.",
+      ".SSW.CC.WSS.",
+      "..SSDDDDSS..",
+      "....SSSS...."
+    ]
+  },
+  pill_trucco: {
+    w: 12, h: 12,
+    palette: { '.': null, 'Y': '#eab308', 'L': '#fef08a', 'D': '#a16207', 'W': '#ffffff' },
+    data: [
+      ".YYYYYYYYYY.",
+      "YYYYYYYYYYYY",
+      "YYLLLLLLLLYY",
+      "YYLWWWWWWLYY",
+      "YYLWDDDDWLYY",
+      "YYLWDDDDWLYY",
+      "YYLWDDDDWLYY",
+      "YYLWDDDDWLYY",
+      "YYLWWWWWWLYY",
+      "YYLLLLLLLLYY",
+      "YYYYYYYYYYYY",
+      ".YYYYYYYYYY."
+    ]
+  },
+  pill_kimdan: {
+    w: 12, h: 12,
+    palette: { '.': null, 'Y': '#facc15', 'L': '#fef08a', 'W': '#ffffff', 'O': '#ea580c', 'D': '#b45309' },
+    data: [
+      "..Y...Y...Y.",
+      "...YYYYYYY..",
+      "..YYLLLLLYY.",
+      ".YLLWWWWLLLY",
+      "YLLWWWWWWLLD",
+      "YLLWWWWWWLLD",
+      "YLLWWWWWWLLD",
+      "YLLLLWWLLLLD",
+      ".YLLLLLLLLD.",
+      "..YYDDDDDD..",
+      "...YYYYYYD..",
+      "..Y...D...D."
+    ]
+  },
+  pill_ngungan: {
+    w: 12, h: 12,
+    palette: { '.': null, 'Y': '#facc15', 'W': '#ffffff', 'O': '#f97316', 'D': '#9a3412', 'L': '#fef08a' },
+    data: [
+      "....YYYY....",
+      "..YYYYYYYY..",
+      ".YYLWWWWLYY.",
+      ".YYLWWWWLYY.",
+      "YYLLW..WLLYY",
+      "YYLLWWWWLLYY",
+      "YYYLLWWLLYYY",
+      "YYLLWWWWLLYY",
+      ".YYLLLLLLYY.",
+      ".YYDDDDDDYY.",
+      "..YYDDDDYY..",
+      "....YYYY...."
+    ]
+  },
+  pill_hoathan: {
+    w: 12, h: 12,
+    palette: { '.': null, 'P': '#6b21a8', 'L': '#c084fc', 'C': '#38bdf8', 'W': '#ffffff', 'D': '#3b0764' },
+    data: [
+      "....PPPP....",
+      "..PPLLLLPP..",
+      ".PPL.W.LLLPP",
+      ".PPLWWWWLLPP",
+      "PPL.CWWC.LPP",
+      "PPLCWWWWCLPP",
+      "PPL.CWWC.LPP",
+      "PPLWWWWLLLPP",
+      ".PPL.W.LLLPP",
+      ".PPDDDDDDLPP",
+      "..PPDDDDPP..",
+      "....PPPP...."
+    ]
+  },
+  pill_huthien: {
+    w: 12, h: 12,
+    palette: { '.': null, 'P': '#9333ea', 'L': '#c084fc', 'B': '#090d16', 'W': '#ffffff' },
+    data: [
+      "....PPPP....",
+      "..PPLLLLPP..",
+      ".PPLBBBBLLPP",
+      ".PLBBBBBBLLP",
+      "PPLBBBBBBLLP",
+      "PPLBBWBBBLPP",
+      "PPLBBBBBBLLP",
+      "PPLBBBBBBLLP",
+      ".PLBBBBBBLLP",
+      ".PPLBBBBLLPP",
+      "..PPLLLLPP..",
+      "....PPPP...."
+    ]
+  },
+  pill_hopnguyen: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#ffffff', 'B': '#0f172a', 'S': '#cbd5e1', 'D': '#334155' },
+    data: [
+      "....WWWW....",
+      "..WWWWWWBB..",
+      ".WWWWBBWWBB.",
+      ".WWWBBBB.WBB",
+      "WWWWBBBB..BB",
+      "WWWWBBBB..BB",
+      "WW..WWWWBBBB",
+      "WW..WWWWBBBB",
+      ".WW.WWWWBBB.",
+      ".WWBBWWWWBB.",
+      "..WWBBBBBB..",
+      "....BBBB...."
+    ]
+  },
+  pill_cankhon: {
+    w: 12, h: 12,
+    palette: { '.': null, 'O': '#ea580c', 'Y': '#facc15', 'W': '#ffffff', 'C': '#38bdf8', 'D': '#7c2d12' },
+    data: [
+      ".......YY...",
+      "....OOOO.Y..",
+      "..OOLLLLOO.Y",
+      ".OOLWLLLLOO.",
+      "YYYYYYYYYYYY",
+      "OOLLWWLLLLOO",
+      ".OOLWWLLLOO.",
+      "Y.OOLLLLOO..",
+      ".Y..OOOO....",
+      "..YY........",
+      "............",
+      "............"
+    ]
+  },
+  pill_dokiep: {
+    w: 12, h: 12,
+    palette: { '.': null, 'P': '#6b21a8', 'D': '#3b0764', 'Y': '#facc15', 'W': '#ffffff', 'L': '#d8b4fe' },
+    data: [
+      "....PPPP....",
+      "..PPLLLLPP..",
+      ".PPL..YYLLPP",
+      ".PPL.YY.LLPP",
+      "PPLLYYYYLLPP",
+      "PPLL.YY.LLPP",
+      "PPLL..YYLLPP",
+      "PPLL.YY.LLPP",
+      ".PPL.YY.LLPP",
+      ".PPL..Y.LLPP",
+      "..PPDDDDPP..",
+      "....PPPP...."
+    ]
+  },
+  pill_daotam: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#ffffff', 'L': '#e0f2fe', 'C': '#38bdf8', 'D': '#0284c7' },
+    data: [
+      "...W....W...",
+      "..WWW..WWW..",
+      ".WWLLWWLLWW.",
+      ".WLLLLLLLLW.",
+      ".WLLCLLCLLW.",
+      ".WLLLLLLLLW.",
+      "..WLLLLLLW..",
+      "...WLLLLW...",
+      "....WLLW....",
+      ".....WW.....",
+      "......W.....",
+      "............"
+    ]
+  },
+  pill_tho_nguyen: {
+    w: 12, h: 12,
+    palette: { '.': null, 'Y': '#eab308', 'W': '#ffffff', 'L': '#fef08a', 'D': '#a16207' },
+    data: [
+      ".YYYYYYYYYY.",
+      "..YWWWWWWY..",
+      "...YLLLLY...",
+      "....YLLY....",
+      ".....YY.....",
+      "....YLLY....",
+      "...YLLLLY...",
+      "..YLWLLWWY..",
+      "..YWWWWWWY..",
+      ".YYYYYYYYYY.",
+      "............",
+      "............"
+    ]
+  },
+
+  // --- 5. PHÙ LỤC (8) ---
+  talisman_don_dia: {
+    w: 12, h: 12,
+    palette: { '.': null, 'Y': '#fef08a', 'R': '#dc2626', 'B': '#92400e', 'W': '#ffffff' },
+    data: [
+      "..YYYYYYYY..",
+      ".YRRRRRRRRY.",
+      ".YR......RY.",
+      ".YR..BB..RY.",
+      ".YR.B..B.RY.",
+      ".YR..BB..RY.",
+      ".YR...B..RY.",
+      ".YR.BB...RY.",
+      ".YR......RY.",
+      ".YRRRRRRRRY.",
+      "..YYYYYYYY..",
+      "............"
+    ]
+  },
+  talisman_kim_cuong: {
+    w: 12, h: 12,
+    palette: { '.': null, 'Y': '#fef08a', 'R': '#dc2626', 'G': '#eab308', 'W': '#ffffff' },
+    data: [
+      "..YYYYYYYY..",
+      ".YRRRRRRRRY.",
+      ".YR..GG..RY.",
+      ".YR.GGGG.RY.",
+      ".YRGW..GGRY.",
+      ".YRGGGGGGCRY.",
+      ".YR.GGGG.RY.",
+      ".YR..GG..RY.",
+      ".YR...G..RY.",
+      ".YRRRRRRRRY.",
+      "..YYYYYYYY..",
+      "............"
+    ]
+  },
+  talisman_dan_loi: {
+    w: 12, h: 12,
+    palette: { '.': null, 'Y': '#fef08a', 'R': '#dc2626', 'B': '#0284c7', 'W': '#ffffff' },
+    data: [
+      "..YYYYYYYY..",
+      ".YRRRRRRRRY.",
+      ".YR...B..RY.",
+      ".YR..BB..RY.",
+      ".YR.BB...RY.",
+      ".YRBBBBB.RY.",
+      ".YR...BB.RY.",
+      ".YR..BB..RY.",
+      ".YR..B...RY.",
+      ".YRRRRRRRRY.",
+      "..YYYYYYYY..",
+      "............"
+    ]
+  },
+  talisman_liet_hoa: {
+    w: 12, h: 12,
+    palette: { '.': null, 'Y': '#fef08a', 'R': '#dc2626', 'F': '#ea580c', 'W': '#facc15' },
+    data: [
+      "..YYYYYYYY..",
+      ".YRRRRRRRRY.",
+      ".YR..F...RY.",
+      ".YR.FFF..RY.",
+      ".YR.FWF..RY.",
+      ".YRFFFFF.RY.",
+      ".YRFFWFF.RY.",
+      ".YR.FFF..RY.",
+      ".YR..F...RY.",
+      ".YRRRRRRRRY.",
+      "..YYYYYYYY..",
+      "............"
+    ]
+  },
+  talisman_bang_phong: {
+    w: 12, h: 12,
+    palette: { '.': null, 'Y': '#bae6fd', 'R': '#0369a1', 'C': '#38bdf8', 'W': '#ffffff' },
+    data: [
+      "..YYYYYYYY..",
+      ".YRRRRRRRRY.",
+      ".YR..W...RY.",
+      ".YR.CWC..RY.",
+      ".YRC.W.C.RY.",
+      ".YRWWWWW.RY.",
+      ".YRC.W.C.RY.",
+      ".YR.CWC..RY.",
+      ".YR..W...RY.",
+      ".YRRRRRRRRY.",
+      "..YYYYYYYY..",
+      "............"
+    ]
+  },
+  talisman_than_hanh: {
+    w: 12, h: 12,
+    palette: { '.': null, 'Y': '#fef08a', 'R': '#dc2626', 'W': '#ffffff', 'G': '#16a34a' },
+    data: [
+      "..YYYYYYYY..",
+      ".YRRRRRRRRY.",
+      ".YR..W...RY.",
+      ".YR.WW...RY.",
+      ".YR.WWW..RY.",
+      ".YR..WWW.RY.",
+      ".YR...WW.RY.",
+      ".YR.WWW..RY.",
+      ".YR.W....RY.",
+      ".YRRRRRRRRY.",
+      "..YYYYYYYY..",
+      "............"
+    ]
+  },
+  talisman_an_than: {
+    w: 12, h: 12,
+    palette: { '.': null, 'Y': '#e2e8f0', 'R': '#475569', 'P': '#9333ea', 'B': '#0f172a' },
+    data: [
+      "..YYYYYYYY..",
+      ".YRRRRRRRRY.",
+      ".YR......RY.",
+      ".YR..PP..RY.",
+      ".YR.PPPP.RY.",
+      ".YRPPBBPP.RY.",
+      ".YR.PPPP.RY.",
+      ".YR..PP..RY.",
+      ".YR......RY.",
+      ".YRRRRRRRRY.",
+      "..YYYYYYYY..",
+      "............"
+    ]
+  },
+  talisman_thien_nhan: {
+    w: 12, h: 12,
+    palette: { '.': null, 'Y': '#fef08a', 'R': '#dc2626', 'G': '#eab308', 'C': '#38bdf8', 'B': '#0f172a' },
+    data: [
+      "..YYYYYYYY..",
+      ".YRRRRRRRRY.",
+      ".YR......RY.",
+      ".YR.GGGG.RY.",
+      ".YRG.CC.GRY.",
+      ".YRGCBBCGRY.",
+      ".YRG.CC.GRY.",
+      ".YR.GGGG.RY.",
+      ".YR......RY.",
+      ".YRRRRRRRRY.",
+      "..YYYYYYYY..",
+      "............"
+    ]
+  },
+
+  // --- 6. TRÀ, RƯƠNG & KỲ VẬT (7) ---
+  tea_ngo_dao: {
+    w: 12, h: 12,
+    palette: { '.': null, 'C': '#0d9488', 'G': '#22c55e', 'L': '#86efac', 'W': '#f0fdf4', 'B': '#78350f' },
+    data: [
+      "....W..W....",
+      ".....W..W...",
+      "...CCCCCC...",
+      "..CLLLLLLC..",
+      ".CGGGGGGGGC.",
+      ".CGGGGGGGGC.",
+      ".CGGGGGGGGC.",
+      "..CGGGGGGC..",
+      "...CCCCCC...",
+      "...BBBBBB...",
+      "..BBBBBBBB..",
+      "............"
+    ]
+  },
+  chest_tu_tru_vat: {
+    w: 12, h: 12,
+    palette: { '.': null, 'B': '#78350f', 'D': '#451a03', 'Y': '#eab308', 'W': '#fef08a' },
+    data: [
+      "....YYYY....",
+      "....YYYY....",
+      "...YYYYYY...",
+      "..BBDDDDBB..",
+      ".BBYYYYYYBB.",
+      ".BBYYYYYYBB.",
+      "BBDDDDDDDDBB",
+      "BBBBBBBBBBBB",
+      "BBBBBBBBBBBB",
+      ".BBBBBBBBBB.",
+      "..DDDDDDDD..",
+      "............"
+    ]
+  },
+  chest_bi_canh: {
+    w: 12, h: 12,
+    palette: { '.': null, 'B': '#78350f', 'D': '#451a03', 'M': '#94a3b8', 'Y': '#eab308', 'K': '#0f172a' },
+    data: [
+      "...MMMMMM...",
+      "..MBBBBBDM..",
+      ".MBBBBBBBDM.",
+      "MMMMMMMMMMMM",
+      "MBBBBYYBBBDM",
+      "MBBBBKYBBBDM",
+      "MBBBBKYBBBDM",
+      "MMMMMMMMMMMM",
+      "MDDDDYYDDDDK",
+      "MDDDDYYDDDDK",
+      "MDDDDDDDDDDK",
+      ".KKKKKKKKKK."
+    ]
+  },
+  chest_thien_co: {
+    w: 12, h: 12,
+    palette: { '.': null, 'Y': '#facc15', 'W': '#ffffff', 'O': '#ea580c', 'R': '#ef4444', 'C': '#38bdf8' },
+    data: [
+      "...YYYYYY...",
+      "..YYWWWWYY..",
+      ".YYWWWWWWYY.",
+      "YYYYYYYYYYYY",
+      "YYRRYYYYRRYY",
+      "YYRRYCYYRRYY",
+      "YYRRYCYYRRYY",
+      "YYYYYYYYYYYY",
+      "YYOYYYYYYOYY",
+      "YYOYYYYYYOYY",
+      "YYOOOOOOOOYY",
+      ".YYYYYYYYYY."
+    ]
+  },
+  map_tang_bao: {
+    w: 12, h: 12,
+    palette: { '.': null, 'Y': '#fef08a', 'B': '#ca8a04', 'R': '#ef4444', 'D': '#854d0e' },
+    data: [
+      ".YYYYYYYY...",
+      "YYYYYYYYYY..",
+      "YY..B..B.YY.",
+      "YY.R.R...YY.",
+      "YY..R..B.YY.",
+      "YY.R.R...YY.",
+      "YY...B..BYY.",
+      "YY.......YY.",
+      "YY..B..B.YY.",
+      "YYYYYYYYYYD.",
+      ".YYYYYYYYD..",
+      "..DDDDDDD..."
+    ]
+  },
+  tome_cong_phap_tan_thien: {
+    w: 12, h: 12,
+    palette: { '.': null, 'Y': '#fef08a', 'D': '#ca8a04', 'R': '#dc2626', 'B': '#1e293b' },
+    data: [
+      "...YYDDYY...",
+      "..YYYYYYYY..",
+      ".YYYYYYYYYY.",
+      ".YY..RR..YY.",
+      ".YY.RRRR.YY.",
+      ".YY..RR..YY.",
+      ".YY.B..B.YY.",
+      ".YY..BB..YY.",
+      ".YYYYYYYYYY.",
+      "..YYYYYYYY..",
+      "...YYDDYY...",
+      "............"
+    ]
+  },
+  pet_linh_thu_noan: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#ffffff', 'L': '#fbcfe8', 'P': '#ec4899', 'Y': '#facc15', 'D': '#be185d' },
+    data: [
+      "....PPPP....",
+      "...PLWWLP...",
+      "..PLWWWWLL..",
+      ".PLWW.YWWLL.",
+      ".PLW.YY.WLL.",
+      "PLW.YY..WLLD",
+      "PLWW.YY.WLLD",
+      "PLLW..YYWLLD",
+      ".PLLWWWWLLD.",
+      ".PLLLLLLLLD.",
+      "..PDDDDDDD..",
+      "....DDDD...."
+    ]
+  },
+
+  // --- 7. BINH KHÍ (4) ---
+  wpn_thanhphong: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#ffffff', 'S': '#cbd5e1', 'C': '#0284c7', 'L': '#38bdf8', 'B': '#0f172a' },
+    data: [
+      "..........W.",
+      ".........WS.",
+      "........WSS.",
+      ".......WSS..",
+      "......WSS...",
+      ".....WSS....",
+      "....WSS.....",
+      "...WSS......",
+      "..LCL.......",
+      ".LBC........",
+      "B.L.........",
+      "............"
+    ]
+  },
+  wpn_xichtieu: {
+    w: 12, h: 12,
+    palette: { '.': null, 'R': '#ef4444', 'O': '#f97316', 'Y': '#facc15', 'W': '#ffffff', 'D': '#7f1d1d' },
+    data: [
+      "..........W.",
+      ".........WRO",
+      "........WRO.",
+      ".......WRO..",
+      "......WRO...",
+      ".....WRO....",
+      "....WRO.....",
+      "...WRO......",
+      "..YYO.......",
+      ".DYD........",
+      "D.D.........",
+      "............"
+    ]
+  },
+  wpn_tramyeu: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#ffffff', 'S': '#94a3b8', 'D': '#475569', 'B': '#1e293b', 'R': '#dc2626' },
+    data: [
+      ".......WWSS.",
+      "......WWSSSD",
+      ".....WWSSSDD",
+      "....WWSSSDDB",
+      "...WWSSSDDB.",
+      "..WWSSSDDB..",
+      ".WWSSSDDB...",
+      ".DRSSDB.....",
+      "..BBD.......",
+      "...BB.......",
+      "....B.......",
+      "............"
+    ]
+  },
+  wpn_tienkiem: {
+    w: 12, h: 12,
+    palette: { '.': null, 'Y': '#facc15', 'W': '#ffffff', 'O': '#ea580c', 'C': '#38bdf8' },
+    data: [
+      "W...W...W...",
+      "WY.WYW.YW...",
+      "WY.WYW.YW...",
+      ".WYWYWYW....",
+      "..YYYYY.....",
+      "...WYW......",
+      "...WYW......",
+      "...WYW......",
+      "..CCYCC.....",
+      "...OYO......",
+      "...OYO......",
+      "....O......."
+    ]
+  },
+
+  // --- 8. HỘ GIÁP (4) ---
+  arm_huyenthiet: {
+    w: 12, h: 12,
+    palette: { '.': null, 'D': '#1e293b', 'M': '#475569', 'L': '#94a3b8', 'W': '#cbd5e1' },
+    data: [
+      ".LL......LL.",
+      "LMMLL..LLMML",
+      "LMWMMDDMMWML",
+      "DMMMMDDMMMMD",
+      "DMMMMDDMMMMD",
+      ".DMMMDDMMMD.",
+      ".DMMMDDMMMD.",
+      ".DMMMDDMMMD.",
+      ".DMMMDDMMMD.",
+      ".DDDDDDDDDD.",
+      "..DD....DD..",
+      "............"
+    ]
+  },
+  arm_tinhvan: {
+    w: 12, h: 12,
+    palette: { '.': null, 'P': '#9333ea', 'L': '#d8b4fe', 'C': '#38bdf8', 'Y': '#facc15', 'W': '#ffffff' },
+    data: [
+      ".PP......PP.",
+      "PPLLP..PLLPP",
+      "PPL.P..P.LPP",
+      "PP...YY...PP",
+      "PP..YYYY..PP",
+      ".PP.YYYY.PP.",
+      ".PPL.C..LPP.",
+      ".PPL.W..LPP.",
+      ".PPL....LPP.",
+      ".PPLLLLLLPP.",
+      "..PP....PP..",
+      "............"
+    ]
+  },
+  arm_longlan: {
+    w: 12, h: 12,
+    palette: { '.': null, 'G': '#059669', 'L': '#34d399', 'Y': '#facc15', 'D': '#064e3b', 'W': '#ecfdf5' },
+    data: [
+      ".YY......YY.",
+      "YYGYY..YYGYY",
+      "YGLGGYYGGLGY",
+      "DGGGGYYGGGGD",
+      "DGLGLYYLGLGD",
+      ".DGGYYYYGGD.",
+      ".DGLGLGLGLD.",
+      ".DGGGGGGGGD.",
+      ".DGLGLGLGLD.",
+      ".DDDDDDDDDD.",
+      "..DD....DD..",
+      "............"
+    ]
+  },
+  arm_hondon: {
+    w: 12, h: 12,
+    palette: { '.': null, 'W': '#ffffff', 'C': '#7dd3fc', 'P': '#e879f9', 'Y': '#fde047' },
+    data: [
+      ".WW......WW.",
+      "WWCCW..WCCWW",
+      "WWP.W..W.PWW",
+      "WW...YY...WW",
+      "WW..YYYY..WW",
+      ".WW.YYYY.WW.",
+      ".WWP....PWW.",
+      ".WW.C..C.WW.",
+      ".WWC....CWW.",
+      ".WWWWWWWWWW.",
+      "..WW....WW..",
+      "............"
+    ]
+  },
+
+  // --- 9. PHÁP BẢO (3) ---
+  art_guong: {
+    w: 12, h: 12,
+    palette: { '.': null, 'Y': '#d97706', 'O': '#92400e', 'W': '#ffffff', 'B': '#0f172a', 'S': '#cbd5e1' },
+    data: [
+      "...YYYYYY...",
+      "..YYYYYYYY..",
+      ".YY......YY.",
+      "YY..WWWW..YY",
+      "YY.WWBBWW.YY",
+      "YY.WBBBBW.YY",
+      "YY.WBBBBW.YY",
+      "YY.WWBBWW.YY",
+      "YY..WWWW..YY",
+      ".YY......YY.",
+      "..YYYYYYYY..",
+      "...YYYYYY..."
+    ]
+  },
+  art_chuoi: {
+    w: 12, h: 12,
+    palette: { '.': null, 'B': '#78350f', 'D': '#451a03', 'Y': '#d97706', 'R': '#dc2626' },
+    data: [
+      "...BB..BB...",
+      "..BB....BB..",
+      ".BB......BB.",
+      "BB........BB",
+      "BB........BB",
+      "BB........BB",
+      ".BB......BB.",
+      "..BB....BB..",
+      "...BB..BB...",
+      "....YYYY....",
+      ".....RR.....",
+      ".....RR....."
+    ]
+  },
+  art_dinh: {
+    w: 12, h: 12,
+    palette: { '.': null, 'B': '#0d9488', 'L': '#2dd4bf', 'D': '#115e59', 'Y': '#facc15' },
+    data: [
+      ".BB......BB.",
+      ".BB......BB.",
+      "BBBBBBBBBBBB",
+      "BBLLLLLLLLBB",
+      "BBLDDDDDDLBB",
+      "BBLDYYYYDLBB",
+      "BBLDDDDDDLBB",
+      ".BBLLLLLLBB.",
+      "..BBBBBBBB..",
+      "..BB....BB..",
+      "..BB....BB..",
+      "............"
+    ]
+  }
+  };
+
+  function getItemPixelSvg(itemId, size = 20) {
+    const sprite = ITEM_PIXEL_SPRITES[itemId];
+    if (!sprite) return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="${size}" height="${size}" class="item-pixel-icon"><rect width="12" height="12" fill="#64748b"/></svg>`;
+    const { w, h, palette, data } = sprite;
+    let rects = '';
+    for (let y = 0; y < h; y++) {
+      const row = data[y];
+      if (!row) continue;
+      let startX = -1;
+      let currentColor = null;
+      for (let x = 0; x < w; x++) {
+        const char = row[x];
+        const color = palette[char];
+        if (color !== currentColor) {
+          if (currentColor && startX >= 0) {
+            rects += `<rect x="${startX}" y="${y}" width="${x - startX}" height="1" fill="${currentColor}"/>`;
+          }
+          currentColor = color;
+          startX = color ? x : -1;
+        }
+      }
+      if (currentColor && startX >= 0) {
+        rects += `<rect x="${startX}" y="${y}" width="${w - startX}" height="1" fill="${currentColor}"/>`;
+      }
+    }
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${size}" height="${size}" shape-rendering="crispEdges" class="item-pixel-icon">${rects}</svg>`;
+  }
+
   function drawProceduralLightning(ctx, x1, y1, x2, y2, branches = 3, color = '#38bdf8', width = 3) {
     ctx.save();
     ctx.strokeStyle = color;
@@ -1924,6 +3289,12 @@
       sources: ['Boss Thế Giới', 'Rương Thiên Cơ']
     }
   };
+
+  // Khởi tạo icon pixel art tự vẽ (Custom Drawn 12x12 Pixel Sprite) cho toàn bộ 73 vật phẩm
+  Object.keys(ITEMS).forEach(k => {
+    ITEMS[k].emoji = ITEMS[k].icon;
+    ITEMS[k].icon = getItemPixelSvg(k, 20);
+  });
 
   const COMPANIONS = {
     pet_thunder: {
@@ -5335,7 +6706,7 @@
       else if (item.type === 'secret_tome') typeName = 'Tàn Quyển Bí Tịch';
       else if (item.type === 'pet_egg') typeName = 'Linh Thú Noãn';
 
-      if (iconEl) iconEl.textContent = icon;
+      if (iconEl) iconEl.innerHTML = getItemPixelSvg(item.id, 44);
       if (nameEl) {
         nameEl.textContent = `${item.name}${item.refineLevel ? ' +' + item.refineLevel : ''}`;
         nameEl.style.color = rarityColor;
@@ -7708,7 +9079,7 @@
         else if (price > 250) rarityColor = '#38bdf8';
         else if (price > 50) rarityColor = '#34d399';
 
-        const icon = item.icon || '💎';
+        const icon = getItemPixelSvg(k, 28);
         let typeName = 'Bảo Vật';
         if (item.type === 'pill') typeName = 'Đan Dược';
         else if (item.type === 'weapon') typeName = 'Binh Khí';
@@ -9347,6 +10718,8 @@
     window.WORLD_REGIONS = WORLD_REGIONS;
     window.MONSTERS = MONSTERS;
     window.ITEMS = ITEMS;
+    window.ITEM_PIXEL_SPRITES = ITEM_PIXEL_SPRITES;
+    window.getItemPixelSvg = getItemPixelSvg;
     window.REALMS = REALMS;
     window.SCENES = SCENES;
   }
@@ -9367,6 +10740,8 @@
       WORLD_REGIONS,
       MONSTERS,
       ITEMS,
+      ITEM_PIXEL_SPRITES,
+      getItemPixelSvg,
       COMPANIONS,
       REALMS,
       SCENES
