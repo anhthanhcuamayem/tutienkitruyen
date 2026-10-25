@@ -3296,6 +3296,21 @@
     ITEMS[k].icon = getItemPixelSvg(k, 20);
   });
 
+  // Vật phẩm tăng chỉ số vĩnh viễn/ngoài chiến đấu không được dùng vô hạn.
+  // Giới hạn theo từng loại để vẫn cho phép người chơi xây dựng nhân vật,
+  // nhưng tránh việc spam một vật phẩm làm chỉ số tăng mất cân bằng.
+  const STAT_BOOST_ITEM_LIMITS = Object.freeze({
+    herb_u_hon: 3,
+    herb_hoaviem: 3,
+    herb_huyen_bang: 3,
+    herb_longhuyet: 1,
+    herb_thienkiem: 1,
+    pill_tay_tuy: 3,
+    pill_tho_nguyen: 2,
+    talisman_than_hanh: 1,
+    tome_cong_phap_tan_thien: 1
+  });
+
   const COMPANIONS = {
     pet_thunder: {
       id: 'pet_thunder',
@@ -6282,6 +6297,17 @@
       p.forgeMastery = finiteInt(p.forgeMastery, 1, 1, 9);
       if (!p.signedRegions || typeof p.signedRegions !== 'object' || Array.isArray(p.signedRegions)) p.signedRegions = {};
       if (!p.sectQuestKills || typeof p.sectQuestKills !== 'object' || Array.isArray(p.sectQuestKills)) p.sectQuestKills = {};
+      if (!p.statItemUses || typeof p.statItemUses !== 'object' || Array.isArray(p.statItemUses)) p.statItemUses = {};
+      Object.keys(p.statItemUses).forEach(itemId => {
+        if (STAT_BOOST_ITEM_LIMITS[itemId] === undefined) {
+          delete p.statItemUses[itemId];
+          return;
+        }
+        const uses = Number(p.statItemUses[itemId]);
+        p.statItemUses[itemId] = Number.isFinite(uses)
+          ? Math.max(0, Math.min(STAT_BOOST_ITEM_LIMITS[itemId], Math.floor(uses)))
+          : 0;
+      });
       if (p.sectId === undefined) p.sectId = null;
       if (!p.skills || !Array.isArray(p.skills) || p.skills.length === 0) {
         if (p.cultivationPath && p.cultivationPath.skills && p.cultivationPath.skills.length > 0) {
@@ -6423,6 +6449,40 @@
       if (!stacks) return '';
       return Object.keys(stacks).map(Number).sort((a, b) => b - a).filter(level => stacks[level] > 0)
         .map(level => `${this.getQualityInfo(level).short} x${stacks[level]}`).join(' • ');
+    }
+
+    getStatItemUseLimit(itemId) {
+      return Object.prototype.hasOwnProperty.call(STAT_BOOST_ITEM_LIMITS, itemId)
+        ? STAT_BOOST_ITEM_LIMITS[itemId]
+        : null;
+    }
+
+    getStatItemUseCount(itemId) {
+      const uses = Number(this.player?.statItemUses?.[itemId]);
+      return Number.isFinite(uses) ? Math.max(0, Math.floor(uses)) : 0;
+    }
+
+    canUseStatItem(itemId) {
+      const limit = this.getStatItemUseLimit(itemId);
+      if (limit === null) return true;
+      const used = this.getStatItemUseCount(itemId);
+      if (used < limit) return true;
+
+      const item = ITEMS[itemId];
+      this.addLog(`【${item ? item.name : itemId}】 đã đạt giới hạn sử dụng (${limit} lần), không thể tăng thêm chỉ số.`, 'warning');
+      return false;
+    }
+
+    recordStatItemUse(itemId) {
+      const limit = this.getStatItemUseLimit(itemId);
+      if (limit === null || !this.player) return;
+      this.player.statItemUses = this.player.statItemUses || {};
+      this.player.statItemUses[itemId] = Math.min(limit, this.getStatItemUseCount(itemId) + 1);
+    }
+
+    getItemSellPrice(itemOrId) {
+      const item = typeof itemOrId === 'string' ? ITEMS[itemOrId] : itemOrId;
+      return Math.max(1, Math.floor((Number(item?.price) || 10) * 0.25));
     }
 
     getSkillLevel(skill) {
@@ -6653,6 +6713,7 @@
         sectSalaryClaimedYear: -1,
         sectPatrolKills: 0,
         sectManualsBought: [],
+        statItemUses: {},
         bonusCrit: 0,
         bonusLifeSteal: 0,
         isInjured: false
@@ -7122,6 +7183,9 @@
       const ownedCount = (p.inventory && p.inventory[item.id]) || (source && source.startsWith('equipped_') ? 1 : 0);
       if (countEl) countEl.textContent = `Sở Hữu: ${ownedCount}`;
 
+      const statLimit = this.getStatItemUseLimit(item.id);
+      const statUses = this.getStatItemUseCount(item.id);
+
       if (descEl) descEl.textContent = item.desc || 'Bảo vật linh diệu ẩn chứa thiên cơ.';
       if (priceEl) priceEl.textContent = `${item.price || 0} Linh Thạch`;
 
@@ -7130,6 +7194,7 @@
         statsList.innerHTML = '';
         const qualitySummary = source === 'inventory' && item.type === 'pill' ? this.getQualitySummary(item.id) : '';
         if (qualitySummary) statsList.innerHTML += `<div class="item-stat-badge" style="color: #c084fc;">✨ Phẩm chất đang có: ${qualitySummary}</div>`;
+        if (statLimit !== null) statsList.innerHTML += `<div class="item-stat-badge" style="color: #fbbf24;">📌 Đã dùng tăng chỉ số: ${statUses}/${statLimit} lần</div>`;
         if (item.trait) statsList.innerHTML += `<div class="item-stat-badge text-gold">✨ Đặc Tính: ${item.trait}</div>`;
         if (item.rawEffectDesc) statsList.innerHTML += `<div class="item-stat-badge text-emerald">🍃 Dược Lực Nuốt Trực Tiếp: ${item.rawEffectDesc}</div>`;
         if (item.refineLevel) statsList.innerHTML += `<div class="item-stat-badge text-gold">🔨 Thối Luyện Cấp: +${item.refineLevel} (+${item.refineLevel * 15}% Chỉ số)</div>`;
@@ -7304,8 +7369,8 @@
         }
 
         btnSell.style.display = 'inline-block';
-        const sellPrice = Math.max(1, Math.floor((item.price || 10) * 0.5));
-        btnSell.textContent = `💰 Bán (+${sellPrice} Linh Thạch)`;
+        const sellPrice = this.getItemSellPrice(item);
+        btnSell.textContent = `💰 Bán hệ thống (+${sellPrice} Linh Thạch)`;
         btnSell.onclick = () => {
           this.sellItem(item.id);
           closeModal();
@@ -8701,12 +8766,14 @@
       if (count <= 0) return;
 
       const item = ITEMS[itemId];
-      const sellPrice = Math.max(1, Math.floor(item.price * 0.5));
-      p.inventory[itemId]--;
+      if (!item) return;
+      const sellPrice = this.getItemSellPrice(item);
+      if (item.type === 'pill') this.consumeInventoryQuality(itemId);
+      else p.inventory[itemId]--;
       p.spiritStones += sellPrice;
 
       sound.playClick();
-      this.addLog(`Đã bán 【${item.name}】 x1 thu về ${sellPrice} Linh Thạch.`, 'loot');
+      this.addLog(`Đã bán 【${item.name}】 x1 cho hệ thống, thu về ${sellPrice} Linh Thạch.`, 'loot');
       this.updateUI();
       this.saveToLocalStorage();
     }
@@ -8963,6 +9030,8 @@
       const item = ITEMS[itemId];
       if (!item) return;
 
+      if (!this.canUseStatItem(itemId)) return;
+
       if (item.type === 'pill') {
         if (item.isBreakthrough) {
           this.addLog(`【${item.name}】 là đan dược dùng khi bấm nút [Đột Phá] cảnh giới! Hãy giữ lại trong túi!`, 'warning');
@@ -9048,7 +9117,7 @@
           this.renderer.addFloatingText('KIM CƯƠNG HỘ THỂ!', 320, 160, '#fbbf24', true);
           this.addLog(`🛡️ Kích hoạt 【Kim Cương Hộ Thể Phù】! Kim quang bảo hộ, hồi phục 40% Khí Huyết! (Khuyên dùng trong giao chiến để nhận 800 Hộ Thuẫn)`, 'golden');
         } else if (itemId === 'talisman_than_hanh') {
-          p.agility = (p.agility || 10) + 5;
+          p.bonusSpd = (p.bonusSpd || 0) + 5;
           p.inventory[itemId]--;
           this.recalculatePlayerStats();
           sound.playBreakthrough();
@@ -9225,6 +9294,7 @@
         this.addLog(`Đã trang bị pháp bảo: 【${item.name}】!`, 'system');
       }
 
+      this.recordStatItemUse(itemId);
       this.updateUI();
       this.saveToLocalStorage();
     }
@@ -9588,8 +9658,12 @@
 
           const isUsable = item.type === 'pill' || item.type === 'talisman' || item.type === 'tea' || item.type === 'chest' || item.type === 'herb' || item.type === 'treasure_map' || item.type === 'secret_tome' || item.type === 'pet_egg';
           const isEquip = item.type === 'weapon' || item.type === 'armor' || item.type === 'artifact';
-          let actionLabel = 'Bán';
-          let actionClass = 'pixel-btn small-btn btn-use';
+          const hasUseAction = isUsable || isEquip;
+          const statLimit = this.getStatItemUseLimit(k);
+          const statUses = this.getStatItemUseCount(k);
+          const statLimitReached = statLimit !== null && statUses >= statLimit;
+          const sellPrice = this.getItemSellPrice(item);
+          let actionLabel = '';
           if (isUsable) {
             if (item.type === 'chest') actionLabel = 'Mở';
             else if (item.type === 'talisman') actionLabel = 'Phù';
@@ -9598,10 +9672,8 @@
             else if (item.type === 'secret_tome') actionLabel = 'Lĩnh ngộ';
             else if (item.type === 'pet_egg') actionLabel = 'Ấp trứng';
             else actionLabel = 'Dùng';
-            actionClass = 'pixel-btn small-btn btn-use primary-btn';
           } else if (isEquip) {
             actionLabel = 'Trang bị';
-            actionClass = 'pixel-btn small-btn btn-use primary-btn';
           }
 
           const itemCard = document.createElement('div');
@@ -9611,9 +9683,11 @@
             <div class="item-name" style="cursor: pointer;" title="Bấm để xem chi tiết"><span class="item-icon-tag">${item.icon || '💎'}</span>${item.name}${item.refineLevel ? '<span class="refine-badge">+' + item.refineLevel + '</span>' : ''} <span class="item-count">x${p.inventory[k]}</span></div>
             <div class="item-desc">${item.desc}</div>
             ${qualitySummary ? `<div style="font-size: 11px; color: #c084fc; margin-top: 4px;">✨ Phẩm chất: ${qualitySummary}</div>` : ''}
+            ${statLimit !== null ? `<div style="font-size: 11px; color: ${statLimitReached ? '#f87171' : '#fbbf24'}; margin-top: 4px;">📌 Tăng chỉ số: ${statUses}/${statLimit} lần${statLimitReached ? ' — đã đạt giới hạn' : ''}</div>` : ''}
             <div class="item-actions" style="display: flex; gap: 6px; margin-top: 6px;">
               <button class="pixel-btn small-btn btn-inspect" style="background: rgba(30, 41, 59, 0.7);">🔍 Chi Tiết</button>
-              <button class="${actionClass}">${actionLabel}</button>
+              ${hasUseAction ? `<button class="pixel-btn small-btn btn-use primary-btn" ${statLimitReached ? 'disabled title="Đã đạt giới hạn tăng chỉ số"' : ''}>${statLimitReached ? 'Đã đạt giới hạn' : actionLabel}</button>` : ''}
+              <button class="pixel-btn small-btn btn-sell">💰 Bán (+${sellPrice} Linh Thạch)</button>
             </div>
           `;
 
@@ -9627,13 +9701,15 @@
             this.showItemDetail(k, 'inventory');
           };
 
-          itemCard.querySelector('.btn-use').onclick = (e) => {
+          const useButton = itemCard.querySelector('.btn-use');
+          if (useButton) useButton.onclick = (e) => {
             e.stopPropagation();
-            if (isUsable || isEquip) {
-              this.useInventoryItem(k);
-            } else {
-              this.sellItem(k);
-            }
+            this.useInventoryItem(k);
+          };
+
+          itemCard.querySelector('.btn-sell').onclick = (e) => {
+            e.stopPropagation();
+            this.sellItem(k);
           };
 
           listEl.appendChild(itemCard);
