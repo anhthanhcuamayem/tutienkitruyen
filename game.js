@@ -3804,6 +3804,8 @@
     }
 
     setScene(scene) {
+      // Xóa rung còn sót lại khi chuyển cảnh để canvas không tiếp tục trôi.
+      this.stopShake();
       this.currentScene = scene;
       const statusText = document.getElementById('canvas-status-text');
       if (statusText) {
@@ -3827,6 +3829,11 @@
     triggerShake(duration = 20, intensity = 6) {
       this.shakeDuration = duration;
       this.shakeIntensity = intensity;
+    }
+
+    stopShake() {
+      this.shakeDuration = 0;
+      this.shakeIntensity = 0;
     }
 
     addFloatingText(text, x, y, color = '#f87171', isCrit = false) {
@@ -5910,11 +5917,18 @@
 
       if (overlay) overlay.classList.remove('hidden');
 
-      if (this.resultAutoTimer) clearTimeout(this.resultAutoTimer);
-      const autoCloseDelay = this.combatSpeed === 2 ? 1500 : 2500;
-      this.resultAutoTimer = setTimeout(() => {
-        this.closeResultAndEnd(isWin);
-      }, autoCloseDelay);
+      // Persist rewards/losses immediately. Waiting for the periodic autosave
+      // could lose the latest spirit-stone balance while the result modal is open.
+      if (this.systems && typeof this.systems.saveToLocalStorage === 'function') {
+        this.systems.saveToLocalStorage();
+      }
+
+      // Không tự đóng kết quả: người chơi phải bấm nhận thưởng thì trận mới
+      // kết thúc và canvas mới trở về cảnh vận công.
+      if (this.resultAutoTimer) {
+        clearTimeout(this.resultAutoTimer);
+        this.resultAutoTimer = null;
+      }
     }
 
     closeResultAndEnd(won = null) {
@@ -5973,6 +5987,9 @@
       const endHandler = this.activeCombatEndHandler;
       this.activeCombatEndHandler = null;
       if (endHandler) endHandler(won, fled);
+      if (this.systems && typeof this.systems.saveToLocalStorage === 'function') {
+        this.systems.saveToLocalStorage();
+      }
       this.renderer.checkVisibilityAndResume();
     }
 
@@ -7539,6 +7556,7 @@
       this.addLog(`Nhặt thêm ${stones} Linh Thạch tinh khiết nằm trong hốc đá.`, 'loot');
 
       this.updateUI();
+      this.saveToLocalStorage();
     }
 
     ensureWorldState() {
@@ -7598,6 +7616,7 @@
       this.worldEncounter = null;
       sound.playClick();
       this.updateUI();
+      this.saveToLocalStorage();
     }
 
     openWorldExplore() {
@@ -7691,6 +7710,7 @@
       this.addLog(`🏳️ 【${traveler.name}】 nhận lời gia nhập 【${p.worldFaction.name}】! Thế lực tăng 5 ảnh hưởng.`, 'golden');
       sound.playBreakthrough();
       this.updateUI();
+      this.saveToLocalStorage();
     }
 
     createWorldFaction() {
@@ -7729,6 +7749,7 @@
       this.addLog(`🏯 Lập 【${name}】 thành công tại 【${this.currentRegion.name}】! Các đạo hữu quanh vùng bắt đầu chú ý đến thế lực mới.`, 'golden');
       sound.playBreakthrough();
       this.updateUI();
+      this.saveToLocalStorage();
     }
 
     upgradeWorldFaction() {
@@ -7750,6 +7771,7 @@
       faction.influence = (faction.influence || 0) + 15;
       this.addLog(`🏗️ 【${faction.name}】 mở rộng thành công lên cấp ${faction.level}, ảnh hưởng +15!`, 'golden');
       this.updateUI();
+      this.saveToLocalStorage();
     }
 
     buildWorldResidence() {
@@ -7785,6 +7807,7 @@
       this.addLog(`🏠 ${level === 0 ? 'Dựng cư trú' : 'Nâng cấp cư trú'} tại 【${region.name}】 thành công, đạt cấp ${nextLevel}!`, 'golden');
       sound.playLoot();
       this.updateUI();
+      this.saveToLocalStorage();
     }
 
     formWorldAlliance(factionId) {
@@ -7814,6 +7837,7 @@
       this.addLog(`🤝 【${p.worldFaction.name}】 chính thức kết minh cùng 【${faction.name}】!`, 'golden');
       sound.playBreakthrough();
       this.updateUI();
+      this.saveToLocalStorage();
     }
 
     showEventModal(event) {
@@ -7955,6 +7979,7 @@
       }
 
       this.updateUI();
+      this.saveToLocalStorage();
     }
 
     upgradeSkillMastery() {
@@ -8113,8 +8138,9 @@
       if (this.forgeInterval) clearInterval(this.forgeInterval);
       if (this.forgeSession) this.forgeSession.active = false;
       this.forgeSession = null;
-      this.renderer.triggerShake(14, 25);
-      this.renderer.spawnSmokeParticles(25);
+      // Chỉ rung nhẹ đúng một khung hình, không làm cả màn hình trôi theo vụ nổ.
+      this.renderer.triggerShake(1, 1);
+      this.renderer.spawnSmokeParticles(320, 110, 25);
       sound.playHurt();
       this.addLog('💥 NỔ LÒ LUYỆN KHÍ! Khí phôi vỡ nát vì nhiệt độ vượt ngưỡng!', 'danger');
       this.renderer.addFloatingText('💥 NỔ LÒ KHÍ!', 320, 160, '#ef4444', true);
@@ -8295,8 +8321,9 @@
       if (this.alchemySession) this.alchemySession.active = false;
       this.alchemySession = null;
 
-      this.renderer.triggerShake(14, 25);
-      this.renderer.spawnSmokeParticles(25);
+      // Chỉ rung nhẹ đúng một khung hình, không làm cả màn hình trôi theo vụ nổ.
+      this.renderer.triggerShake(1, 1);
+      this.renderer.spawnSmokeParticles(320, 110, 25);
       sound.playHurt();
 
       this.addLog(`💥 NỔ LÒ! Nhiệt độ đan hỏa quá cao vượt ngưỡng khống chế khiến lò thần phát nổ! Toàn bộ linh dược hóa thành tro bụi!`, 'danger');
@@ -8665,6 +8692,7 @@
       this.addLog(`Đã mua 【${item.name}】 x1 từ Phường Thị với giá ${item.price} Linh Thạch.`, 'loot');
       this.renderMarketUI();
       this.updateUI();
+      this.saveToLocalStorage();
     }
 
     sellItem(itemId) {
@@ -8680,6 +8708,7 @@
       sound.playClick();
       this.addLog(`Đã bán 【${item.name}】 x1 thu về ${sellPrice} Linh Thạch.`, 'loot');
       this.updateUI();
+      this.saveToLocalStorage();
     }
 
     joinSect(sectId) {
@@ -8723,6 +8752,7 @@
       sound.playBreakthrough();
       this.addLog(`🏯 Đạo hữu chính thức bái nhập 【${sect.name}】! Trở thành môn nhân sơn môn!`, 'golden');
       this.updateUI();
+      this.saveToLocalStorage();
     }
 
     claimSectSalary() {
@@ -8742,6 +8772,7 @@
       this.renderer.addFloatingText(`+${salary} Linh Thạch`, 320, 160, '#38bdf8');
       this.addLog(`Nhận bổng lộc hàng năm của chức vị 【${curRank.rank}】: +${salary} Linh Thạch!`, 'loot');
       this.updateUI();
+      this.saveToLocalStorage();
     }
 
     completeSectQuest(questId) {
@@ -8802,6 +8833,7 @@
       this.addLog(`Hoàn thành nhiệm vụ 【${quest.name}】! Nhận +${quest.contrib} Điểm Cống Hiến${quest.stone ? `, +${quest.stone} Linh Thạch` : ''}!`, 'loot');
       this.checkSectPromotion();
       this.updateUI();
+      this.saveToLocalStorage();
     }
 
     startSectPatrolFight() {
@@ -8919,6 +8951,7 @@
       this.renderer.addFloatingText(`LĨNH NGỘ BÍ TỊCH!`, 320, 160, '#facc15', true);
       this.addLog(`📖 Lĩnh ngộ thành công 【${man.name}】 tại Tàng Kinh Các! Thuộc tính tăng vĩnh viễn: ${effects.join(', ')}! (Chức vị tông môn không bị ảnh hưởng)`, 'golden');
       this.updateUI();
+      this.saveToLocalStorage();
     }
 
     useInventoryItem(itemId) {
@@ -9193,6 +9226,7 @@
       }
 
       this.updateUI();
+      this.saveToLocalStorage();
     }
 
     handleDeathByAge() {
@@ -9213,6 +9247,9 @@
     saveToLocalStorage() {
       if (!this.player) return;
       try {
+        // Normalize legacy/corrupt currency before serializing. Otherwise an
+        // undefined, string or NaN balance can break later arithmetic after reload.
+        this.normalizePlayerState(this.player);
         const envelope = {
           schemaVersion: 2,
           timestamp: Date.now(),
