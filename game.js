@@ -2957,8 +2957,8 @@
     // 4. VẬT PHẨM SỬ DỤNG: ĐAN DƯỢC
     // ==========================================
     pill_hoixuan: {
-      id: 'pill_hoixuan', name: 'Hồi Xuân Đan', type: 'pill', icon: '💚', healPercent: 0.5,
-      desc: 'Lập tức hồi phục 50% Khí Huyết (HP) tối đa.',
+      id: 'pill_hoixuan', name: 'Hồi Xuân Đan', type: 'pill', icon: '💚', healAmount: 50, fixedAmount: true,
+      desc: 'Lập tức hồi phục cố định 50 Khí Huyết (HP). Đan cơ bản, không nhận phẩm chất.',
       price: 40,
       howToGet: '🧪 Luyện đan tại Động Phủ (2 Linh Chi Thảo) | 🏪 Phường Thị (40 Linh Thạch) | 🏯 Tông Môn',
       sources: ['Động Phủ Luyện Đan', 'Phường Thị', 'Tông Môn']
@@ -2971,8 +2971,8 @@
       sources: ['Động Phủ Luyện Đan', 'Phường Thị']
     },
     pill_tukhi: {
-      id: 'pill_tukhi', name: 'Tụ Khí Đan', type: 'pill', icon: '💊', expGain: 350,
-      desc: 'Uống vào tăng trực tiếp 350 điểm Tu Vi (hưởng thêm hệ số Ngộ Tính).',
+      id: 'pill_tukhi', name: 'Tụ Khí Đan', type: 'pill', icon: '💊', expGain: 150, fixedAmount: true,
+      desc: 'Uống vào tăng cố định 150 điểm Tu Vi. Đan cơ bản, không nhận phẩm chất.',
       price: 80,
       howToGet: '🧪 Luyện đan (2 Linh Chi + 1 Thanh U + 1 Huyền Thiết) | 🏪 Phường Thị | 🎁 Điểm Danh',
       sources: ['Động Phủ Luyện Đan', 'Phường Thị', 'Điểm Danh']
@@ -3431,6 +3431,23 @@
     { id: 'rec_tinhvan', name: 'Tinh Vân Đạo Bào', type: 'forge', resultId: 'arm_tinhvan', reqRealmIndex: 10, ingredients: { ore_tutinh: 3, herb_bachnien: 3 }, successRate: 0.75, desc: 'Cần 3 Tử Tinh Khoáng, 3 Bách Niên Linh Dược.' },
     { id: 'rec_longlan', name: 'Long Lân Bảo Giáp', type: 'forge', resultId: 'arm_longlan', reqRealmIndex: 14, ingredients: { ore_thienngoai: 4, herb_longhuyet: 3 }, successRate: 0.65, desc: 'Cần 4 Thiên Ngoại Vẫn Thiết, 3 Long Huyết Thảo.' }
   ];
+
+  // Chín phẩm là cấp độ dược lực của đan dược thành phẩm. Hai loại đan cơ bản
+  // được cố ý loại khỏi hệ thống phẩm chất để tránh việc hồi phục/tu vi bị phình
+  // quá mạnh ở đầu game.
+  const ALCHEMY_QUALITY_LEVELS = [
+    { level: 1, name: 'Nhất Phẩm', short: '1 phẩm', multiplier: 0.60, color: '#94a3b8' },
+    { level: 2, name: 'Nhị Phẩm', short: '2 phẩm', multiplier: 0.72, color: '#a3e635' },
+    { level: 3, name: 'Tam Phẩm', short: '3 phẩm', multiplier: 0.84, color: '#38bdf8' },
+    { level: 4, name: 'Tứ Phẩm', short: '4 phẩm', multiplier: 1.00, color: '#facc15' },
+    { level: 5, name: 'Ngũ Phẩm', short: '5 phẩm', multiplier: 1.15, color: '#fb923c' },
+    { level: 6, name: 'Lục Phẩm', short: '6 phẩm', multiplier: 1.32, color: '#f472b6' },
+    { level: 7, name: 'Thất Phẩm', short: '7 phẩm', multiplier: 1.52, color: '#c084fc' },
+    { level: 8, name: 'Bát Phẩm', short: '8 phẩm', multiplier: 1.76, color: '#67e8f9' },
+    { level: 9, name: 'Cửu Phẩm', short: '9 phẩm', multiplier: 2.05, color: '#f8fafc' }
+  ];
+  const BASIC_FIXED_PILL_IDS = ['pill_hoixuan', 'pill_tukhi'];
+  const MASTERY_THRESHOLDS = [0, 5, 15, 30, 50, 75, 105, 140, 180];
 
   const RANDOM_EVENTS = [
     {
@@ -4494,15 +4511,17 @@
 
       drawPixelSprite(ctx, SPRITES.sceneFurnace, 240, 100, 10);
 
-      const session = this.systems && this.systems.alchemySession;
+      const session = this.systems && (this.systems.alchemySession || this.systems.forgeSession);
       const isSessionActive = session && session.active;
-      const fireMode = isSessionActive ? session.fireMode : 'gentle';
+      const fireMode = isSessionActive ? session.fireMode : 'steady';
       const isMartial = fireMode === 'martial';
+      const sessionType = session && session.type === 'forge' ? 'Luyện Khí' : 'Luyện Đan';
+      const fireModeLabel = fireMode === 'martial' ? 'VŨ HỎA 🔥' : fireMode === 'gentle' ? 'VĂN HỎA ❄️' : 'ĐỊNH HỎA ⚖️';
 
       const fireHeight = (isMartial ? 22 : 12) + Math.sin(this.time * 0.25) * 5;
-      ctx.fillStyle = isMartial ? '#ef4444' : '#0284c7';
+      ctx.fillStyle = isMartial ? '#ef4444' : fireMode === 'steady' ? '#16a34a' : '#0284c7';
       ctx.fillRect(270, 260 - fireHeight, 100, fireHeight);
-      ctx.fillStyle = isMartial ? '#fbbf24' : '#38bdf8';
+      ctx.fillStyle = isMartial ? '#fbbf24' : fireMode === 'steady' ? '#86efac' : '#38bdf8';
       ctx.fillRect(290, 260 - fireHeight * 0.8, 60, fireHeight * 0.8);
 
       if (this.time % 5 === 0) {
@@ -4553,7 +4572,7 @@
 
         ctx.font = '13px "Courier New", monospace';
         ctx.fillStyle = '#cbd5e1';
-        ctx.fillText(`Lò Thần: ${session.recipe.name} • Hỏa Hầu: ${isMartial ? 'VŨ HỎA 🔥' : 'VĂN HỎA ❄️'} • Tinh Thuần: ${Math.round(session.purity)}`, 320, 310);
+        ctx.fillText(`${sessionType}: ${session.recipe.name} • Hỏa Hầu: ${fireModeLabel} • ${sessionType === 'Luyện Khí' ? 'Độ Ổn Định' : 'Tinh Thuần'}: ${Math.round(session.purity)}`, 320, 310);
       } else {
         ctx.font = '14px "Courier New", monospace';
         ctx.fillStyle = '#cbd5e1';
@@ -5435,7 +5454,9 @@
         return;
       }
 
-      this.player.inventory[pillId]--;
+      const quality = this.systems && typeof this.systems.consumeInventoryQuality === 'function'
+        ? this.systems.consumeInventoryQuality(pillId)
+        : ((this.player.inventory[pillId]--), 0);
       this.isPlayerTurn = false;
       this.isProcessingTurn = true;
       this.updateCombatButtons(false);
@@ -5446,14 +5467,17 @@
       sound.playLoot();
       let healMult = 1.0;
       if (this.player.cultivationPath && this.player.cultivationPath.id === 'dan_y_tu') healMult = 1.35;
+      const qualityMult = this.systems && typeof this.systems.getItemQualityMultiplier === 'function'
+        ? this.systems.getItemQualityMultiplier(pillId, quality)
+        : 1;
 
       if (pillId === 'pill_hoixuan') {
-        const heal = Math.floor(this.playerCombat.maxHp * 0.5 * healMult);
+        const heal = Math.floor(50 * healMult);
         this.playerCombat.curHp = Math.min(this.playerCombat.maxHp, this.playerCombat.curHp + heal);
         this.renderer.addFloatingText(`+${heal} HP`, 170, 160, '#34d399');
         this.addLog(`Đạo hữu nuốt vào Hồi Xuân Đan, sinh cơ tràn trề hồi phục ${heal} Khí Huyết!`, 'heal');
       } else if (pillId === 'pill_tulinh') {
-        const mana = Math.floor(this.playerCombat.maxMp * 0.6 * healMult);
+        const mana = Math.floor(this.playerCombat.maxMp * 0.6 * qualityMult * healMult);
         this.playerCombat.curMp = Math.min(this.playerCombat.maxMp, this.playerCombat.curMp + mana);
         this.renderer.addFloatingText(`+${mana} MP`, 170, 160, '#38bdf8');
         this.addLog(`Đạo hữu nuốt vào Tụ Linh Đan, linh đan tan ra hồi phục ${mana} Linh Lực!`, 'heal');
@@ -5463,15 +5487,16 @@
         this.renderer.addFloatingText(`HỒI PHỤC TOÀN BỘ!`, 170, 160, '#34d399', true);
         this.addLog(`Đạo hữu nuốt vào Ngũ Hành Quy Nguyên Đan, hồi phục toàn bộ 100% Khí Huyết & Linh Lực!`, 'golden');
       } else if (pillId === 'pill_ngung_than') {
-        const heal = Math.floor(this.playerCombat.maxHp * 0.25 * healMult);
+        const heal = Math.floor(this.playerCombat.maxHp * 0.25 * qualityMult * healMult);
         this.playerCombat.curHp = Math.min(this.playerCombat.maxHp, this.playerCombat.curHp + heal);
         CombatStatusManager.cleanse(this.playerCombat);
         this.renderer.addFloatingText(`THANH TÂM`, 170, 160, '#38bdf8');
         this.addLog(`Đạo hữu nuốt vào Thanh Tâm Ngưng Thần Đan, hóa giải toàn bộ hiệu ứng xấu và hồi phục ${heal} Khí Huyết!`, 'heal');
       } else if (pillId === 'pill_bao_khi') {
         this.playerCombat.berserkTurns = 5;
-        this.renderer.addFloatingText(`BẠO KHÍ +35%`, 170, 160, '#ef4444', true);
-        this.addLog(`Đạo hữu nuốt vào Bạo Khí Cuồng Đan, đan điền cuộn trào tăng 35% Công Kích & Bạo Kích trong 5 hiệp!`, 'golden');
+        const buff = Math.floor(35 * qualityMult);
+        this.renderer.addFloatingText(`BẠO KHÍ +${buff}%`, 170, 160, '#ef4444', true);
+        this.addLog(`Đạo hữu nuốt vào Bạo Khí Cuồng Đan, đan điền cuộn trào tăng ${buff}% Công Kích & Bạo Kích trong 5 hiệp!`, 'golden');
       }
       this.updateCombatUI();
       this.isProcessingTurn = false;
@@ -6155,6 +6180,8 @@
       this.breakthroughInProgress = false;
       this.alchemySession = null;
       this.alchemyInterval = null;
+      this.forgeSession = null;
+      this.forgeInterval = null;
       this.inventoryFilter = 'all';
       this.compendiumFilter = 'all';
       this.setupLifecycleListeners();
@@ -6181,6 +6208,14 @@
         clearInterval(this.saveTimer);
         this.saveTimer = null;
       }
+      if (this.alchemyInterval) {
+        clearInterval(this.alchemyInterval);
+        this.alchemyInterval = null;
+      }
+      if (this.forgeInterval) {
+        clearInterval(this.forgeInterval);
+        this.forgeInterval = null;
+      }
     }
 
     normalizePlayerState(p) {
@@ -6206,6 +6241,28 @@
       p.curMp = finiteInt(p.curMp, 0);
       if (!p.inventory || typeof p.inventory !== 'object' || Array.isArray(p.inventory)) p.inventory = {};
       Object.keys(p.inventory).forEach(id => { p.inventory[id] = finiteInt(p.inventory[id], 0); });
+      if (!p.inventoryQuality || typeof p.inventoryQuality !== 'object' || Array.isArray(p.inventoryQuality)) p.inventoryQuality = {};
+      Object.keys(p.inventoryQuality).forEach(itemId => {
+        if (!ITEMS[itemId] || ITEMS[itemId].type !== 'pill' || BASIC_FIXED_PILL_IDS.includes(itemId)) {
+          delete p.inventoryQuality[itemId];
+          return;
+        }
+        if (!p.inventoryQuality[itemId] || typeof p.inventoryQuality[itemId] !== 'object' || Array.isArray(p.inventoryQuality[itemId])) {
+          delete p.inventoryQuality[itemId];
+          return;
+        }
+        Object.keys(p.inventoryQuality[itemId]).forEach(level => {
+          const quality = finiteInt(level, 0, 1, 9);
+          const count = finiteInt(p.inventoryQuality[itemId][level], 0);
+          if (quality !== Number(level) || count <= 0) delete p.inventoryQuality[itemId][level];
+          else p.inventoryQuality[itemId][level] = count;
+        });
+        if (Object.keys(p.inventoryQuality[itemId]).length === 0) delete p.inventoryQuality[itemId];
+      });
+      p.alchemyMasteryExp = finiteInt(p.alchemyMasteryExp, 0);
+      p.forgeMasteryExp = finiteInt(p.forgeMasteryExp, 0);
+      p.alchemyMastery = finiteInt(p.alchemyMastery, 1, 1, 9);
+      p.forgeMastery = finiteInt(p.forgeMastery, 1, 1, 9);
       if (!p.signedRegions || typeof p.signedRegions !== 'object' || Array.isArray(p.signedRegions)) p.signedRegions = {};
       if (!p.sectQuestKills || typeof p.sectQuestKills !== 'object' || Array.isArray(p.sectQuestKills)) p.sectQuestKills = {};
       if (p.sectId === undefined) p.sectId = null;
@@ -6262,6 +6319,93 @@
         else p[key] = null;
       });
       return p;
+    }
+
+    getMasteryLevel(type = 'alchemy') {
+      const p = this.player || {};
+      const exp = Number(p[`${type}MasteryExp`]) || 0;
+      let level = 1;
+      MASTERY_THRESHOLDS.forEach((threshold, index) => {
+        if (exp >= threshold) level = index + 1;
+      });
+      p[`${type}Mastery`] = Math.max(1, Math.min(9, level));
+      return p[`${type}Mastery`];
+    }
+
+    getMasteryProgress(type = 'alchemy') {
+      const level = this.getMasteryLevel(type);
+      const exp = Number(this.player?.[`${type}MasteryExp`]) || 0;
+      const current = MASTERY_THRESHOLDS[level - 1] || 0;
+      const next = MASTERY_THRESHOLDS[level] || current;
+      return { level, exp, current, next, ratio: next > current ? Math.min(1, (exp - current) / (next - current)) : 1 };
+    }
+
+    addMasteryExp(type, amount = 1) {
+      if (!this.player) return this.getMasteryLevel(type);
+      const key = `${type}MasteryExp`;
+      const oldLevel = this.getMasteryLevel(type);
+      this.player[key] = Math.max(0, Math.floor((Number(this.player[key]) || 0) + amount));
+      const newLevel = this.getMasteryLevel(type);
+      if (newLevel > oldLevel) {
+        this.addLog(`🌟 Thông thạo ${type === 'alchemy' ? 'luyện đan' : 'luyện khí'} đạt 【${newLevel} phẩm】!`, 'golden');
+      }
+      return newLevel;
+    }
+
+    getQualityInfo(level) {
+      return ALCHEMY_QUALITY_LEVELS[Math.max(0, Math.min(8, Math.floor(Number(level) || 1) - 1))];
+    }
+
+    getAlchemyQuality(purity) {
+      const value = Math.max(0, Math.min(100, Number(purity) || 0));
+      if (value >= 97) return 9;
+      if (value >= 90) return 8;
+      if (value >= 80) return 7;
+      if (value >= 70) return 6;
+      if (value >= 60) return 5;
+      if (value >= 50) return 4;
+      if (value >= 35) return 3;
+      if (value >= 20) return 2;
+      return 1;
+    }
+
+    getItemQualityMultiplier(itemId, quality) {
+      if (!itemId || BASIC_FIXED_PILL_IDS.includes(itemId)) return 1;
+      const item = ITEMS[itemId];
+      if (!item || item.type !== 'pill') return 1;
+      return this.getQualityInfo(quality).multiplier;
+    }
+
+    addInventoryItem(itemId, count = 1, quality = null) {
+      const p = this.player;
+      if (!p || !itemId || count <= 0) return;
+      p.inventory[itemId] = (p.inventory[itemId] || 0) + Math.floor(count);
+      if (quality && ITEMS[itemId]?.type === 'pill' && !BASIC_FIXED_PILL_IDS.includes(itemId)) {
+        if (!p.inventoryQuality[itemId]) p.inventoryQuality[itemId] = {};
+        const level = Math.max(1, Math.min(9, Math.floor(Number(quality) || 1)));
+        p.inventoryQuality[itemId][level] = (p.inventoryQuality[itemId][level] || 0) + Math.floor(count);
+      }
+    }
+
+    consumeInventoryQuality(itemId) {
+      const p = this.player;
+      if (!p || !(p.inventory[itemId] > 0)) return 0;
+      p.inventory[itemId]--;
+      const stacks = p.inventoryQuality && p.inventoryQuality[itemId];
+      if (!stacks || BASIC_FIXED_PILL_IDS.includes(itemId)) return 0;
+      const level = Object.keys(stacks).map(Number).filter(Number.isFinite).sort((a, b) => b - a).find(q => stacks[q] > 0);
+      if (!level) return 0;
+      stacks[level]--;
+      if (stacks[level] <= 0) delete stacks[level];
+      if (Object.keys(stacks).length === 0) delete p.inventoryQuality[itemId];
+      return level;
+    }
+
+    getQualitySummary(itemId) {
+      const stacks = this.player?.inventoryQuality?.[itemId];
+      if (!stacks) return '';
+      return Object.keys(stacks).map(Number).sort((a, b) => b - a).filter(level => stacks[level] > 0)
+        .map(level => `${this.getQualityInfo(level).short} x${stacks[level]}`).join(' • ');
     }
 
     getSkillLevel(skill) {
@@ -6480,6 +6624,11 @@
           herb_linhchi: 5,
           ore_huyenthiet: 3
         },
+        inventoryQuality: {},
+        alchemyMastery: 1,
+        alchemyMasteryExp: 0,
+        forgeMastery: 1,
+        forgeMasteryExp: 0,
 
         sectId: null,
         sectContrib: 0,
@@ -6705,17 +6854,18 @@
       let usedPill = null;
       const pillId = realm.pillNeeded ? this.getPillIdByName(realm.pillNeeded) : null;
       if (pillId && p.inventory[pillId] > 0) {
-        p.inventory[pillId]--;
+        const quality = this.consumeInventoryQuality(pillId);
+        const pill = ITEMS[pillId];
         usedPill = realm.pillNeeded;
-        successChance += 0.35;
+        successChance += (pill?.breakBonus || 0.35) * this.getItemQualityMultiplier(pillId, quality);
       } else if (p.daoTamBuff > 0) {
         successChance += p.daoTamBuff;
         usedPill = 'Đạo Tâm Đan';
         p.daoTamBuff = 0;
       } else if (p.inventory['pill_daotam'] > 0) {
-        p.inventory['pill_daotam']--;
+        const quality = this.consumeInventoryQuality('pill_daotam');
         usedPill = 'Đạo Tâm Đan';
-        successChance += 0.20;
+        successChance += (ITEMS.pill_daotam?.breakBonus || 0.20) * this.getItemQualityMultiplier('pill_daotam', quality);
       }
 
       if (p.cheatPerk && p.cheatPerk.id === 'breakthrough_guard') {
@@ -6961,6 +7111,8 @@
       // Thuộc tính
       if (statsList) {
         statsList.innerHTML = '';
+        const qualitySummary = source === 'inventory' && item.type === 'pill' ? this.getQualitySummary(item.id) : '';
+        if (qualitySummary) statsList.innerHTML += `<div class="item-stat-badge" style="color: #c084fc;">✨ Phẩm chất đang có: ${qualitySummary}</div>`;
         if (item.trait) statsList.innerHTML += `<div class="item-stat-badge text-gold">✨ Đặc Tính: ${item.trait}</div>`;
         if (item.rawEffectDesc) statsList.innerHTML += `<div class="item-stat-badge text-emerald">🍃 Dược Lực Nuốt Trực Tiếp: ${item.rawEffectDesc}</div>`;
         if (item.refineLevel) statsList.innerHTML += `<div class="item-stat-badge text-gold">🔨 Thối Luyện Cấp: +${item.refineLevel} (+${item.refineLevel * 15}% Chỉ số)</div>`;
@@ -6970,8 +7122,10 @@
         if (item.mp) statsList.innerHTML += `<div class="item-stat-badge text-cyan">💧 Linh Lực: +${item.mp} MP</div>`;
         if (item.crit) statsList.innerHTML += `<div class="item-stat-badge text-gold">⚡ Bạo Kích: +${Math.floor(item.crit * 100)}%</div>`;
         if (item.healPercent) statsList.innerHTML += `<div class="item-stat-badge text-emerald">🩸 Hồi Phục: +${Math.floor(item.healPercent * 100)}% Khí Huyết</div>`;
+        if (item.healAmount) statsList.innerHTML += `<div class="item-stat-badge text-emerald">🩸 Hồi Phục Cố Định: +${item.healAmount} HP • Không nhập phẩm chất</div>`;
         if (item.mpPercent) statsList.innerHTML += `<div class="item-stat-badge text-cyan">💧 Hồi Phục: +${Math.floor(item.mpPercent * 100)}% Linh Lực</div>`;
         if (item.expGain) statsList.innerHTML += `<div class="item-stat-badge text-purple">🌟 Đan Khí: +${item.expGain} Tu Vi</div>`;
+        if (item.fixedAmount && item.expGain) statsList.innerHTML += `<div class="item-stat-badge text-purple">🌟 Tu Vi Cố Định • Không nhập phẩm chất</div>`;
         if (item.breakBonus) statsList.innerHTML += `<div class="item-stat-badge text-gold">⚡ Tỷ Lệ Đột Phá: +${Math.floor(item.breakBonus * 100)}%</div>`;
         if (item.lifespanGain) statsList.innerHTML += `<div class="item-stat-badge text-gold">⏳ Kéo Dài Thọ Nguyên: +${item.lifespanGain} Năm</div>`;
         if (item.shieldAmount) statsList.innerHTML += `<div class="item-stat-badge text-gold">🛡️ Hộ Thuẫn: +${item.shieldAmount} Sát Thương</div>`;
@@ -7827,7 +7981,7 @@
       if (recipe.type === 'alchemy') {
         this.startInteractiveAlchemy(recipeId);
       } else {
-        this.craftEquipment(recipeId);
+        this.startInteractiveForge(recipeId);
       }
     }
 
@@ -7868,12 +8022,141 @@
       }, 1200);
     }
 
+    startInteractiveForge(recipeId) {
+      const p = this.player;
+      const recipe = RECIPES.find(r => r.id === recipeId && r.type === 'forge');
+      if (!recipe) return;
+      if ((this.alchemySession && this.alchemySession.active) || (this.forgeSession && this.forgeSession.active)) {
+        this.addLog('Lò luyện đang vận hành, hãy hoàn tất mẻ hiện tại!', 'warning');
+        return;
+      }
+      for (const [itemId, count] of Object.entries(recipe.ingredients)) {
+        if ((p.inventory[itemId] || 0) < count) {
+          const itemObj = ITEMS[itemId];
+          this.addLog(`Không đủ nguyên liệu 【${itemObj ? itemObj.name : itemId}】 (cần ${count}, có ${p.inventory[itemId] || 0})!`, 'warning');
+          return;
+        }
+      }
+      Object.entries(recipe.ingredients).forEach(([itemId, count]) => { p.inventory[itemId] -= count; });
+
+      const mastery = this.getMasteryLevel('forge');
+      if (this.forgeInterval) clearInterval(this.forgeInterval);
+      this.forgeSession = {
+        active: true,
+        type: 'forge',
+        recipe,
+        temp: recipe.reqRealmIndex >= 14 ? 59 : 58,
+        purity: Math.min(75, 40 + (mastery - 1) * 4),
+        fireMode: 'gentle',
+        targetMin: recipe.reqRealmIndex >= 14 ? 55 : 45,
+        targetMax: recipe.reqRealmIndex >= 14 ? 75 : 72,
+        overheatTicks: 0
+      };
+      this.renderer.setScene(SCENES.ALCHEMY);
+      this.updateForgePanelUI();
+
+      this.forgeInterval = setInterval(() => {
+        const sess = this.forgeSession;
+        if (!sess || !sess.active) {
+          clearInterval(this.forgeInterval);
+          return;
+        }
+        if (sess.fireMode === 'martial') sess.temp = Math.min(105, sess.temp + 0.85);
+        else if (sess.fireMode === 'gentle') sess.temp = Math.max(15, sess.temp - 0.85);
+        else {
+          const center = (sess.targetMin + sess.targetMax) / 2;
+          sess.temp += sess.temp < center ? 0.35 : sess.temp > center ? -0.35 : 0;
+        }
+        if (sess.temp >= sess.targetMin && sess.temp <= sess.targetMax) sess.purity = Math.min(100, sess.purity + 0.65);
+        else sess.purity = Math.max(0, sess.purity - 0.45);
+        if (sess.temp >= 95) {
+          sess.overheatTicks++;
+          if (sess.overheatTicks >= 20) return this.explodeForge();
+        } else sess.overheatTicks = Math.max(0, sess.overheatTicks - 1);
+        this.updateForgePanelUI();
+      }, 100);
+      this.addLog(`🔨 Khai lò luyện khí 【${recipe.name}】. Giữ nhiệt trong khoảng [${this.forgeSession.targetMin}°C - ${this.forgeSession.targetMax}°C] rồi bấm Ngưng Khí!`, 'golden');
+      this.updateUI();
+    }
+
+    setForgeFireMode(mode) {
+      if (!this.forgeSession || !this.forgeSession.active) return;
+      this.forgeSession.fireMode = ['martial', 'gentle', 'steady'].includes(mode) ? mode : 'steady';
+      this.updateForgePanelUI();
+    }
+
+    harvestForge() {
+      if (!this.forgeSession || !this.forgeSession.active) return;
+      const sess = this.forgeSession;
+      if (this.forgeInterval) clearInterval(this.forgeInterval);
+      sess.active = false;
+      this.renderer.setScene(SCENES.MEDITATE);
+      const purity = Math.round(sess.purity);
+      const quality = Math.max(1, this.getAlchemyQuality(purity));
+      const qualityInfo = this.getQualityInfo(quality);
+      const result = ITEMS[sess.recipe.resultId];
+      if (result) {
+        this.player.inventory[sess.recipe.resultId] = (this.player.inventory[sess.recipe.resultId] || 0) + 1;
+      }
+      this.addMasteryExp('forge', 1 + Math.floor((sess.recipe.reqRealmIndex || 0) / 10));
+      sound.playLoot();
+      this.addLog(`⚒️ Khí phôi thành hình 【${result ? result.name : sess.recipe.resultId}】 — 【${qualityInfo.name}】 (Ổn định: ${purity}%). Thông thạo luyện khí: ${this.getMasteryLevel('forge')} phẩm.`, 'loot');
+      this.renderer.addFloatingText(`${qualityInfo.name} KHÍ!`, 320, 160, qualityInfo.color, true);
+      this.forgeSession = null;
+      this.updateForgePanelUI();
+      this.updateUI();
+    }
+
+    explodeForge() {
+      if (this.forgeInterval) clearInterval(this.forgeInterval);
+      if (this.forgeSession) this.forgeSession.active = false;
+      this.forgeSession = null;
+      this.renderer.triggerShake(14, 25);
+      this.renderer.spawnSmokeParticles(25);
+      sound.playHurt();
+      this.addLog('💥 NỔ LÒ LUYỆN KHÍ! Khí phôi vỡ nát vì nhiệt độ vượt ngưỡng!', 'danger');
+      this.renderer.addFloatingText('💥 NỔ LÒ KHÍ!', 320, 160, '#ef4444', true);
+      setTimeout(() => {
+        this.renderer.setScene(SCENES.MEDITATE);
+        this.updateForgePanelUI();
+        this.updateUI();
+      }, 1200);
+    }
+
+    updateForgePanelUI() {
+      const panel = document.getElementById('interactive-forge-panel');
+      if (!panel) return;
+      if (!this.forgeSession || !this.forgeSession.active) {
+        panel.classList.add('hidden');
+        return;
+      }
+      panel.classList.remove('hidden');
+      const sess = this.forgeSession;
+      const q = this.getAlchemyQuality(sess.purity);
+      const qualityInfo = this.getQualityInfo(q);
+      const setText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+      setText('forge-recipe-title', `🔨 Đang Luyện Khí: ${sess.recipe.name}`);
+      setText('forge-mastery', `Thông thạo luyện khí: ${this.getMasteryLevel('forge')} phẩm`);
+      setText('forge-quality-preview', `Dự kiến: ${qualityInfo.name}`);
+      setText('forge-purity-text', `${Math.round(sess.purity)}%`);
+      setText('forge-target-range', `${sess.targetMin}°C - ${sess.targetMax}°C`);
+      setText('forge-temp-text', `${Math.round(sess.temp)}°C`);
+      const purityBar = document.getElementById('forge-purity-bar');
+      if (purityBar) purityBar.style.width = `${Math.max(0, Math.min(100, sess.purity))}%`;
+      const tempBar = document.getElementById('forge-temp-bar');
+      if (tempBar) tempBar.style.width = `${Math.max(0, Math.min(100, sess.temp))}%`;
+      const martial = document.getElementById('btn-forge-martial');
+      const gentle = document.getElementById('btn-forge-gentle');
+      if (martial) martial.style.boxShadow = sess.fireMode === 'martial' ? '0 0 10px #ef4444' : 'none';
+      if (gentle) gentle.style.boxShadow = sess.fireMode === 'gentle' ? '0 0 10px #38bdf8' : 'none';
+    }
+
     startInteractiveAlchemy(recipeId) {
       const p = this.player;
       const recipe = RECIPES.find(r => r.id === recipeId);
       if (!recipe) return;
 
-      if (this.alchemySession && this.alchemySession.active) {
+      if ((this.alchemySession && this.alchemySession.active) || (this.forgeSession && this.forgeSession.active)) {
         this.addLog('Lò luyện đang vận hành, hãy hoàn tất mẻ đan hiện tại!', 'warning');
         return;
       }
@@ -7900,9 +8183,10 @@
       if (this.alchemyInterval) clearInterval(this.alchemyInterval);
       this.alchemySession = {
         active: true,
+        type: 'alchemy',
         recipe: recipe,
-        temp: 35,
-        purity: 50,
+        temp: recipe.reqRealmIndex >= 14 ? 58 : 55,
+        purity: Math.min(75, 42 + (this.getMasteryLevel('alchemy') - 1) * 3),
         fireMode: 'gentle',
         targetMin: targetMin,
         targetMax: targetMax,
@@ -7918,10 +8202,11 @@
           return;
         }
         const sess = this.alchemySession;
-        if (sess.fireMode === 'martial') {
-          sess.temp = Math.min(105, sess.temp + 1.4);
-        } else {
-          sess.temp = Math.max(15, sess.temp - 0.8);
+        if (sess.fireMode === 'martial') sess.temp = Math.min(105, sess.temp + 0.85);
+        else if (sess.fireMode === 'gentle') sess.temp = Math.max(15, sess.temp - 0.85);
+        else {
+          const center = (sess.targetMin + sess.targetMax) / 2;
+          sess.temp += sess.temp < center ? 0.35 : sess.temp > center ? -0.35 : 0;
         }
 
         if (sess.temp >= sess.targetMin && sess.temp <= sess.targetMax) {
@@ -7949,7 +8234,7 @@
 
     setAlchemyFireMode(mode) {
       if (!this.alchemySession || !this.alchemySession.active) return;
-      this.alchemySession.fireMode = mode;
+      this.alchemySession.fireMode = ['martial', 'gentle', 'steady'].includes(mode) ? mode : 'steady';
       this.updateAlchemyPanelUI();
     }
 
@@ -7961,9 +8246,12 @@
       this.renderer.setScene(SCENES.MEDITATE);
 
       const purity = Math.round(sess.purity);
+      const resultItem = ITEMS[sess.recipe.resultId];
       let grade = 'Hạ Phẩm';
       let gradeBonus = '';
       let count = 1;
+      const isQualityPill = resultItem && resultItem.type === 'pill' && !BASIC_FIXED_PILL_IDS.includes(resultItem.id);
+      const quality = isQualityPill ? this.getAlchemyQuality(purity) : 0;
 
       if (purity >= 90) {
         grade = 'CỰC PHẨM';
@@ -7980,13 +8268,14 @@
         gradeBonus = ' (Dược lực suy giảm do lẫn tạp chất)';
       }
 
-      const p = this.player;
-      p.inventory[sess.recipe.resultId] = (p.inventory[sess.recipe.resultId] || 0) + count;
+      this.addInventoryItem(sess.recipe.resultId, count, quality || null);
+      this.addMasteryExp('alchemy', 1 + Math.floor((sess.recipe.reqRealmIndex || 0) / 10));
       sound.playLoot();
 
-      const resultItem = ITEMS[sess.recipe.resultId];
-      this.addLog(`✨ Đan thành mở nắp! Luyện thành 【${resultItem ? resultItem.name : sess.recipe.resultId}】 x${count} — Phẩm cấp: 【${grade}】 (Tinh thuần: ${purity}%)${gradeBonus}!`, 'loot');
-      this.renderer.addFloatingText(`${grade} ĐAN!`, 320, 160, purity >= 90 ? '#facc15' : '#38bdf8', true);
+      const qualityInfo = quality ? this.getQualityInfo(quality) : null;
+      const qualityText = qualityInfo ? ` — 【${qualityInfo.name}】 (${qualityInfo.multiplier}x dược lực)` : ' — Đan cơ bản, không nhập phẩm chất';
+      this.addLog(`✨ Đan thành mở nắp! Luyện thành 【${resultItem ? resultItem.name : sess.recipe.resultId}】 x${count}${qualityText} (Tinh thuần: ${purity}%)${gradeBonus}!`, 'loot');
+      this.renderer.addFloatingText(qualityInfo ? `${qualityInfo.name} ĐAN!` : 'ĐAN THÀNH!', 320, 160, qualityInfo ? qualityInfo.color : '#38bdf8', true);
 
       this.alchemySession = null;
       this.updateAlchemyPanelUI();
@@ -8032,6 +8321,7 @@
       const rangeText = document.getElementById('alchemy-target-range');
       const btnMartial = document.getElementById('btn-fire-martial');
       const btnGentle = document.getElementById('btn-fire-gentle');
+      const btnSteady = document.getElementById('btn-fire-steady');
 
       if (titleEl) titleEl.textContent = `🔥 Đang Luyện: ${sess.recipe.name}`;
       if (rangeText) rangeText.textContent = `${sess.targetMin}°C - ${sess.targetMax}°C`;
@@ -8040,11 +8330,17 @@
       if (purityBar) purityBar.style.width = `${purity}%`;
       if (purityText) purityText.textContent = `${purity}%`;
 
-      let curGrade = 'Hạ Phẩm';
-      if (purity >= 90) curGrade = 'Cực Phẩm ⭐⭐⭐';
-      else if (purity >= 70) curGrade = 'Thượng Phẩm ⭐⭐';
-      else if (purity >= 50) curGrade = 'Trung Phẩm ⭐';
-      if (gradeEl) gradeEl.textContent = `Dự kiến: ${curGrade}`;
+      const qualityInfo = this.getQualityInfo(this.getAlchemyQuality(purity));
+      if (gradeEl) {
+        const resultItem = ITEMS[sess.recipe.resultId];
+        const isBasicPill = resultItem && resultItem.type === 'pill' && BASIC_FIXED_PILL_IDS.includes(resultItem.id);
+        gradeEl.textContent = isBasicPill
+          ? `Đan cơ bản • không nhập phẩm chất • Thông thạo: ${this.getMasteryLevel('alchemy')} phẩm`
+          : `Dự kiến: ${qualityInfo.name} • Thông thạo: ${this.getMasteryLevel('alchemy')} phẩm`;
+        gradeEl.style.color = isBasicPill ? '#94a3b8' : qualityInfo.color;
+      }
+      const masteryEl = document.getElementById('alchemy-mastery');
+      if (masteryEl) masteryEl.textContent = `Thông thạo luyện đan: ${this.getMasteryLevel('alchemy')} phẩm`;
 
       const temp = Math.round(sess.temp);
       if (tempText) tempText.textContent = `${temp}°C`;
@@ -8055,15 +8351,9 @@
         else tempBar.style.background = '#f59e0b';
       }
 
-      if (btnMartial && btnGentle) {
-        if (sess.fireMode === 'martial') {
-          btnMartial.style.boxShadow = '0 0 10px #ef4444';
-          btnGentle.style.boxShadow = 'none';
-        } else {
-          btnGentle.style.boxShadow = '0 0 10px #38bdf8';
-          btnMartial.style.boxShadow = 'none';
-        }
-      }
+      if (btnMartial) btnMartial.style.boxShadow = sess.fireMode === 'martial' ? '0 0 10px #ef4444' : 'none';
+      if (btnGentle) btnGentle.style.boxShadow = sess.fireMode === 'gentle' ? '0 0 10px #38bdf8' : 'none';
+      if (btnSteady) btnSteady.style.boxShadow = sess.fireMode === 'steady' ? '0 0 10px #22c55e' : 'none';
     }
 
     openHerbEncyclopedia() {
@@ -8637,10 +8927,11 @@
           this.addLog(`【${item.name}】 là đan dược dùng khi bấm nút [Đột Phá] cảnh giới! Hãy giữ lại trong túi!`, 'warning');
           return;
         }
+        const quality = this.consumeInventoryQuality(itemId);
+        const qualityMult = this.getItemQualityMultiplier(itemId, quality);
 
         if (itemId === 'pill_daotam') {
           p.daoTamBuff = Math.min(0.2, (p.daoTamBuff || 0) + (item.breakBonus || 0.2));
-          p.inventory[itemId]--;
           sound.playBreakthrough();
           this.renderer.addFloatingText('ĐẠO TÂM KIÊN ĐỊNH!', 320, 160, '#f8fafc', true);
           this.addLog(`🤍 Nuốt 【${item.name}】! Đạo tâm được củng cố, lần đột phá kế tiếp tăng ${Math.floor((item.breakBonus || 0.2) * 100)}% tỷ lệ thành công.`, 'golden');
@@ -8648,7 +8939,6 @@
           p.comprehension = Math.round((p.comprehension || 100) + (item.compGain || 3));
           p.curHp = p.maxHp;
           p.curMp = p.maxMp;
-          p.inventory[itemId]--;
           this.recalculatePlayerStats();
           sound.playBreakthrough();
           this.renderer.addFloatingText(`NGỘ TÍNH +${item.compGain || 3}%!`, 320, 160, '#fbbf24', true);
@@ -8656,41 +8946,41 @@
         } else if (itemId === 'pill_quy_nguyen') {
           p.curHp = p.maxHp;
           p.curMp = p.maxMp;
-          p.inventory[itemId]--;
           sound.playHeal();
           this.renderer.addFloatingText('QUY NGUYÊN 100%!', 320, 160, '#34d399', true);
           this.addLog(`🌀 Uống 【${item.name}】! Ngũ hành lưu chuyển, toàn bộ Khí Huyết và Linh Lực lập tức hồi phục 100%!`, 'heal');
         } else if (itemId === 'pill_ngung_than' || item.cleanseDebuff) {
-          p.curHp = Math.min(p.maxHp, p.curHp + Math.floor(p.maxHp * (item.healPercent || 0.25)));
-          p.inventory[itemId]--;
+          p.curHp = Math.min(p.maxHp, p.curHp + Math.floor(p.maxHp * (item.healPercent || 0.25) * qualityMult));
           sound.playHeal();
           this.renderer.addFloatingText('THANH TÂM!', 320, 160, '#38bdf8');
           this.addLog(`🧘 Uống 【${item.name}】! Thần hồn an tĩnh, hồi phục ${Math.floor((item.healPercent || 0.25) * 100)}% Khí Huyết, xua tan mọi tạp niệm!`, 'heal');
         } else if (itemId === 'pill_bao_khi') {
           p.curMp = p.maxMp;
-          p.inventory[itemId]--;
           sound.playBreakthrough();
           this.renderer.addFloatingText('BẠO KHÍ!', 320, 160, '#ef4444');
           this.addLog(`🔥 Uống 【${item.name}】! Đan điền cuộn trào sôi sục, hồi phục toàn bộ Linh Lực! (Khuyên dùng trong giao chiến để nhận +35% Công Kích)`, 'golden');
+        } else if (item.healAmount) {
+          const heal = Math.floor(item.healAmount * (item.fixedAmount ? 1 : qualityMult));
+          p.curHp = Math.min(p.maxHp, p.curHp + heal);
+          sound.playLoot();
+          this.addLog(`Uống 【${item.name}】, hồi phục cố định ${heal} Khí Huyết!`, 'heal');
         } else if (item.healPercent) {
-          p.curHp = Math.min(p.maxHp, p.curHp + Math.floor(p.maxHp * item.healPercent));
-          p.inventory[itemId]--;
+          const heal = Math.floor(p.maxHp * item.healPercent * qualityMult);
+          p.curHp = Math.min(p.maxHp, p.curHp + heal);
           sound.playLoot();
-          this.addLog(`Uống 【${item.name}】, hồi phục ${Math.floor(item.healPercent * 100)}% Khí Huyết!`, 'heal');
+          this.addLog(`Uống 【${item.name}】, hồi phục ${heal} Khí Huyết (${Math.floor(item.healPercent * qualityMult * 100)}%)!`, 'heal');
         } else if (item.mpPercent) {
-          p.curMp = Math.min(p.maxMp, p.curMp + Math.floor(p.maxMp * item.mpPercent));
-          p.inventory[itemId]--;
+          const mana = Math.floor(p.maxMp * item.mpPercent * qualityMult);
+          p.curMp = Math.min(p.maxMp, p.curMp + mana);
           sound.playLoot();
-          this.addLog(`Uống 【${item.name}】, hồi phục ${Math.floor(item.mpPercent * 100)}% Linh Lực!`, 'heal');
+          this.addLog(`Uống 【${item.name}】, hồi phục ${mana} Linh Lực!`, 'heal');
         } else if (item.expGain) {
-          let gain = Math.floor(item.expGain * (p.comprehension / 100));
+          let gain = Math.floor(item.expGain * (item.fixedAmount ? 1 : (p.comprehension / 100) * qualityMult));
           gain = this.addCultivationExp(gain);
-          p.inventory[itemId]--;
           sound.playLoot();
           this.addLog(`Uống 【${item.name}】, đan khí hóa tu vi tăng +${gain} Tu Vi!`, 'golden');
         } else if (item.lifespanGain) {
           p.bonusLifespan = (p.bonusLifespan || 0) + item.lifespanGain;
-          p.inventory[itemId]--;
           this.recalculatePlayerStats();
           sound.playBreakthrough();
           this.addLog(`Nuốt vào 【${item.name}】! Kéo dài thọ nguyên thêm +${item.lifespanGain} năm!`, 'golden');
@@ -9271,9 +9561,11 @@
 
           const itemCard = document.createElement('div');
           itemCard.className = 'inventory-card pixel-box';
+          const qualitySummary = item.type === 'pill' ? this.getQualitySummary(k) : '';
           itemCard.innerHTML = `
             <div class="item-name" style="cursor: pointer;" title="Bấm để xem chi tiết"><span class="item-icon-tag">${item.icon || '💎'}</span>${item.name}${item.refineLevel ? '<span class="refine-badge">+' + item.refineLevel + '</span>' : ''} <span class="item-count">x${p.inventory[k]}</span></div>
             <div class="item-desc">${item.desc}</div>
+            ${qualitySummary ? `<div style="font-size: 11px; color: #c084fc; margin-top: 4px;">✨ Phẩm chất: ${qualitySummary}</div>` : ''}
             <div class="item-actions" style="display: flex; gap: 6px; margin-top: 6px;">
               <button class="pixel-btn small-btn btn-inspect" style="background: rgba(30, 41, 59, 0.7);">🔍 Chi Tiết</button>
               <button class="${actionClass}">${actionLabel}</button>
@@ -9934,20 +10226,28 @@
 
     renderForgeUI() {
       const container = document.getElementById('recipe-list');
-      if (!container) return;
-      container.innerHTML = '';
-
-      RECIPES.forEach(r => {
+      const forgeContainer = document.getElementById('forge-recipe-list');
+      if (!container && !forgeContainer) return;
+      if (container) container.innerHTML = '';
+      if (forgeContainer) forgeContainer.innerHTML = '';
+      const alchemyRecipes = RECIPES.filter(r => r.type === 'alchemy');
+      const forgeRecipes = RECIPES.filter(r => r.type === 'forge');
+      const mastery = this.getMasteryLevel('alchemy');
+      const forgeMastery = this.getMasteryLevel('forge');
+      const renderRecipe = (r, target, isForge) => {
         const card = document.createElement('div');
         card.className = 'recipe-card pixel-box';
         card.innerHTML = `
-          <div class="recipe-name">${r.name} (${r.type === 'alchemy' ? 'Đan Dược' : 'Trang Bị'})</div>
-          <div class="recipe-desc">${r.desc} - Tỷ lệ thành công: ${Math.floor(r.successRate * 100)}%</div>
-          <button class="pixel-btn small-btn">Khai Lò Luyện Chế</button>
+          <div class="recipe-name">${isForge ? '🔨' : '🧪'} ${r.name} (${isForge ? 'Luyện Khí' : 'Luyện Đan'})</div>
+          <div class="recipe-desc">${r.desc}</div>
+          <div style="font-size: 11px; color: ${isForge ? '#fb923c' : '#c084fc'}; margin-top: 4px;">Thông thạo: ${isForge ? forgeMastery : mastery} phẩm • Tỷ lệ nền: ${Math.floor(r.successRate * 100)}%</div>
+          <button class="pixel-btn small-btn">${isForge ? 'Khai Lò Luyện Khí' : 'Khai Lò Luyện Đan'}</button>
         `;
         card.querySelector('button').onclick = () => this.craftRecipe(r.id);
-        container.appendChild(card);
-      });
+        target.appendChild(card);
+      };
+      if (container) alchemyRecipes.forEach(r => renderRecipe(r, container, false));
+      if (forgeContainer) forgeRecipes.forEach(r => renderRecipe(r, forgeContainer, true));
     }
 
     renderMarketUI() {
@@ -10486,8 +10786,18 @@
     if (btnFireMartial) btnFireMartial.addEventListener('click', () => systems.setAlchemyFireMode('martial'));
     const btnFireGentle = document.getElementById('btn-fire-gentle');
     if (btnFireGentle) btnFireGentle.addEventListener('click', () => systems.setAlchemyFireMode('gentle'));
+    const btnFireSteady = document.getElementById('btn-fire-steady');
+    if (btnFireSteady) btnFireSteady.addEventListener('click', () => systems.setAlchemyFireMode('steady'));
     const btnHarvestPill = document.getElementById('btn-harvest-pill');
     if (btnHarvestPill) btnHarvestPill.addEventListener('click', () => systems.harvestPill());
+    const btnForgeMartial = document.getElementById('btn-forge-martial');
+    if (btnForgeMartial) btnForgeMartial.addEventListener('click', () => systems.setForgeFireMode('martial'));
+    const btnForgeGentle = document.getElementById('btn-forge-gentle');
+    if (btnForgeGentle) btnForgeGentle.addEventListener('click', () => systems.setForgeFireMode('gentle'));
+    const btnForgeSteady = document.getElementById('btn-forge-steady');
+    if (btnForgeSteady) btnForgeSteady.addEventListener('click', () => systems.setForgeFireMode('steady'));
+    const btnHarvestForge = document.getElementById('btn-harvest-forge');
+    if (btnHarvestForge) btnHarvestForge.addEventListener('click', () => systems.harvestForge());
 
     // Nút Bí Cảnh Roguelike 5 Tầng
     const btnEnterDungeon = document.getElementById('btn-enter-dungeon');
@@ -10993,6 +11303,8 @@
     window.WORLD_REGIONS = WORLD_REGIONS;
     window.MONSTERS = MONSTERS;
     window.ITEMS = ITEMS;
+    window.ALCHEMY_QUALITY_LEVELS = ALCHEMY_QUALITY_LEVELS;
+    window.MASTERY_THRESHOLDS = MASTERY_THRESHOLDS;
     window.ITEM_PIXEL_SPRITES = ITEM_PIXEL_SPRITES;
     window.getItemPixelSvg = getItemPixelSvg;
     window.REALMS = REALMS;
@@ -11015,6 +11327,8 @@
       WORLD_REGIONS,
       MONSTERS,
       ITEMS,
+      ALCHEMY_QUALITY_LEVELS,
+      MASTERY_THRESHOLDS,
       ITEM_PIXEL_SPRITES,
       getItemPixelSvg,
       COMPANIONS,
