@@ -8040,16 +8040,18 @@
       Object.entries(recipe.ingredients).forEach(([itemId, count]) => { p.inventory[itemId] -= count; });
 
       const mastery = this.getMasteryLevel('forge');
+      const targetMin = recipe.reqRealmIndex >= 14 ? 57 : 48;
+      const targetMax = recipe.reqRealmIndex >= 14 ? 69 : 66;
       if (this.forgeInterval) clearInterval(this.forgeInterval);
       this.forgeSession = {
         active: true,
         type: 'forge',
         recipe,
-        temp: recipe.reqRealmIndex >= 14 ? 59 : 58,
+        temp: (targetMin + targetMax) / 2,
         purity: Math.min(75, 40 + (mastery - 1) * 4),
         fireMode: 'gentle',
-        targetMin: recipe.reqRealmIndex >= 14 ? 55 : 45,
-        targetMax: recipe.reqRealmIndex >= 14 ? 75 : 72,
+        targetMin,
+        targetMax,
         overheatTicks: 0
       };
       this.renderer.setScene(SCENES.ALCHEMY);
@@ -8061,17 +8063,17 @@
           clearInterval(this.forgeInterval);
           return;
         }
-        if (sess.fireMode === 'martial') sess.temp = Math.min(105, sess.temp + 0.85);
-        else if (sess.fireMode === 'gentle') sess.temp = Math.max(15, sess.temp - 0.85);
+        if (sess.fireMode === 'martial') sess.temp = Math.min(105, sess.temp + 1.0);
+        else if (sess.fireMode === 'gentle') sess.temp = Math.max(15, sess.temp - 0.9);
         else {
           const center = (sess.targetMin + sess.targetMax) / 2;
-          sess.temp += sess.temp < center ? 0.35 : sess.temp > center ? -0.35 : 0;
+          sess.temp += sess.temp < center ? 0.25 : sess.temp > center ? -0.25 : 0;
         }
-        if (sess.temp >= sess.targetMin && sess.temp <= sess.targetMax) sess.purity = Math.min(100, sess.purity + 0.65);
-        else sess.purity = Math.max(0, sess.purity - 0.45);
+        if (sess.temp >= sess.targetMin && sess.temp <= sess.targetMax) sess.purity = Math.min(100, sess.purity + 0.5);
+        else sess.purity = Math.max(0, sess.purity - 0.6);
         if (sess.temp >= 95) {
           sess.overheatTicks++;
-          if (sess.overheatTicks >= 20) return this.explodeForge();
+          if (sess.overheatTicks >= 17) return this.explodeForge();
         } else sess.overheatTicks = Math.max(0, sess.overheatTicks - 1);
         this.updateForgePanelUI();
       }, 100);
@@ -8173,19 +8175,25 @@
         p.inventory[itemId] -= count;
       }
 
-      let targetMin = 40;
-      let targetMax = 70;
+      // Luyện đan yêu cầu khống hỏa chính xác hơn luyện khí; đan càng cao
+      // thì vùng nhiệt cho phép càng hẹp.
+      let targetMin = 45;
+      let targetMax = 63;
       if (recipe.reqRealmIndex >= 14) {
-        targetMin = 50;
-        targetMax = 65;
+        targetMin = 55;
+        targetMax = 63;
+      } else if (recipe.reqRealmIndex >= 8) {
+        targetMin = 49;
+        targetMax = 61;
       }
+      const startingTemp = (targetMin + targetMax) / 2;
 
       if (this.alchemyInterval) clearInterval(this.alchemyInterval);
       this.alchemySession = {
         active: true,
         type: 'alchemy',
         recipe: recipe,
-        temp: recipe.reqRealmIndex >= 14 ? 58 : 55,
+        temp: startingTemp,
         purity: Math.min(75, 42 + (this.getMasteryLevel('alchemy') - 1) * 3),
         fireMode: 'gentle',
         targetMin: targetMin,
@@ -8202,22 +8210,22 @@
           return;
         }
         const sess = this.alchemySession;
-        if (sess.fireMode === 'martial') sess.temp = Math.min(105, sess.temp + 0.85);
-        else if (sess.fireMode === 'gentle') sess.temp = Math.max(15, sess.temp - 0.85);
+        if (sess.fireMode === 'martial') sess.temp = Math.min(105, sess.temp + 1.05);
+        else if (sess.fireMode === 'gentle') sess.temp = Math.max(15, sess.temp - 0.95);
         else {
           const center = (sess.targetMin + sess.targetMax) / 2;
-          sess.temp += sess.temp < center ? 0.35 : sess.temp > center ? -0.35 : 0;
+          sess.temp += sess.temp < center ? 0.22 : sess.temp > center ? -0.22 : 0;
         }
 
         if (sess.temp >= sess.targetMin && sess.temp <= sess.targetMax) {
-          sess.purity = Math.min(100, sess.purity + 0.6);
+          sess.purity = Math.min(100, sess.purity + 0.45);
         } else {
-          sess.purity = Math.max(0, sess.purity - 0.4);
+          sess.purity = Math.max(0, sess.purity - 0.7);
         }
 
         if (sess.temp >= 95) {
           sess.overheatTicks++;
-          if (sess.overheatTicks >= 20) {
+          if (sess.overheatTicks >= 15) {
             this.explodeCauldron();
             return;
           }
