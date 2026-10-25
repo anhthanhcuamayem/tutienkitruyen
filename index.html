@@ -229,6 +229,15 @@
         </button>
       </nav>
 
+      <!-- Khung Canvas: Chỉ hiển thị ở Tab Nhân Vật (ngồi thiền) hoặc khi Chiến Đấu -->
+      <div class="canvas-viewport">
+        <canvas id="main-canvas" width="640" height="360"></canvas>
+        <div id="canvas-status-banner" class="canvas-status-hud">
+          <span class="status-orb"></span>
+          <span id="canvas-status-text">Đang đả tọa hấp thu thiên địa linh khí...</span>
+        </div>
+      </div>
+
       <!-- Banner Cảnh Báo Trạng Thái Chiến Đấu Khẩn Cấp (Hiện Khi Vào Trận) -->
       <div id="combat-active-header" class="combat-active-banner hidden">
         <div class="combat-banner-title">
@@ -239,14 +248,6 @@
       </div>
 
       <div class="tab-content-area">
-        <!-- Khung Canvas: Hiển thị ở Tab Nhân Vật (ngồi thiền / luyện đan) hoặc khi Chiến Đấu, cuộn tự nhiên theo nội dung -->
-        <div class="canvas-viewport">
-          <canvas id="main-canvas" width="640" height="360"></canvas>
-          <div id="canvas-status-banner" class="canvas-status-hud">
-            <span class="status-orb"></span>
-            <span id="canvas-status-text">Đang đả tọa hấp thu thiên địa linh khí...</span>
-          </div>
-        </div>
 
         <!-- TAB 1: NHÂN VẬT (ĐẢ TỌA TU LUYỆN & ĐỘNG PHỦ LUYỆN ĐAN) -->
         <section id="tab-nhanvat" class="tab-pane active">

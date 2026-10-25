@@ -1307,13 +1307,12 @@ body.auth-required .game-header .header-actions > *:not(#btn-account) {
   max-width: 540px;
   aspect-ratio: 16 / 9;
   height: auto;
-  margin: 0 auto 10px auto;
+  margin: 0 auto 8px auto;
   background: #07090e;
   border: 2px solid var(--border-bronze);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8), inset 0 0 0 1px var(--border-gold);
   border-radius: 2px;
   overflow: hidden;
-  flex-shrink: 0;
 }
 
 /* Chỉ hiển thị khi đang ở tab Nhân Vật */
@@ -3548,8 +3547,7 @@ body.combat-active-mode #tab-combat {
     height: auto !important;
     aspect-ratio: 16 / 9;
     max-height: 190px !important;
-    margin-bottom: 8px;
-    flex-shrink: 0;
+    margin-bottom: 4px;
   }
 
   #main-canvas {
