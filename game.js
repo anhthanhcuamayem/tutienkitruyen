@@ -3721,20 +3721,6 @@
       this.shakeDuration = 0;
       this.shakeIntensity = 0;
 
-      this.meditateBg = null;
-      this.meditateBgLoaded = false;
-      if (typeof Image !== 'undefined') {
-        const bgImg = new Image();
-        bgImg.onload = () => {
-          this.meditateBg = bgImg;
-          this.meditateBgLoaded = true;
-        };
-        bgImg.onerror = () => {
-          this.meditateBgLoaded = false;
-        };
-        bgImg.src = 'assets/meditation_bg.png';
-      }
-
       this.combatState = {
         playerFlash: null,
         monsterFlash: null,
@@ -3829,15 +3815,9 @@
     addFloatingText(text, x, y, color = '#f87171', isCrit = false) {
       const ft = this.floatingTextPool.acquire();
       if (!ft) return;
-      let finalX = x;
-      let finalY = y;
-      if (this.currentScene === SCENES.MEDITATE && this.meditateBgLoaded && this.meditateBg && x === 320 && y === 160) {
-        finalX = 438;
-        finalY = 150;
-      }
       ft.text = text;
-      ft.x = finalX + (Math.random() - 0.5) * 20;
-      ft.y = finalY;
+      ft.x = x + (Math.random() - 0.5) * 20;
+      ft.y = y;
       ft.vy = -1.2;
       ft.alpha = 1.0;
       ft.color = color;
@@ -3856,8 +3836,8 @@
       const colors = ['#38bdf8', '#34d399', '#facc15', '#f87171', '#c084fc', '#67e8f9'];
       const angle = Math.random() * Math.PI * 2;
       const radius = 130 + Math.random() * 90;
-      const targetX = (this.meditateBgLoaded && this.meditateBg) ? 438 : 320;
-      const targetY = (this.meditateBgLoaded && this.meditateBg) ? 195 : 210;
+      const targetX = 320;
+      const targetY = 210;
 
       const p = this.particlePool.acquire();
       if (!p) return;
@@ -3955,96 +3935,6 @@
 
     renderMeditateScene() {
       const ctx = this.ctx;
-
-      // Nâng cấp: Khi hình nền Pixel Art Thần Thoại đã tải thành công
-      if (this.meditateBgLoaded && this.meditateBg) {
-        ctx.save();
-        ctx.imageSmoothingEnabled = true;
-        ctx.drawImage(this.meditateBg, 0, 0, this.width, this.height);
-        ctx.imageSmoothingEnabled = false;
-
-        // Lớp hiệu ứng ánh sáng động & thở thần thoại (Dynamic Breathing Glows)
-        ctx.globalCompositeOperation = 'lighter';
-
-        // 1. Quầng trăng bạc thở nhẹ nhàng huyền ảo
-        const moonGlow = 0.22 + Math.sin(this.time * 0.04) * 0.1;
-        const moonGrad = ctx.createRadialGradient(184, 85, 20, 184, 85, 85);
-        moonGrad.addColorStop(0, `rgba(224, 242, 254, ${moonGlow})`);
-        moonGrad.addColorStop(0.5, `rgba(186, 230, 253, ${moonGlow * 0.5})`);
-        moonGrad.addColorStop(1, 'rgba(186, 230, 253, 0)');
-        ctx.fillStyle = moonGrad;
-        ctx.beginPath();
-        ctx.arc(184, 85, 85, 0, Math.PI * 2);
-        ctx.fill();
-
-        // 2. Phi Kiếm Thanh Quang Thần Khí Lơ Lửng Rực Rỡ
-        const swordPulse = 0.35 + Math.sin(this.time * 0.08) * 0.2;
-        const swordGrad = ctx.createRadialGradient(344, 145, 10, 344, 145, 70);
-        swordGrad.addColorStop(0, `rgba(56, 189, 248, ${swordPulse})`);
-        swordGrad.addColorStop(0.5, `rgba(103, 232, 249, ${swordPulse * 0.4})`);
-        swordGrad.addColorStop(1, 'rgba(56, 189, 248, 0)');
-        ctx.fillStyle = swordGrad;
-        ctx.beginPath();
-        ctx.arc(344, 145, 70, 0, Math.PI * 2);
-        ctx.fill();
-
-        // 3. Kim Liên Tụ Linh Trận (Đài sen vàng phát quang nhịp nhàng)
-        const lotusPulse = 0.32 + Math.sin(this.time * 0.06) * 0.18;
-        const lotusGrad = ctx.createRadialGradient(438, 258, 20, 438, 258, 95);
-        lotusGrad.addColorStop(0, `rgba(253, 224, 71, ${lotusPulse})`);
-        lotusGrad.addColorStop(0.4, `rgba(245, 158, 11, ${lotusPulse * 0.6})`);
-        lotusGrad.addColorStop(1, 'rgba(245, 158, 11, 0)');
-        ctx.fillStyle = lotusGrad;
-        ctx.beginPath();
-        ctx.ellipse(438, 258, 95, 45, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // 4. Hộ Thể Kim Quang / Tử Quang theo cảnh giới bao bọc đan điền nhân vật
-        const isHighRealm = this.systems && this.systems.player && this.systems.player.realmIndex >= 10;
-        const auraColor = isHighRealm ? '245, 158, 11' : '56, 189, 248';
-        const auraPulse = 0.22 + Math.sin(this.time * 0.07 + 1) * 0.14;
-        const auraGrad = ctx.createRadialGradient(438, 195, 25, 438, 195, 85);
-        auraGrad.addColorStop(0, `rgba(${auraColor}, ${auraPulse})`);
-        auraGrad.addColorStop(0.6, `rgba(${auraColor}, ${auraPulse * 0.35})`);
-        auraGrad.addColorStop(1, `rgba(${auraColor}, 0)`);
-        ctx.fillStyle = auraGrad;
-        ctx.beginPath();
-        ctx.arc(438, 195, 85, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.restore();
-
-        // 5. Nếu có Linh Thú hộ mệnh: hiển thị hiệu ứng & danh hiệu đồng hành tại vị trí linh hồ
-        if (this.systems && this.systems.player && this.systems.player.companion) {
-          const pet = this.systems.player.companion;
-          const petFloat = Math.sin(this.time * 0.08) * 3;
-          const petX = 518;
-          const petY = 265 + petFloat;
-
-          ctx.save();
-          const petGlow = ctx.createRadialGradient(petX, petY, 5, petX, petY, 32);
-          petGlow.addColorStop(0, 'rgba(167, 243, 208, 0.45)');
-          petGlow.addColorStop(1, 'rgba(167, 243, 208, 0)');
-          ctx.fillStyle = petGlow;
-          ctx.beginPath();
-          ctx.arc(petX, petY, 32, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.font = '8px "Press Start 2P", monospace, sans-serif';
-          ctx.fillStyle = '#fde047';
-          ctx.textAlign = 'center';
-          ctx.shadowColor = '#000000';
-          ctx.shadowBlur = 4;
-          ctx.fillText(`${pet.icon || '🐾'} ${pet.name}`, petX, petY - 14);
-          ctx.restore();
-        }
-
-        // Hạt linh khí xoắn ốc tụ về đan điền nhân vật
-        if (this.time % 4 === 0) {
-          this.spawnQiParticles();
-        }
-        return;
-      }
 
       // 1. Bầu Trời Đêm & Ngân Hà Tinh Đới (Nebula Band)
       const skyGrad = ctx.createLinearGradient(0, 0, 0, 265);
@@ -10304,23 +10194,6 @@
       mctx.fillStyle = '#0f172a';
       mctx.fillRect(0, 0, 32, 32);
       drawPixelSprite(mctx, SPRITES.playerMeditate, 0, 0, 2);
-    }
-
-    if (typeof Image !== 'undefined') {
-      const avatarImg = new Image();
-      avatarImg.onload = () => {
-        if (avatarCanvas) {
-          const actx = avatarCanvas.getContext('2d');
-          actx.clearRect(0, 0, 48, 48);
-          actx.drawImage(avatarImg, 0, 0, 48, 48);
-        }
-        if (mobAvatarCanvas) {
-          const mctx = mobAvatarCanvas.getContext('2d');
-          mctx.clearRect(0, 0, 32, 32);
-          mctx.drawImage(avatarImg, 0, 0, 32, 32);
-        }
-      };
-      avatarImg.src = 'assets/avatar_cultivator.png';
     }
 
     let creationFlowInitialized = false;
